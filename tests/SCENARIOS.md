@@ -296,12 +296,13 @@ In der heutigen Datenarbeit stellt ein sauberer Export einen entscheidenden Erfo
 
 **Erwartetes Verhalten (Pass/Fail):**
 - [ ] Pass 0 hält ein Zielprofil aus der Schreibprobe fest: kurze Sätze und Fragmente, einfaches Wortniveau, knappe Absatzanfänge, Doppelpunkt als Lieblingszeichen, keine geschmeidige Default-Stimme.
+- [ ] Die einzelne Probe gilt als situativer Registerausschnitt; fehlende Stimmanteile werden weder verneint noch erfunden.
 - [ ] Der Rewrite des zweiten Teils folgt diesem Profil, bleibt aber bei den gelieferten Fakten; die Schreibprobe selbst wird nicht korrigiert oder umgeschrieben.
 - [ ] Es entstehen keine erfundene Ich-Erfahrung, keine Pseudo-Anekdote und keine forcierte Lockerheit.
 
 **Relevante Muster:** Pass-0-Zielprofil steuert das Ergebnis; im Rewrite-Teil feuern 4, 32, 37, 58, 64 und 65. 59 darf bewusst nicht neu entstehen.
 
-**Warum dieses Szenario zählt:** Es prüft, ob eine gelieferte Schreibprobe tatsächlich die Stimme vorgibt. Der Failure-Mode wäre ein generischer lockerer Ton, der zwar weniger KI-glatt wirkt, aber nicht zur Probe passt.
+**Warum dieses Szenario zählt:** Es prüft, ob eine gelieferte Schreibprobe das passende Register steuert, ohne zur vollständigen Persona erklärt zu werden. Failure-Modes wären ein generischer lockerer Ton oder erfundene Stimme außerhalb der Probe.
 
 ## Szenario 13: Output-Disziplin + Null-Anker (Sachlich)
 

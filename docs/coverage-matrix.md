@@ -1,6 +1,6 @@
 # Humanizer-de Coverage Matrix
 
-Status: P0 source-of-truth matrix for v5.10.1.
+Status: P0 source-of-truth matrix for v5.10.2.
 
 This matrix prevents one common documentation error: treating the 72-pattern catalog as if every pattern were deterministically detected, automatically rewritten, and fully regression-tested. The project has several coverage layers with different guarantees.
 
@@ -20,6 +20,7 @@ This matrix prevents one common documentation error: treating the 72-pattern cat
 | Register linter | `scripts/register_lint.py` | Mixed address, expected address blockers, modal particles, formal voice intrusion | Deterministic profile-drift warnings/blockers for its features | Full register modeling |
 | Evidence linter | `scripts/evidence_lint.py` | Before/after anchor drift: numbers, dates, URLs, DOI, paragraphs, code, quotes, proper names, authority, direction | Conservative drift warnings/blockers | Full factual checking or semantic preservation |
 | Scenario contracts | `tests/scenarios/`, `scripts/run_review_eval.py` | LLM-in-loop invariants for output discipline, QGIR traces, edit budget, anchors, register, detector wording | Regression checks for known failure modes | A complete benchmark of German writing quality |
+| Trigger-routing fixture | `tests/trigger_eval.json` | Curated should-/should-not-trigger requests around the edit-pass boundary | Manual review set for description changes | Automatic platform invocation or routing accuracy |
 | Human reviewer / LLM judgment | `SKILL.md`, scenario docs | Cluster interpretation, context, register tradeoffs, rewrite choices, subtle structure | Required for judgment-only patterns and proportional edits | Deterministic reproducibility without tests |
 
 ## Script Pattern Coverage

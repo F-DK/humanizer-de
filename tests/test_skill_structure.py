@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_VERSION = "5.10.1"
+EXPECTED_VERSION = "5.10.2"
 EXPECTED_PATTERN_COUNT = 72
 
 
@@ -103,7 +103,17 @@ class SkillStructureTests(unittest.TestCase):
         self.assertIsNotNone(match)
         description = match.group(1)
         self.assertLessEqual(len(description), 220)
+        self.assertIn("bestehenden deutschen Text", description)
         self.assertIn("deutschen Text humanisieren", description)
+
+    def test_trigger_eval_fixture_is_wellformed(self):
+        cases = json.loads(read_utf8(ROOT / "tests" / "trigger_eval.json"))
+
+        self.assertEqual(set(cases), {"should_trigger", "should_not_trigger"})
+        self.assertGreaterEqual(len(cases["should_trigger"]), 10)
+        self.assertGreaterEqual(len(cases["should_not_trigger"]), 10)
+        self.assertTrue(all(isinstance(case, str) and case.strip() for group in cases.values() for case in group))
+        self.assertFalse(set(cases["should_trigger"]) & set(cases["should_not_trigger"]))
 
     def test_output_prelude_has_suppression_clause(self):
         text = read_utf8(ROOT / "SKILL.md")
@@ -193,7 +203,10 @@ class SkillStructureTests(unittest.TestCase):
         self.assertIn("trotzdem Textqualität, Präzision oder Lesbarkeit verschlechtern", naturalness)
 
         self.assertIn("deictic_center", profiles)
+        self.assertIn("word_level", profiles)
+        self.assertIn("paragraph_openers", profiles)
         self.assertIn("Sprecherposition bleibt stabil", profiles)
+        self.assertIn("situatives Register, nicht die ganze Stimme", profiles)
 
     def test_quality_rubric_exists_and_is_anchored_in_pass_5(self):
         rubric = (ROOT / "references" / "quality-rubric.md")

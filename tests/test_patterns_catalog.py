@@ -185,6 +185,20 @@ class PatternCatalogTests(unittest.TestCase):
         self.assertIn("Dialog-, Support-, Coaching- oder Interviewantwort", normalized_18)
         self.assertIn('Ein einzelnes "Genau" oder "Absolut"', normalized_18)
 
+    def test_pattern_24_tracks_export_artifacts_with_false_positive_boundary(self):
+        section = extract_pattern_section(24)
+
+        for artifact in (
+            "<grok:render ...>",
+            "【85†L261-269】",
+            "[citation:1]",
+            "_[unsupported block: think]_",
+            "anbieterneutral behandelte",
+            "aus ihnen allein folgt keine Anbieterzuordnung",
+            "Codeblöcke, zitierte Beispiele",
+        ):
+            self.assertIn(artifact, section)
+
     def test_pattern_26_is_factual_reliability_gate(self):
         section = extract_pattern_section(26)
 

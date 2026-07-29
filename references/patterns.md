@@ -1,6 +1,6 @@
 # Humanizer-de Pattern Catalog
 
-Vollstaendiger Musterkatalog fuer Humanizer (Deutsch) v5.10.1. Nur bei konkreter Musterdiagnose, Audit oder Grenzfaellen laden.
+Vollstaendiger Musterkatalog fuer Humanizer (Deutsch) v5.10.2. Nur bei konkreter Musterdiagnose, Audit oder Grenzfaellen laden.
 
 ## Kurzreferenz
 
@@ -708,14 +708,15 @@ Häufige Indikatoren:
 - `{{cite book|author=` ohne Schließ-`}}`
 - **ChatGPT:** `oaicite:0`-/`oaicite:ref`-Tags, `contentReference[oaicite:0]`-Spans, `oai_citation`, `turn0search0`/`citeturn0search0` (von Private-Use-Area-Unicode umschlossen; Varianten: `citeturn0news0`, `citeturn1file0`, `iturn0image0`), `+1`-Suffixe an Quellennamen (`Wikipedia+1`, `ISO+3`), JSON-Anhang `({"attribution":{"attributableIndex":"X-Y"}})`
 - **Gemini:** `[cite: 1]` bzw. `[cite: 3, 12, 13]`, `[span_1][start_span]`/`[span_1][end_span]`
-- **Grok:** `grok_card`-Spans (`<grok-card data-id=...>`), `grok_render_citation_card_json`
+- **Grok:** `grok_card`-Spans (`<grok-card data-id=...>`), `grok_render_citation_card_json`, `<grok:render ...>` mit `<argument name="citation_id">`
 - **DeepSeek:** Linsenklammern mit Dagger, z. B. `【85†L261-269】`
+- **Weitere anbieterneutral behandelte Chat-/Share-Exportreste:** `[citation:1]`-Ketten, ein publizierter Block `> **Thinking**`, `[^1^]`, `_[unsupported block: think]_`, `_[unsupported block: search]_`, numerische `[[1]]`-Ketten außerhalb echten Wiki-/Notiz-Kontexts sowie unverarbeitete Reasoning-Tags wie `<think>...</think>`
 - **Perplexity:** `[attached_file:1]`, `[web:1]`, `ppl-ai-file-upload` in Zitat-URLs
 - **Anbieter unklar:** `:::writing{variant="document" id="12345"}`
 - Markdown-Formatierung in Word- oder PDF-Dokumenten
 - Publizierte interne Reasoning-Spur, z. B. "Ich muss das Schritt für Schritt durchdenken", "Zuerst prüfe ich, was der Nutzer wirklich will": interner Arbeitsmonolog in der veröffentlichten Antwort
 
-**Abgrenzung:** Selbstgerichtete Deliberation über Prompt, Nutzerabsicht oder Antwortstrategie = Muster 24. Lesergerichtete Erklärung eines fachlichen Prüfschritts = kein Befund. Ankündigung der Textstruktur = Muster 33. Rückblickender Editierbericht = Muster 31.
+**Abgrenzung:** Die Strings sind nur Befund, wenn sie als unverarbeitete Exportreste im Zieltext stehen; aus ihnen allein folgt keine Anbieterzuordnung. Codeblöcke, zitierte Beispiele, Dokumentation über Reasoning-Modelle sowie valide Fußnoten, Wiki- oder Notiz-Links sind kein Befund. Selbstgerichtete Deliberation über Prompt, Nutzerabsicht oder Antwortstrategie = Muster 24. Lesergerichtete Erklärung eines fachlichen Prüfschritts = kein Befund. Ankündigung der Textstruktur = Muster 33. Rückblickender Editierbericht = Muster 31.
 
 **Warum LLMs das tun:** Wikitext-Syntax wurde nicht korrekt generiert. KI-Tools fügen interne Referenz-Tags ein, die im Export nicht bereinigt werden.
 

@@ -11,6 +11,8 @@ Pass 0 erzeugt eine kleine Stilkarte. Sie ist kein Schreibauftrag, sondern ein S
 | `address` | du, Sie, wir, man, neutral | Anrede stabil halten |
 | `distance` | nah, neutral, institutionell | Keine falsche Naehe einbauen |
 | `sentence_shape` | kurz, gemischt, lang/fachlich | Rhythmus am Texttyp messen |
+| `word_level` | einfach, gemischt, fachlich | Wortniveau nicht pauschal glätten |
+| `paragraph_openers` | knapp, variabel, ausformuliert | Typische Absatzanfänge erhalten |
 | `paragraph_shape` | knapp, normal, dicht | Struktur nicht normieren |
 | `terms` | Fachwoerter, Produktnamen | Terminologie stabil halten |
 | `particles` | keine, sparsam, praegend | Modalpartikeln nur im passenden Register |
@@ -47,5 +49,6 @@ Iterative Revision darf das Profil nicht in generisches, glattes Standarddeutsch
 - Sprecherposition bleibt stabil: Ich-/Wir-Stimme nur nutzen, wenn sie im Input, Zielprofil oder Kontext angelegt ist.
 - Fachbegriffe, Produktnamen und lokale Lieblingszeichen bleiben erhalten, wenn sie nicht selbst Artefakt sind.
 - Schreibproben liefern Richtung, aber keine Pflicht zur maximalen Imitation.
+- Eine einzelne Schreibprobe zeigt ein situatives Register, nicht die ganze Stimme. Fehlende Registeranteile weder verneinen noch erfinden; aus fehlender Ich-Form folgt etwa kein generelles Ich-Verbot. Mehrere Proben helfen, Konstanten und Bandbreite zu trennen.
 - Formal-Modus schlaegt Schreibprobe, Rhythmus und Naturalness.
 - Wenn ein weiterer Pass nur Stimme verstaerken wuerde, stoppt QGIR.
