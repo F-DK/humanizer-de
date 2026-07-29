@@ -124,7 +124,8 @@ def package_checks(root: Path) -> tuple[list[dict[str, Any]], str | None]:
         marketplace_version = plugins[0].get("version") if plugins else None
     except (OSError, json.JSONDecodeError, AttributeError):
         marketplace_version = None
-    versions["marketplace"] = marketplace_version
+    if marketplace_version:
+        versions["marketplace"] = marketplace_version
 
     known_versions = [value for value in versions.values() if value]
     synced = len(known_versions) == len(versions) and len(set(known_versions)) == 1

@@ -26,6 +26,27 @@ Fixtures müssen die öffentliche Regeloberfläche prüfen, nicht nur Hilfsfunkt
 an Regex, Schwelle, Severity, Meldung oder Scope gelten als materielle Regeländerung und
 erfordern einen neuen datierten Begründungseintrag.
 
+## Auslieferung: Patch-Bump-Pflicht
+
+Installierte Plugins sind auf die Versionsnummer aus `plugin.json` gepinnt. Claude Code und
+Codex vergleichen nur diese Zeichenkette; solange sie gleich bleibt, behalten sie ihre
+zwischengespeicherte Kopie und liefern neue Commits nicht aus. Neuinstallationen ziehen
+dagegen den Default-Branch und sehen jede Änderung sofort. Ohne Bump laufen beide Gruppen
+also auseinander.
+
+Deshalb gilt: Jede inhaltliche Änderung an ausgelieferten Dateien — Linter-Regeln,
+`SKILL.md`, `references/`, `assets/`, `agents/` — bekommt im selben Commit-Zug mindestens
+einen Patch-Bump. Reine Reparaturen an Tests, Entwicklerdoku oder interner Steuerung
+brauchen keinen.
+
+Zu bumpen sind: `.claude-plugin/plugin.json`, `.codex-plugin/plugin.json`, das
+`SKILL.md`-Frontmatter, die Kopfzeilen von `references/patterns.md` und
+`references/decision-tables.md`, `docs/coverage-matrix.md`, `WARP.md` sowie die Pins in
+`tests/`. Der Versions-Sync-Test und `scripts/doctor.py` erzwingen die Vollständigkeit.
+`.claude-plugin/marketplace.json` führt bewusst keine Version: Steht sie an beiden Stellen,
+gewinnt `plugin.json` ohne Warnung, und ein vergessener Wert dort verdeckt den gepflegten
+im Marktplatz-Eintrag.
+
 ## Aufgenommen: M72-Kandidatenhinweis
 
 1. **Muster-ID, Name, Zweck:** Muster 72, `address_validation_candidate`. Der Hinweis findet

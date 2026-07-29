@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_VERSION = "5.10.0"
+EXPECTED_VERSION = "5.10.1"
 EXPECTED_PATTERN_COUNT = 72
 
 
@@ -130,7 +130,7 @@ class SkillStructureTests(unittest.TestCase):
         self.assertRegex(skill_text, rf"version:\s+['\"]?{re.escape(EXPECTED_VERSION)}['\"]?")
         self.assertEqual(plugin["version"], EXPECTED_VERSION)
         self.assertEqual(codex_plugin["version"], EXPECTED_VERSION)
-        self.assertEqual(marketplace_plugin["version"], EXPECTED_VERSION)
+        self.assertNotIn("version", marketplace_plugin)
         self.assertEqual(codex_marketplace["name"], "humanizer-de")
         self.assertEqual(codex_marketplace_plugin["name"], "humanizer-de")
         self.assertEqual(codex_marketplace_plugin["source"]["path"], "./")
