@@ -37,7 +37,7 @@ EXPECTED_REGISTER_JSON = """{
     {
       "severity": "warning",
       "kind": "mixed_address",
-      "message": "Du- and Sie-address appear in the same passage.",
+      "message": "Possible Du/Sie address mix; verify that capitalized forms are direct address, not anaphora or quoted voice.",
       "spans": [
         {
           "start": 0,

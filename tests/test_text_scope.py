@@ -122,6 +122,15 @@ class TextScopeTests(unittest.TestCase):
         self.assertEqual(rhythm_lint.analyze(text)["document"]["sentence_count"], 1)
         self.assertEqual(style_profile.profile(text, "quoted")["metrics"], style_profile.profile("Sachliche eigene Prosa.", "base")["metrics"])
 
+    def test_style_profile_excludes_inline_quoted_foreign_voice(self):
+        base = "Du dokumentierst den Hinweis und gehst weiter."
+        quoted = "Du dokumentierst den Hinweis „Bitte prüfen Sie Ihre Angaben“ und gehst weiter."
+
+        self.assertEqual(
+            style_profile.profile(quoted, "quoted")["metrics"]["address_counts"],
+            style_profile.profile(base, "base")["metrics"]["address_counts"],
+        )
+
     def test_all_wir_inflections_are_counted(self):
         text = "Wir helfen uns mit unser, unsere, unseren, unserem, unserer und unseres."
 

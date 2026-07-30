@@ -16,6 +16,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
+import evidence_lint
 import text_scope
 from cli_output import print_json, resolve_exit_code
 
@@ -63,7 +64,16 @@ def precise_context(precise: bool) -> tuple[dict | None, object | None]:
 
 def strip_protected(text: str, exclude_blockquotes: bool = False) -> str:
     scope = text_scope.AUTHORED_PROSE if exclude_blockquotes else text_scope.DOCUMENT_PROSE
-    return text_scope.mask_text(text, scope=scope)
+    clean_text = text_scope.mask_text(text, scope=scope)
+    if not exclude_blockquotes:
+        return clean_text
+
+    def mask_quote(match: re.Match) -> str:
+        return "".join(char if char in {"\n", "\r"} else " " for char in match.group())
+
+    for pattern in evidence_lint.VALID_QUOTE_PATTERNS:
+        clean_text = pattern.sub(mask_quote, clean_text)
+    return clean_text
 
 
 def blockquote_ranges(text: str) -> list[tuple[int, int]]:
@@ -219,7 +229,7 @@ def lint(text: str, mode: str = "sachlich", expected_address: str | None = None,
             findings,
             "warning",
             "mixed_address",
-            "Du- and Sie-address appear in the same passage.",
+            "Possible Du/Sie address mix; verify that capitalized forms are direct address, not anaphora or quoted voice.",
             spans["du"] + spans["sie"],
         )
     if expected_address == "du" and found["sie_formal_count"]:

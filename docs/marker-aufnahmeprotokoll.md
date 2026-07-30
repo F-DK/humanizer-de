@@ -47,6 +47,41 @@ Zu bumpen sind: `.claude-plugin/plugin.json`, `.codex-plugin/plugin.json`, das
 gewinnt `plugin.json` ohne Warnung, und ein vergessener Wert dort verdeckt den gepflegten
 im Marktplatz-Eintrag.
 
+## Präzisiert: `mixed_address` bei Inline-Zitaten
+
+1. **Name und Zweck:** Bestehender Registerbefund `mixed_address`, kein Katalogmuster.
+   Eindeutig gepaarte Inline-Zitate sollen im aktiven `--precise`-Pfad wie Blockquotes als
+   fremde Stimme gelten.
+2. **Scope:** Alle Modi; im Stilprofil und bei aktivem spaCy-Präzisionspfad. Code,
+   Frontmatter, Tabellen, HTML-Syntax und Blockquotes bleiben wie bisher geschützt.
+3. **Logik:** Die validen Quote-Patterns des Evidence-Gates maskieren gepaarte deutsche,
+   Schweizer, englische und gerade Inline-Zitate längentreu vor der
+   Registerzählung. Der kompatible Default bleibt unverändert.
+4. **Schwelle:** Der Registerbefund entsteht weiterhin erst, wenn ungeschützte `du`- und
+   `Sie`-Formen gemeinsam vorkommen.
+5. **Fixtures:**
+
+   | Typ | Textfamilie | Erwartung |
+   |---|---|---|
+   | Positiv | Du-Stimme + deutsches Inline-Zitat mit `Sie` | kein `mixed_address` in `--precise` |
+   | Positiv | Du-Stimme + gerades Inline-Zitat mit `Sie` | kein `mixed_address` in `--precise` |
+   | Positiv | Sie-Stimme + Schweizer Inline-Zitat mit `Du` | kein `mixed_address` in `--precise` |
+   | Negativ | unzitierter echter Wechsel von `Du` zu `Sie` | `mixed_address` |
+   | Negativ | nur ein Sachwort zitiert, echte `Sie`-Anrede unzitiert | `mixed_address` |
+   | Negativ | Zitat plus weitere echte `Sie`-Anrede außerhalb | `mixed_address` |
+   | Grenzfall | ungepaarte Anführungszeichen | konservativ nicht maskieren |
+   | Grenzfall | mögliche Plural-Anapher (`Die Teams ... Sie ...`) | manueller Kandidat bleibt |
+
+6. **Fehlalarmfamilien:** Zitate, UI-Wortlaut, Interview- und Dialogbeispiele. Die sichere
+   gepaarte Teilmenge fällt im Präzisionspfad weg; Plural-Coreference bleibt qualitativ
+   zu prüfen, weil `Sie` grammatisch nicht sicher von der Höflichkeitsform trennbar ist.
+7. **Severity, Meldung, Aktion:** `warning` bleibt. Die Meldung nennt jetzt einen möglichen
+   Anredewechsel und verlangt die Prüfung auf Anapher oder Zitat. Kein Auto-Rewrite.
+8. **Autorschaft:** Der Befund erlaubt weiterhin keine Aussage zur Verfasserschaft.
+9. **Version und Begründung:** 2026-07-30, Version 5.10.5. Der Audit von 20 eigenen Posts
+   zeigte zitierte Fremdstimme und anaphorisches `Sie` als wiederkehrende Fehlalarmfamilien.
+   Automatisiert wird nur die eindeutig trennbare Zitatfamilie.
+
 ## Aufgenommen: M72-Kandidatenhinweis
 
 1. **Muster-ID, Name, Zweck:** Muster 72, `address_validation_candidate`. Der Hinweis findet

@@ -174,6 +174,29 @@ class RegisterLintPreciseTests(unittest.TestCase):
 
         self.assertIn("mixed_address", kinds(report))
 
+    def test_precise_ignores_inline_quoted_foreign_voice(self):
+        texts = (
+            "Du dokumentierst den Hinweis „Bitte prüfen Sie Ihre Angaben“ und gehst weiter.",
+            'Du dokumentierst den Hinweis "Bitte prüfen Sie Ihre Angaben" und gehst weiter.',
+            "Sie dokumentieren den Hinweis «Du musst das prüfen» und fahren fort.",
+        )
+
+        for text in texts:
+            with self.subTest(text=text):
+                self.assertNotIn("mixed_address", kinds(register_lint.lint(text, precise=True)))
+
+    def test_precise_keeps_real_address_outside_inline_quotes(self):
+        texts = (
+            "Du prüfst den Text. Bitte senden Sie danach die Freigabe.",
+            "Du prüfst den „finalen“ Text. Bitte senden Sie danach die Freigabe.",
+            "Du kennst den Hinweis „Bitte prüfen Sie“. Senden Sie danach die Freigabe.",
+            "Du kennst den Hinweis „Bitte prüfen Sie”.",
+        )
+
+        for text in texts:
+            with self.subTest(text=text):
+                self.assertIn("mixed_address", kinds(register_lint.lint(text, precise=True)))
+
     def test_precise_ignores_sie_address_in_blockquote(self):
         text = "Du prüfst die Daten.\n\n> Bitte prüfen Sie Ihre Angaben.\n\nDann passt es."
         report = register_lint.lint(text, precise=True)

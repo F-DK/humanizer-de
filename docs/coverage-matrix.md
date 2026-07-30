@@ -1,6 +1,6 @@
 # Humanizer-de Coverage Matrix
 
-Status: P0 source-of-truth matrix for v5.10.4.
+Status: P0 source-of-truth matrix for v5.10.5.
 
 This matrix prevents one common documentation error: treating the 72-pattern catalog as if every pattern were deterministically detected, automatically rewritten, and fully regression-tested. The project has several coverage layers with different guarantees.
 
@@ -17,7 +17,7 @@ This matrix prevents one common documentation error: treating the 72-pattern cat
 | Unicode linter | `scripts/unicode_lint.py` | Hidden Unicode and German quote issues | Deterministic findings and conservative fixes for its scope | Style, evidence, rhythm, register |
 | Rhythm linter | `scripts/rhythm_lint.py` | Suspicion metrics for patterns 4, 54, 55, 61 | Deterministic measurements and scoped suspicions | Final KI-Tell judgment; pattern 51 is deliberately not emitted |
 | German pattern linter | `scripts/german_pattern_lint.py` | Cluster checks for patterns 8, 13, 54, 58, 63, 64, 65 plus an `info` advisory candidate for pattern 72 | Deterministic cluster findings for selected naturalness signals; candidate-only context prompt for pattern 72 | Most of the 72-pattern catalog; no confirmed pattern-72 verdict |
-| Register linter | `scripts/register_lint.py` | Mixed address, expected address blockers, modal particles, formal voice intrusion | Deterministic profile-drift warnings/blockers for its features | Full register modeling |
+| Register linter | `scripts/register_lint.py` | Mixed address, expected address blockers, modal particles, formal voice intrusion | Deterministic profile-drift warnings/blockers; `--precise` excludes singular anaphora and clearly paired quoted voice | Plural coreference and full register modeling |
 | Evidence linter | `scripts/evidence_lint.py` | Before/after anchor drift: numbers, dates, URLs, DOI, paragraphs, code, quotes, proper names, authority, direction | Conservative drift warnings/blockers | Full factual checking or semantic preservation |
 | Audit aggregator | `scripts/humanizer_audit.py` | Compact findings from Unicode, rhythm, naturalness, and register checks; original-text spans where a concrete location exists | Python-codepoint offsets remain valid across masked Markdown structure | Artificial locations for document-wide metrics or semantic proof |
 | Scenario contracts | `tests/scenarios/`, `scripts/run_review_eval.py` | LLM-in-loop invariants for output discipline, QGIR traces, edit budget, anchors, register, detector wording, and a historical M45 before/after case | Regression checks for known failure modes, including linter-green translationese | A complete benchmark of German writing quality |

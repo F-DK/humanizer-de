@@ -4,7 +4,7 @@ description: 'Edit-Pass für bestehenden deutschen Text: Register/Rhythmus messe
 allowed-tools: [Read, Write, Edit, Grep, Glob, Bash]
 metadata:
   display_name: Humanizer (Deutsch)
-  version: 5.10.4
+  version: 5.10.5
   author: Martin Moeller
   maintainer_website: https://www.martin-moeller.biz
   based_on: 'Deutsche Wikipedia: Anzeichen für KI-generierte Inhalte, Erkennung KI-Einsatz, Schnelltest KI'
@@ -66,8 +66,8 @@ Lint-Befunde sind Verdacht, kein Verdikt – jeden vor einer Änderung gegen den
 
 - Quotes in Codeblöcken, Inline-Code, YAML-Frontmatter, Markdown-Bildtiteln (`![Alt](url "Titel")`) und rohen HTML-Tags blendet `unicode_lint.py` aus (`straight_quote`, `mixed_quote_styles`), weil gerade Anführungszeichen dort technische Syntax sind. `--fix --write` trotzdem nie blind auf technische Syntax anwenden; Ergebnis prüfen.
 - Quotes in rohem HTML innerhalb von Markdown, etwa `<iframe title="Eingebetteter Beitrag">`, sind kein Befund, solange die Quotes Teil eines HTML-Tags sind; echter Befund bleibt gerades Anführungszeichen in laufender deutscher Prosa außerhalb technischer Syntax.
-- `mixed_address` bei satzinitialem `Sie`: Der kompatible Default zählt die Form konservativ als mögliche Anrede. Aktives `--precise` blendet eine eindeutige Singular-Anapher aus (etwa `Die Idee war neu. Sie überzeugte sofort.`). Bei `"active": false` manuell prüfen.
-- `mixed_address` aus zitierter Fremdstimme: Stilprofil und aktives `--precise` blenden Blockquotes aus; der kompatible Default des Register-Linters bleibt konservativ. Registerdrift liegt erst vor, wenn die Autorenstimme selbst zwischen `du` und `Sie` wechselt.
+- `mixed_address` bei satzinitialem `Sie`: Der Default zählt konservativ eine Anrede. `--precise` blendet klare Singular-Anaphern aus (`Die Idee war neu. Sie überzeugte sofort.`). Plural-Anaphern (`Die Modelle ... Sie ...`) bleiben ohne sichere Coreference manuell.
+- `mixed_address` aus Fremdstimme: Stilprofil und aktives `--precise` blenden Blockquotes sowie gepaarte Inline-Zitate aus. Registerdrift liegt erst vor, wenn die Autorenstimme selbst zwischen `du` und `Sie` wechselt.
 - Muster 64 bei Use-Mention: `german_pattern_lint.py` blendet Marker in Code, Inline-Zitaten und Markdown-Hervorhebung aus. Ein angeführtes `nahtlos` ist kein Beitrag zum Cluster.
 - `particles_outside_locker`/`particle_overdose` und `copula_avoidance_cluster` bei lexikalischer Mehrdeutigkeit: `register_lint.py` sieht Partikel-, `german_pattern_lint.py` Kopula-Wortformen, aber keine Wortart oder Lesart. `schon` im Sinn von `bereits`, `mal` als `einmal` oder `5-mal`, `ja` als Antwort und `stellt` als Vollverb (`stellt eine Frage`, `stellt sich die Frage`, `stellt die KI vor ein Problem`) sind allein kein Befund; real bleibt der Fund, wenn die Wörter tatsächlich als Modalpartikeln/Nähemarker gehäuft sind oder `stellt` eine Kopula-Vermeidung wie `stellt dar` statt `ist`/`hat` bildet.
 - Hoher `subject_initial_ratio` ohne Cluster: Werte über 0,85 sind allein unauffällig (Kalibrierungs-Median menschlicher Blogtexte: 0,891). `rhythm_lint.py` meldet dies nur als Fund bei zusätzlich niedriger Satzlängenvarianz oder wiederholten Satzanfängen – die reine Zahl in einer Audit-Zusammenfassung ist für sich kein Fund.

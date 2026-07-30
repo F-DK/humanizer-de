@@ -1,6 +1,6 @@
 # Humanizer-de Decision Tables
 
-Nutze diese Tabellen vor `references/patterns.md`, wenn Befunde ueberlappen. Sie sind die verbindliche Kurzlogik fuer v5.10.4.
+Nutze diese Tabellen vor `references/patterns.md`, wenn Befunde ueberlappen. Sie sind die verbindliche Kurzlogik fuer v5.10.5.
 
 ## QGIR: Moduswahl
 
@@ -126,6 +126,14 @@ Substantive themenfremd ersetzen. Funktioniert der Satz unverändert, anschließ
 | Auffälligkeit liegt auf Wortebene bei Partikelarmut oder -überdosis | 63, nicht 69 | Nach Partikel- und Moduslogik behandeln |
 | Lockerheit beruht auf erfundener Erfahrung oder forcierter Mündlichkeit | 59, nicht 69 | Persona-Lock anwenden; erfundene Erfahrung entfernen |
 | Register oder Stimme wechseln zwischen Absätzen | 30, nicht 69 | Wechsel angleichen; nicht pauschal die Architektur lockern |
+
+## Register: Anrede
+
+| Situation | Aktion |
+|---|---|
+| `du` und echte höfliche `Sie`-Anrede in der Autorenstimme | `mixed_address` bestätigen und Anrede vereinheitlichen |
+| Großes `Sie` als Singular-Anapher oder in eindeutig gepaartem Inline-Zitat/Blockquote | Mit aktivem `--precise` ausblenden; kein Registerwechsel |
+| Großes `Sie` als mögliche Plural-Anapher | Manuell prüfen; nicht automatisch umschreiben |
 
 ## Evidenz zweiter Ordnung: 59
 
