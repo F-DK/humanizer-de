@@ -45,6 +45,15 @@ def merge_ranges(ranges: list[tuple[int, int]]) -> list[tuple[int, int]]:
     return merged
 
 
+def serialize_spans(ranges: list[tuple[int, int]]) -> list[dict[str, int]]:
+    """Return sorted, distinct Python-codepoint offsets for JSON findings."""
+    return [
+        {"start": start, "end": end}
+        for start, end in sorted(set(ranges))
+        if 0 <= start < end
+    ]
+
+
 def blockquote_ranges(text: str) -> list[tuple[int, int]]:
     return [match.span() for match in BLOCKQUOTE_LINE_RE.finditer(text)]
 

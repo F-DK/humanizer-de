@@ -21,6 +21,7 @@ import style_profile
 import syntax_lint
 import unicode_lint
 from cli_output import print_json, resolve_exit_code
+import text_scope
 
 
 SOURCES = ("unicode", "rhythm", "german_pattern", "register")
@@ -242,22 +243,27 @@ def compact_unicode_findings(findings: list[dict]) -> list[dict]:
     for item in findings:
         kind = item.get("kind", "unknown")
         if kind not in grouped:
-            grouped[kind] = {"first": item, "count": 0}
+            grouped[kind] = {"first": item, "count": 0, "spans": []}
         grouped[kind]["count"] += 1
+        grouped[kind]["spans"].extend(
+            (span["start"], span["end"]) for span in item.get("spans", [])
+        )
 
     compact: list[dict] = []
     for kind, group in grouped.items():
         first = group["first"]
-        compact.append(
-            {
-                "source": "unicode",
-                "pattern": first.get("pattern", 0),
-                "kind": kind,
-                "severity": "warning",
-                "count": group["count"],
-                "summary": short_text(first.get("message", kind)),
-            }
-        )
+        item = {
+            "source": "unicode",
+            "pattern": first.get("pattern", 0),
+            "kind": kind,
+            "severity": "warning",
+            "count": group["count"],
+            "summary": short_text(first.get("message", kind)),
+        }
+        spans = text_scope.serialize_spans(group["spans"])
+        if spans:
+            item["spans"] = spans
+        compact.append(item)
     return compact
 
 
@@ -267,14 +273,15 @@ def compact_rhythm_findings(suspicions: list[dict]) -> list[dict]:
         summary = item.get("reason", "rhythm suspicion")
         if item.get("evidence"):
             summary = f"{summary}: {item['evidence']}"
-        compact.append(
-            {
-                "source": "rhythm",
-                "pattern": item.get("pattern", 0),
-                "severity": item.get("severity", "warning"),
-                "summary": short_text(summary),
-            }
-        )
+        compact_item = {
+            "source": "rhythm",
+            "pattern": item.get("pattern", 0),
+            "severity": item.get("severity", "warning"),
+            "summary": short_text(summary),
+        }
+        if item.get("spans"):
+            compact_item["spans"] = item["spans"]
+        compact.append(compact_item)
     return compact
 
 
@@ -293,6 +300,8 @@ def compact_german_pattern_findings(findings: list[dict]) -> list[dict]:
         }
         if item.get("advisory"):
             compact_item["advisory"] = True
+        if item.get("spans"):
+            compact_item["spans"] = item["spans"]
         compact.append(compact_item)
     return compact
 
@@ -300,15 +309,16 @@ def compact_german_pattern_findings(findings: list[dict]) -> list[dict]:
 def compact_register_findings(findings: list[dict]) -> list[dict]:
     compact: list[dict] = []
     for item in findings:
-        compact.append(
-            {
-                "source": "register",
-                "pattern": 0,
-                "kind": item.get("kind", "unknown"),
-                "severity": item.get("severity", "warning"),
-                "summary": short_text(item.get("message", item.get("kind", "register finding"))),
-            }
-        )
+        compact_item = {
+            "source": "register",
+            "pattern": 0,
+            "kind": item.get("kind", "unknown"),
+            "severity": item.get("severity", "warning"),
+            "summary": short_text(item.get("message", item.get("kind", "register finding"))),
+        }
+        if item.get("spans"):
+            compact_item["spans"] = item["spans"]
+        compact.append(compact_item)
     return compact
 
 
@@ -383,6 +393,7 @@ def analyze_file(
     report = {
         "file": str(path),
         "mode": mode,
+        "offset_unit": "unicode_codepoint",
         "ok": sum(counts.values()) == 0,
         "summary": {
             "rhythm": rhythm_summary(rhythm_report),
@@ -408,7 +419,12 @@ def analyze_file(
 def md_finding_line(item: dict) -> str:
     kind = f" {item['kind']}" if item.get("kind") else ""
     count = f" x{item['count']}" if item.get("count") else ""
-    return f"- {item['severity']} pattern {item['pattern']}{kind}{count}: {item['summary']}"
+    span_items = item.get("spans", [])
+    spans = ",".join(f"{span['start']}:{span['end']}" for span in span_items[:5])
+    if len(span_items) > 5:
+        spans += f",+{len(span_items) - 5}_more"
+    location = f" spans={spans}" if spans else ""
+    return f"- {item['severity']} pattern {item['pattern']}{kind}{count}{location}: {item['summary']}"
 
 
 def format_markdown(report: dict) -> str:

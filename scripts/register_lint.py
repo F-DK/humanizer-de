@@ -75,8 +75,15 @@ def is_in_ranges(start: int, end: int, ranges: Iterable[tuple[int, int]]) -> boo
 
 
 def count_words(text: str, words: Iterable[str]) -> int:
-    lowered = text.lower()
-    return sum(len(re.findall(rf"\b{re.escape(word)}\b", lowered)) for word in words)
+    return len(word_spans(text, words))
+
+
+def word_spans(text: str, words: Iterable[str]) -> list[tuple[int, int]]:
+    return sorted(
+        match.span()
+        for word in words
+        for match in re.finditer(rf"\b{re.escape(word)}\b", text, re.IGNORECASE)
+    )
 
 
 def is_sentence_initial_sie(text: str, start: int) -> bool:
@@ -136,17 +143,21 @@ def is_anaphoric_sie(match: re.Match, text: str, doc: object) -> bool:
     )
 
 
-def sie_formal_count(text: str, nlp: object | None = None) -> int:
+def sie_formal_spans(text: str, nlp: object | None = None) -> list[tuple[int, int]]:
     blockquotes = blockquote_ranges(text) if nlp is not None else []
     doc = nlp(text) if nlp is not None else None
-    count = 0
+    spans: list[tuple[int, int]] = []
     for match in SIE_FORMS_RE.finditer(text):
         if is_in_ranges(match.start(), match.end(), blockquotes):
             continue
         if doc is not None and is_anaphoric_sie(match, text, doc):
             continue
-        count += 1
-    return count
+        spans.append(match.span())
+    return spans
+
+
+def sie_formal_count(text: str, nlp: object | None = None) -> int:
+    return len(sie_formal_spans(text, nlp=nlp))
 
 
 def features(text: str, nlp: object | None = None, exclude_blockquotes: bool | None = None) -> dict:
@@ -164,31 +175,97 @@ def features(text: str, nlp: object | None = None, exclude_blockquotes: bool | N
     }
 
 
-def add(findings: list[dict], severity: str, kind: str, message: str) -> None:
-    findings.append({"severity": severity, "kind": kind, "message": message})
+def add(
+    findings: list[dict],
+    severity: str,
+    kind: str,
+    message: str,
+    spans: list[tuple[int, int]] | None = None,
+) -> None:
+    item = {"severity": severity, "kind": kind, "message": message}
+    serialized = text_scope.serialize_spans(spans or [])
+    if serialized:
+        item["spans"] = serialized
+    findings.append(item)
 
 
 def lint(text: str, mode: str = "sachlich", expected_address: str | None = None, precise: bool = False) -> dict:
     status, nlp = precise_context(precise)
-    found = features(text, nlp=nlp)
+    clean_text = strip_protected(text, exclude_blockquotes=nlp is not None)
+    spans = {
+        "du": word_spans(clean_text, DU_FORMS),
+        "sie": sie_formal_spans(clean_text, nlp=nlp),
+        "wir": word_spans(clean_text, WIR_FORMS),
+        "particles": word_spans(clean_text, MODAL_PARTICLES),
+        "emoji": [match.span() for match in EMOJI_RE.finditer(clean_text)],
+        "questions": [
+            (match.start(), match.start() + 1)
+            for match in re.finditer(r"\?\s*(?:$|\n|[A-ZÄÖÜ])", clean_text)
+        ],
+    }
+    found = {
+        "du_count": len(spans["du"]),
+        "sie_formal_count": len(spans["sie"]),
+        "wir_count": len(spans["wir"]),
+        "man_count": count_words(clean_text, {"man"}),
+        "modal_particle_count": len(spans["particles"]),
+        "emoji_count": len(spans["emoji"]),
+        "rhetorical_questions": len(spans["questions"]),
+    }
     findings: list[dict] = []
 
     if found["du_count"] and found["sie_formal_count"]:
-        add(findings, "warning", "mixed_address", "Du- and Sie-address appear in the same passage.")
+        add(
+            findings,
+            "warning",
+            "mixed_address",
+            "Du- and Sie-address appear in the same passage.",
+            spans["du"] + spans["sie"],
+        )
     if expected_address == "du" and found["sie_formal_count"]:
-        add(findings, "blocker", "unexpected_sie", "Profile expects du-address, but formal Sie appears.")
+        add(findings, "blocker", "unexpected_sie", "Profile expects du-address, but formal Sie appears.", spans["sie"])
     if expected_address == "sie" and found["du_count"]:
-        add(findings, "blocker", "unexpected_du", "Profile expects Sie-address, but du-address appears.")
+        add(findings, "blocker", "unexpected_du", "Profile expects Sie-address, but du-address appears.", spans["du"])
     if expected_address == "wir" and (found["du_count"] or found["sie_formal_count"]):
-        add(findings, "blocker", "unexpected_direct_address", "Profile expects wir-address, but du/Sie-address appears.")
+        add(
+            findings,
+            "blocker",
+            "unexpected_direct_address",
+            "Profile expects wir-address, but du/Sie-address appears.",
+            spans["du"] + spans["sie"],
+        )
     if expected_address == "neutral" and (found["du_count"] or found["sie_formal_count"] or found["wir_count"]):
-        add(findings, "blocker", "unexpected_direct_address", "Profile expects neutral address, but direct address appears.")
+        add(
+            findings,
+            "blocker",
+            "unexpected_direct_address",
+            "Profile expects neutral address, but direct address appears.",
+            spans["du"] + spans["sie"] + spans["wir"],
+        )
     if mode in {"sachlich", "formal"} and found["modal_particle_count"]:
-        add(findings, "warning", "particles_outside_locker", "Modal particles should not be added in Sachlich/Formal.")
+        add(
+            findings,
+            "warning",
+            "particles_outside_locker",
+            "Modal particles should not be added in Sachlich/Formal.",
+            spans["particles"],
+        )
     if mode == "formal" and (found["emoji_count"] or found["rhetorical_questions"]):
-        add(findings, "blocker", "formal_voice_intrusion", "Formal mode should not add emojis or rhetorical engagement.")
+        add(
+            findings,
+            "blocker",
+            "formal_voice_intrusion",
+            "Formal mode should not add emojis or rhetorical engagement.",
+            spans["emoji"] + spans["questions"],
+        )
     if mode == "locker" and found["modal_particle_count"] > 3:
-        add(findings, "warning", "particle_overdose", "Locker mode uses too many modal particles.")
+        add(
+            findings,
+            "warning",
+            "particle_overdose",
+            "Locker mode uses too many modal particles.",
+            spans["particles"],
+        )
 
     report = {"ok": not findings, "mode": mode, "expected_address": expected_address, "features": found, "findings": findings}
     if status is not None:

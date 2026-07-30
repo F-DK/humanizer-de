@@ -1,6 +1,6 @@
 # Deutsch-spezifische Naturalness Rule Cards
 
-Diese Karten operationalisieren die Muster 7, 8, 13, 54, 55, 58, 60, 63, 64 und 65 sowie registerbezogene Naturalness-Gates. Sie ersetzen keine Cluster-Regel.
+Diese Karten operationalisieren die Muster 7, 8, 13, 45, 54, 55, 58, 60, 63, 64 und 65 sowie registerbezogene Naturalness-Gates. Sie ersetzen keine Cluster-Regel.
 
 ## Deixis und Sprecherposition
 
@@ -43,6 +43,13 @@ Diese Karten operationalisieren die Muster 7, 8, 13, 54, 55, 58, 60, 63, 64 und 
 - Schlechter Reflex: alle Fettungen entfernen.
 - Sicherer Eingriff: Fett auf wenige wirklich tragende Stellen reduzieren; Label-Lead-ins in Fließtext oder eine normale Liste auflösen.
 - Nicht anfassen: einzelne bewusste Hervorhebung; Fett in Code oder Tabellen (zählt der Linter ohnehin nicht).
+
+## 45 Anglizismus-Strukturen
+
+- Signal: mehrere wörtlich englische Kollokationen oder Syntaximporte im deutschen Fließtext, etwa „bin ich simpler gegangen“, „die Reibung fällt“, „der Filter bei der Arbeit“ oder englischer Genitiv vor einem Produktnamen.
+- Schlechter Reflex: jeden englischen Fachbegriff eindeutschen oder aus einem Einzelvorkommen einen KI-Tell machen.
+- Sicherer Eingriff: die deutsche Satzverbindung reparieren und offizielle Namen erhalten, etwa „habe ich es einfacher gehalten“, „die Reibung sinkt“, „der Filter arbeitet“ oder „die Agent Tools von xAI“.
+- Nicht anfassen: Code, Zitate, englische Titel, offizielle Produktstrings und etablierte Fachanglizismen ohne auffällige deutsche Anschlusskonstruktion.
 
 ## 54 Doppelpunkt-Titel
 

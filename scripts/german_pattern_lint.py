@@ -17,6 +17,7 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 from cli_output import print_json, resolve_exit_code
+import text_scope
 
 
 REGISTER_SCRIPT = SCRIPT_DIR / "register_lint.py"
@@ -77,7 +78,8 @@ STELLT_DAR_RE = re.compile(
     r"\bstell(?:t|te|ten|en)\b(?:\s+\S+){0,6}?\s+dar\b"
     r"|\bdarstell(?:t|te|ten|en)\b"
     r"|\bdargestellt\b"
-    r"|\bdarzustellen\b"
+    r"|\bdarzustellen\b",
+    re.IGNORECASE,
 )
 ADDRESS_VALIDATION_RE = re.compile(
     r"\b(?:du\s+bist\s+nicht\s+(?:zu\s+|einfach\s+nur\s+)?"
@@ -157,74 +159,136 @@ def in_mention(index: int, ranges: tuple[tuple[int, int], ...]) -> bool:
     return any(start <= index < end for start, end in ranges)
 
 
-def count_marker(text: str, marker: str) -> int:
-    lowered = text.lower()
-    ranges = mention_ranges(lowered)
+def marker_spans(text: str, marker: str) -> list[tuple[int, int]]:
+    ranges = mention_ranges(text)
     if " " in marker:
-        matches = re.finditer(rf"\b{re.escape(marker)}\w*\b", lowered)
-        return sum(1 for match in matches if not in_mention(match.start(), ranges))
-    stem = marker_stem(marker)
-    matches = re.finditer(rf"\b{re.escape(stem)}\w*\b", lowered)
-    return sum(1 for match in matches if not in_mention(match.start(), ranges))
+        matches = re.finditer(rf"\b{re.escape(marker)}\w*\b", text, re.IGNORECASE)
+    else:
+        stem = marker_stem(marker)
+        matches = re.finditer(rf"\b{re.escape(stem)}\w*\b", text, re.IGNORECASE)
+    return [match.span() for match in matches if not in_mention(match.start(), ranges)]
 
 
-def count_stellt_dar_dependency(text: str, nlp: object) -> int:
+def count_marker(text: str, marker: str) -> int:
+    return len(marker_spans(text, marker))
+
+
+def collect_marker_hits(text: str, markers: tuple[str, ...]) -> tuple[dict[str, int], list[tuple[int, int]]]:
+    hits: dict[str, int] = {}
+    spans: list[tuple[int, int]] = []
+    for marker in markers:
+        matched = marker_spans(text, marker)
+        if matched:
+            hits[marker] = len(matched)
+            spans.extend(matched)
+    return hits, spans
+
+
+def stellt_dar_dependency_spans(text: str, nlp: object) -> list[tuple[int, int]]:
     doc = nlp(text)
-    count = 0
+    spans: list[tuple[int, int]] = []
     for token in doc:
         lemma = token.lemma_.lower()
         if lemma == "darstellen":
-            count += 1
+            spans.append((token.idx, token.idx + len(token.text)))
             continue
         if lemma != "stellen" or "Fin" not in token.morph.get("VerbForm"):
             continue
-        if any(child.dep_ == "svp" and child.text.lower() == "dar" for child in token.children):
-            count += 1
-    return count
+        particle = next(
+            (child for child in token.children if child.dep_ == "svp" and child.text.lower() == "dar"),
+            None,
+        )
+        if particle is not None:
+            spans.append(
+                (
+                    min(token.idx, particle.idx),
+                    max(token.idx + len(token.text), particle.idx + len(particle.text)),
+                )
+            )
+    return spans
 
 
 def lint(text: str, mode: str = "sachlich", precise: bool = False) -> dict:
     status, nlp = precise_context(precise)
     clean_text = register_lint.strip_protected(text)
-    lowered = clean_text.lower()
     findings: list[dict] = []
 
-    ai_hits = {marker: count_marker(lowered, marker) for marker in AI_MARKERS if count_marker(lowered, marker)}
+    ai_hits, ai_spans = collect_marker_hits(clean_text, AI_MARKERS)
     if sum(ai_hits.values()) >= 3:
-        findings.append({"pattern": 64, "kind": "ai_marker_cluster", "severity": "warning", "evidence": ai_hits})
+        findings.append(
+            {
+                "pattern": 64,
+                "kind": "ai_marker_cluster",
+                "severity": "warning",
+                "evidence": ai_hits,
+                "spans": text_scope.serialize_spans(ai_spans),
+            }
+        )
 
-    copula_hits = {marker: count_marker(lowered, marker) for marker in COPULA_AVOIDANCE if count_marker(lowered, marker)}
-    separable_hits = len(STELLT_DAR_RE.findall(lowered))
+    copula_hits, copula_spans = collect_marker_hits(clean_text, COPULA_AVOIDANCE)
+    separable_spans = [match.span() for match in STELLT_DAR_RE.finditer(clean_text)]
     if nlp is not None:
-        separable_hits = count_stellt_dar_dependency(clean_text, nlp)
-    if separable_hits:
-        copula_hits["stellt ... dar"] = separable_hits
+        separable_spans = stellt_dar_dependency_spans(clean_text, nlp)
+    if separable_spans:
+        copula_hits["stellt ... dar"] = len(separable_spans)
+        copula_spans.extend(separable_spans)
     if sum(copula_hits.values()) >= 2:
-        findings.append({"pattern": 65, "kind": "copula_avoidance_cluster", "severity": "warning", "evidence": copula_hits})
+        findings.append(
+            {
+                "pattern": 65,
+                "kind": "copula_avoidance_cluster",
+                "severity": "warning",
+                "evidence": copula_hits,
+                "spans": text_scope.serialize_spans(copula_spans),
+            }
+        )
 
-    abstract_hits = {marker: count_marker(lowered, marker) for marker in ABSTRACTA if count_marker(lowered, marker)}
+    abstract_hits, abstract_spans = collect_marker_hits(clean_text, ABSTRACTA)
     if sum(abstract_hits.values()) >= 3:
-        findings.append({"pattern": 58, "kind": "abstraction_cluster", "severity": "warning", "evidence": abstract_hits})
+        findings.append(
+            {
+                "pattern": 58,
+                "kind": "abstraction_cluster",
+                "severity": "warning",
+                "evidence": abstract_hits,
+                "spans": text_scope.serialize_spans(abstract_spans),
+            }
+        )
 
-    colon_headings = [
-        line.strip()
-        for line in clean_text.splitlines()
-        if re.match(r"^\s{0,3}#{1,3}\s+.+:.+", line)
-    ]
+    colon_headings: list[str] = []
+    colon_heading_spans: list[tuple[int, int]] = []
+    offset = 0
+    for raw_line in clean_text.splitlines(keepends=True):
+        line = raw_line.splitlines()[0]
+        if re.match(r"^\s{0,3}#{1,3}\s+.+:.+", line):
+            colon_headings.append(line.strip())
+            start = offset + len(line) - len(line.lstrip())
+            end = offset + len(line.rstrip())
+            colon_heading_spans.append((start, end))
+        offset += len(raw_line)
     if len(colon_headings) >= 2:
-        findings.append({"pattern": 54, "kind": "colon_heading_cluster", "severity": "warning", "evidence": colon_headings})
+        findings.append(
+            {
+                "pattern": 54,
+                "kind": "colon_heading_cluster",
+                "severity": "warning",
+                "evidence": colon_headings,
+                "spans": text_scope.serialize_spans(colon_heading_spans),
+            }
+        )
 
-    mention_spans = mention_ranges(clean_text.lower())
+    mention_spans = mention_ranges(clean_text)
     negation_matches = sorted(
         (
             match.start(),
+            match.end(),
             match.group().strip(),
         )
         for pattern in NEGATION_PARALLELISM_RES
         for match in pattern.finditer(clean_text)
         if not in_mention(match.start(), mention_spans)
     )
-    evidence = [matched_text for _, matched_text in negation_matches]
+    evidence = [matched_text for _, _, matched_text in negation_matches]
     if evidence:
         findings.append(
             {
@@ -232,15 +296,17 @@ def lint(text: str, mode: str = "sachlich", precise: bool = False) -> dict:
                 "kind": "negation_parallelism",
                 "severity": "warning",
                 "evidence": evidence,
+                "spans": text_scope.serialize_spans([(start, end) for start, end, _ in negation_matches]),
             }
         )
 
-    bold_span_count = sum(
-        1
+    bold_matches = [
+        match
         for match in BOLD_SPAN_RE.finditer(clean_text)
         if (match.start() == 0 or clean_text[match.start() - 1] != "*")
         and (match.end() == len(clean_text) or clean_text[match.end()] != "*")
-    )
+    ]
+    bold_span_count = len(bold_matches)
     if bold_span_count >= BOLD_OVERDOSE_THRESHOLD:
         findings.append(
             {
@@ -248,11 +314,12 @@ def lint(text: str, mode: str = "sachlich", precise: bool = False) -> dict:
                 "kind": "bold_overdose",
                 "severity": "warning",
                 "evidence": {"count": bold_span_count},
+                "spans": text_scope.serialize_spans([match.span() for match in bold_matches]),
             }
         )
 
     address_validation_matches = [
-        match.group().strip()
+        match
         for match in ADDRESS_VALIDATION_RE.finditer(clean_text)
         if not in_mention(match.start(), mention_spans)
     ]
@@ -264,7 +331,8 @@ def lint(text: str, mode: str = "sachlich", precise: bool = False) -> dict:
                 "severity": "info",
                 "advisory": True,
                 "message": ADDRESS_VALIDATION_MESSAGE,
-                "evidence": address_validation_matches,
+                "evidence": [match.group().strip() for match in address_validation_matches],
+                "spans": text_scope.serialize_spans([match.span() for match in address_validation_matches]),
             }
         )
 

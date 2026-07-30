@@ -95,6 +95,7 @@ def range_checker(ranges: list[tuple[int, int]]):
 
     return contains
 
+
 def add_finding(findings: list[dict], pattern: int, kind: str, index: int, char: str, message: str) -> None:
     findings.append(
         {
@@ -105,6 +106,7 @@ def add_finding(findings: list[dict], pattern: int, kind: str, index: int, char:
             "codepoint": codepoint(char),
             "name": unicodedata.name(char, "UNKNOWN"),
             "message": message,
+            "spans": text_scope.serialize_spans([(index, index + 1)]),
         }
     )
 

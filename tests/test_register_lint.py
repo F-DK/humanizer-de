@@ -35,8 +35,15 @@ SPACY_MODEL_AVAILABLE = spacy_model_available()
 
 class RegisterLintTests(unittest.TestCase):
     def test_mixed_du_sie_is_reported(self):
-        report = register_lint.lint("Du kannst die Datei prüfen. Bitte senden Sie danach die Freigabe.")
+        text = "İ Du kannst die Datei prüfen. Bitte senden Sie danach die Freigabe."
+        report = register_lint.lint(text)
         self.assertIn("mixed_address", kinds(report))
+        finding = next(item for item in report["findings"] if item["kind"] == "mixed_address")
+        self.assertEqual(
+            [text[span["start"]:span["end"]] for span in finding["spans"]],
+            ["Du", "Sie"],
+        )
+        self.assertEqual(report["features"], register_lint.features(text))
 
     def test_formal_voice_intrusion_is_blocker(self):
         report = register_lint.lint("Die Studie zeigt den Effekt. Klingt spannend?", mode="formal")
@@ -170,8 +177,10 @@ class RegisterLintPreciseTests(unittest.TestCase):
     def test_precise_ignores_sie_address_in_blockquote(self):
         text = "Du prüfst die Daten.\n\n> Bitte prüfen Sie Ihre Angaben.\n\nDann passt es."
         report = register_lint.lint(text, precise=True)
+        _, nlp = register_lint.precise_context(True)
 
         self.assertNotIn("mixed_address", kinds(report))
+        self.assertEqual(report["features"], register_lint.features(text, nlp=nlp))
 
 
 if __name__ == "__main__":

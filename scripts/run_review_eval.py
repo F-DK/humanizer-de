@@ -61,6 +61,11 @@ def normalize(text: str) -> str:
     return re.sub(r"\s+", " ", text.strip())
 
 
+def requires_unchanged(scenario: dict) -> bool:
+    contract = scenario.get("null_edit_contract")
+    return isinstance(contract, dict) and contract.get("require_unchanged") is True
+
+
 def sentences(text: str) -> list[str]:
     normalized: list[str] = []
     for item in rhythm_lint.split_sentences(text):
@@ -170,6 +175,10 @@ def content_invariant_violations(scenario: dict, output: str) -> list[str]:
 
 def invariant_violations(scenario: dict, output: str) -> list[str]:
     violations = content_invariant_violations(scenario, output)
+    if requires_unchanged(scenario):
+        violations.extend(null_edit_violations(scenario, output))
+        return sorted(set(violations))
+
     input_text = scenario["input"]
     output_norm = normalize(output)
     input_norm = normalize(input_text)
@@ -180,6 +189,14 @@ def invariant_violations(scenario: dict, output: str) -> list[str]:
         violations.append("possible_full_text_output")
 
     return sorted(set(violations))
+
+
+def null_edit_violations(scenario: dict, output: str) -> list[str]:
+    if not requires_unchanged(scenario):
+        return []
+    if output != scenario["input"]:
+        return ["unnecessary_edit"]
+    return []
 
 
 def qgir_output_violations(scenario: dict, output: str) -> list[str]:

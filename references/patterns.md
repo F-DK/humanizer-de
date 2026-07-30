@@ -1,6 +1,6 @@
 # Humanizer-de Pattern Catalog
 
-Vollstaendiger Musterkatalog fuer Humanizer (Deutsch) v5.10.3. Nur bei konkreter Musterdiagnose, Audit oder Grenzfaellen laden.
+Vollstaendiger Musterkatalog fuer Humanizer (Deutsch) v5.10.4. Nur bei konkreter Musterdiagnose, Audit oder Grenzfaellen laden.
 
 ## Kurzreferenz
 
@@ -1364,6 +1364,8 @@ Harte Indikatoren (klare Tells):
 - **Calques:** „am Ende des Tages" (at the end of the day), „in Reihenfolge zu" (in order to), „zu Beginn mit" (to begin with), „das macht keinen Unterschied für mich" (that makes no difference to me)
 - **False Friends:** „eventuell" als „schließlich" (eventually, korrekt: „schließlich"/„am Ende"), „aktuell" als „tatsächlich" (actually, korrekt: „tatsächlich"/„eigentlich"), „sensibel" als „vernünftig/umsichtig" (sensible, korrekt: „vernünftig"/„besonnen")
 - **Syntaktische Transfers:** englische Wortstellung in Relativsätzen („das Unternehmen, welches gegründet wurde in 1990"), nachgestellte Präpositionalphrasen nach englischem Muster („das Buch über Berlin von Peter Schneider geschrieben")
+- **Kollokations-Transfers:** „bin ich simpler gegangen“ (I went simpler), „die Reibung fällt“ (friction drops), „der Filter bei der Arbeit“ (the filter at work), „gegen echten Output iterieren“ (iterate against output)
+- **Englischer Genitiv in deutscher Syntax:** „xAI's Agent Tools“ oder „OpenAI's Responses API“ statt „die Agent Tools von xAI“ beziehungsweise „die Responses API von OpenAI“
 
 **Kein belastbarer Tell (weglassen):**
 - „basiert auf", „in Bezug auf", „adressieren" – in Geschäfts- und Wissenschaftsdeutsch etabliert
@@ -1372,6 +1374,7 @@ Harte Indikatoren (klare Tells):
 - „kontrollieren" als „beherrschen" – Bedeutungen überlappen im Deutschen bereits
 - Unnötige Possessivpronomen – allgemeines Übersetzungsdeutsch, Stilglättung
 - Einzelne Lehnwörter („Meeting", „Team", „Feedback") – im Zielregister oft normal
+- Englische Titel, Zitate, Code und offizielle Produktstrings – nur die deutsche Anschlusskonstruktion prüfen
 
 **Register-Hinweis:**
 - **False Friends** (eventuell/aktuell/sensibel in falscher Bedeutung) sind semantische Fehler – immer korrigieren, unabhängig vom Register.

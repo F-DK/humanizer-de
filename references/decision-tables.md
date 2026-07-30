@@ -1,6 +1,6 @@
 # Humanizer-de Decision Tables
 
-Nutze diese Tabellen vor `references/patterns.md`, wenn Befunde ueberlappen. Sie sind die verbindliche Kurzlogik fuer v5.10.3.
+Nutze diese Tabellen vor `references/patterns.md`, wenn Befunde ueberlappen. Sie sind die verbindliche Kurzlogik fuer v5.10.4.
 
 ## QGIR: Moduswahl
 
@@ -68,6 +68,17 @@ Nutze diese Tabellen vor `references/patterns.md`, wenn Befunde ueberlappen. Sie
 Der Slot-Test ist eine Diagnose, keine Muster-Zuordnung: Wirkt ein Satz wie eine Schablone, die
 Substantive themenfremd ersetzen. Funktioniert der Satz unverändert, anschließend Muster 2, 12,
 56, 58 oder 64 prüfen.
+
+## Anglizismus-Strukturen und Korrektorat: 45
+
+| Situation | Aktion |
+|---|---|
+| False Friend verändert die Bedeutung | Immer als Muster 45 korrigieren |
+| Mehrere wörtlich englische Kollokationen oder Syntaximporte im deutschen Fließtext | Als M45-Cluster lokal auf natürliches Deutsch zurückführen |
+| Englischer Genitiv verbindet Anbieter und Produkt in einem deutschen Satz | Deutsche Attribution verwenden; offiziellen Produktnamen erhalten |
+| Einzelner etablierter Fachanglizismus oder offizieller englischer Produktstring | Kein M45-Befund; stehen lassen |
+| Komma-, Genus- oder Flexionsfehler ohne englischen Transfer | Korrektorat, keine neue Muster-ID und keine Autorschaftsaussage |
+| Sammelcheck ist grün, der Text enthält aber ein belegtes M45-Cluster | Urteilsbasiert lokal redigieren; Linter-Stille nicht als Naturalness-Beweis behandeln |
 
 ## Kontrastformeln: 7 / 8 / 16 / 56
 

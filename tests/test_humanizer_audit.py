@@ -50,6 +50,7 @@ class HumanizerAuditTests(unittest.TestCase):
         self.assertEqual(exit_code, 0)
         self.assertEqual(report["file"], str(path))
         self.assertEqual(report["mode"], "sachlich")
+        self.assertEqual(report["offset_unit"], "unicode_codepoint")
         self.assertFalse(report["ok"])
         self.assertEqual(set(report["summary"]), {"rhythm", "preflight", "counts"})
         self.assertEqual(set(report["summary"]["counts"]), {"unicode", "rhythm", "german_pattern", "register"})
@@ -64,6 +65,10 @@ class HumanizerAuditTests(unittest.TestCase):
         self.assertEqual(len(unicode_findings), 1)
         self.assertEqual(unicode_findings[0]["kind"], "straight_quote")
         self.assertEqual(unicode_findings[0]["count"], 4)
+        self.assertEqual(
+            unicode_findings[0]["spans"],
+            [{"start": 0, "end": 1}, {"start": 5, "end": 6}, {"start": 7, "end": 8}, {"start": 12, "end": 13}],
+        )
         for item in report["findings"]:
             self.assertIn("source", item)
             self.assertIn("pattern", item)
@@ -107,11 +112,67 @@ class HumanizerAuditTests(unittest.TestCase):
             exit_code, report = run_json(["--file", str(path)])
 
         self.assertEqual(exit_code, 0)
-        self.assertEqual(set(report), {"file", "mode", "ok", "summary", "style_profile", "findings"})
+        self.assertEqual(
+            set(report),
+            {"file", "mode", "offset_unit", "ok", "summary", "style_profile", "findings"},
+        )
         self.assertEqual(set(report["summary"]), {"rhythm", "preflight", "counts"})
         self.assertEqual(set(report["summary"]["counts"]), {"unicode", "rhythm", "german_pattern", "register"})
         self.assertNotIn("precise", report["summary"])
         self.assertNotIn("syntax", report)
+
+    def test_spans_reference_original_text_after_masked_markdown(self):
+        text = (
+            "---\ntitle: nahtlos beleuchten dynamisch du Sie\n---\n\n"
+            "```text\nnahtlos beleuchten dynamisch du Sie\n```\n\n"
+            "> Ein Zitat steht vor dem Befund.\n\n"
+            "İ😀 Du prüfst den Text. Bitte senden Sie den Bericht. "
+            "Der Text beleuchtet einen dynamischen, vielschichtigen Prozess. "
+            'Er nennt ihn "klar".\u200b'
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "scoped.md"
+            path.write_text(text, encoding="utf-8")
+
+            exit_code, report = run_json(["--file", str(path)])
+
+        self.assertEqual(exit_code, 0)
+        finding = next(item for item in report["findings"] if item.get("kind") == "ai_marker_cluster")
+        self.assertEqual(
+            [text[span["start"]:span["end"]].lower() for span in finding["spans"]],
+            ["beleuchtet", "dynamischen", "vielschichtigen"],
+        )
+        register_finding = next(item for item in report["findings"] if item.get("kind") == "mixed_address")
+        self.assertEqual(
+            [text[span["start"]:span["end"]] for span in register_finding["spans"]],
+            ["Du", "Sie"],
+        )
+        straight_quotes = next(item for item in report["findings"] if item.get("kind") == "straight_quote")
+        self.assertEqual(
+            [text[span["start"]:span["end"]] for span in straight_quotes["spans"]],
+            ['"', '"'],
+        )
+        hidden = next(item for item in report["findings"] if item.get("kind") == "hidden_unicode")
+        self.assertEqual(
+            [text[span["start"]:span["end"]] for span in hidden["spans"]],
+            ["\u200b"],
+        )
+
+    def test_unicode_spans_cover_document_boundaries(self):
+        text = '"Mitte\u200b'
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "boundaries.md"
+            path.write_text(text, encoding="utf-8")
+
+            exit_code, report = run_json(["--file", str(path)])
+
+        self.assertEqual(exit_code, 0)
+        by_kind = {item["kind"]: item for item in report["findings"]}
+        self.assertEqual(by_kind["straight_quote"]["spans"], [{"start": 0, "end": 1}])
+        self.assertEqual(
+            by_kind["hidden_unicode"]["spans"],
+            [{"start": len(text) - 1, "end": len(text)}],
+        )
 
     def test_precise_without_spacy_reports_status_and_keeps_findings(self):
         text = "Die Idee war neu. Sie überzeugte sofort. Und du merkst das."
@@ -238,6 +299,21 @@ class HumanizerAuditTests(unittest.TestCase):
         self.assertIn("straight_quote x2", output)
         self.assertIn("rhythm:\n- none", output)
         self.assertNotIn('"findings"', output)
+
+    def test_markdown_finding_line_caps_long_span_lists(self):
+        item = {
+            "severity": "warning",
+            "pattern": 43,
+            "kind": "hidden_unicode",
+            "count": 7,
+            "summary": "Remove hidden Unicode character.",
+            "spans": [{"start": index, "end": index + 1} for index in range(7)],
+        }
+
+        line = humanizer_audit.md_finding_line(item)
+
+        self.assertIn("spans=0:1,1:2,2:3,3:4,4:5,+2_more", line)
+        self.assertNotIn("5:6", line)
 
     def test_preflight_high_risk_enables_auto_combing(self):
         text = (

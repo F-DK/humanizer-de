@@ -37,17 +37,39 @@ EXPECTED_REGISTER_JSON = """{
     {
       "severity": "warning",
       "kind": "mixed_address",
-      "message": "Du- and Sie-address appear in the same passage."
+      "message": "Du- and Sie-address appear in the same passage.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 2
+        },
+        {
+          "start": 74,
+          "end": 77
+        }
+      ]
     },
     {
       "severity": "blocker",
       "kind": "unexpected_sie",
-      "message": "Profile expects du-address, but formal Sie appears."
+      "message": "Profile expects du-address, but formal Sie appears.",
+      "spans": [
+        {
+          "start": 74,
+          "end": 77
+        }
+      ]
     },
     {
       "severity": "warning",
       "kind": "particles_outside_locker",
-      "message": "Modal particles should not be added in Sachlich/Formal."
+      "message": "Modal particles should not be added in Sachlich/Formal.",
+      "spans": [
+        {
+          "start": 155,
+          "end": 157
+        }
+      ]
     }
   ]
 }
@@ -65,7 +87,21 @@ EXPECTED_GERMAN_PATTERN_JSON = """{
         "beleuchten": 1,
         "nahtlos": 1,
         "maßgeschneidert": 1
-      }
+      },
+      "spans": [
+        {
+          "start": 14,
+          "end": 31
+        },
+        {
+          "start": 41,
+          "end": 48
+        },
+        {
+          "start": 49,
+          "end": 59
+        }
+      ]
     },
     {
       "pattern": 65,
@@ -74,7 +110,17 @@ EXPECTED_GERMAN_PATTERN_JSON = """{
       "evidence": {
         "fungiert als": 1,
         "dient als": 1
-      }
+      },
+      "spans": [
+        {
+          "start": 100,
+          "end": 112
+        },
+        {
+          "start": 127,
+          "end": 136
+        }
+      ]
     },
     {
       "pattern": 58,
@@ -85,7 +131,25 @@ EXPECTED_GERMAN_PATTERN_JSON = """{
         "aspekte": 1,
         "lösungen": 1,
         "prozesse": 1
-      }
+      },
+      "spans": [
+        {
+          "start": 32,
+          "end": 40
+        },
+        {
+          "start": 167,
+          "end": 176
+        },
+        {
+          "start": 178,
+          "end": 185
+        },
+        {
+          "start": 190,
+          "end": 198
+        }
+      ]
     }
   ]
 }

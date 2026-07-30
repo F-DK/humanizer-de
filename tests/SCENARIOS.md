@@ -38,8 +38,23 @@ python3 scripts/run_review_eval.py tests/scenarios
 | 23 | Locker | Bewusste Marketing-Repetition wird in generische Werbesprache geglättet. |
 | 24 | Formal | Akademische Abstrakta, Passiv und Aussagevorsicht werden als vermeintliche KI-Tells überarbeitet. |
 | 25 | Sachlich | Ein ausdrücklicher Tiefenwunsch wird als Vollrewrite oder Faktenfreibrief missverstanden. |
+| 26 | Sachlich | Bereits sauberer Kontrolltext wird trotz Null-Edit-Regel unnötig poliert. |
+| 27 | Locker | Ein mechanisch unauffälliger historischer Blogstand behält ein Cluster aus englischen Kollokationen und deutscher Anschlussgrammatik. |
 
 Die Szenarien 14 bis 18 (QGIR-Contracts) existieren nur als maschinenlesbare Fixtures in `tests/scenarios/` und laufen ausschließlich über den Runner; sie haben bewusst keinen Eintrag in dieser Datei.
+
+Szenario 26 ergänzt die bisherigen False-Positive-Fälle um einen End-to-End-Negativvertrag.
+In der Fixture ist `sample_outputs[].text` der maßgebliche Text nach dem Edit-Pass, nicht die
+vollständige Assistentenantwort. `null_edit_contract.require_unchanged` akzeptiert nur den
+unveränderten Text. Die eingecheckte Fixture prüft den Vertrag; belastbare Schadensraten
+brauchen weiterhin separat gehaltene, verifizierte menschliche Kontrolltexte aus mehreren
+Registern. „Unverändert“ meint dabei den Rohtext einschließlich Leerraum und finalem
+Zeilenumbruch.
+
+Szenario 27 bildet eine reale Vorher/Nachher-Etappe aus einem über Monate redigierten
+Blogpost nach. Es prüft die Lücke zwischen mechanisch grünem Audit und urteilsbasiertem
+M45-Kollokationspass. Die historischen Formulierungen dienen nur als Regression für
+Naturalness; daraus entsteht weder ein neuer Detektor noch eine neue Muster-ID.
 
 ## Szenario 1: Flagranter KI-Cluster (Sachlich)
 
@@ -458,6 +473,52 @@ Die Beratungsstelle hat im Juni 2026 zwölf Rückmeldungen von Eltern ausgewerte
 **Relevante Muster:** bewusst kein neuer Katalog-Tell. Das Urteil kommt aus dem Tiefenregler: „gründlich“ erhöht die Qualitätstiefe, aber nicht die Erlaubnis zu neuen Fakten, Score-Optimierung oder unproportionaler Iteration.
 
 **Warum dieses Szenario zählt:** Der Fall schützt die neue `--quality`-Dokumentation vor einer gefährlichen Fehlinterpretation. Mehr Tiefe darf bessere Leserführung und sparsamere Sätze erzeugen, Claim-Lock und QGIR-Grenzen bleiben aber die härteren Regeln.
+
+## Szenario 26: Null-Edit-Negativkontrolle (Sachlich)
+
+**Skill-Modus:** Sachlich
+**Nutzer-Prompt:** „Prüfe den Absatz mit dem Humanizer. Wenn nichts auffällt, lass ihn unverändert.“
+
+**Input:**
+```
+Der Suchdienst legt für Bestellungen zwei Indizes an. Der zusammengesetzte B-Tree-Index auf tenant_id und created_at deckt die Standardabfrage ab, weil die Daten immer mandantenweise und innerhalb eines Zeitfensters gelesen werden. Für die Volltextsuche nutzt der Dienst einen separaten GIN-Index. Diese Trennung verhindert zusätzliche Schreibzugriffe auf den ersten Index.
+```
+
+**Erwartetes Verhalten (Pass/Fail):**
+- [ ] Gibt den Text im Edit-Ergebnis bytegenau unverändert zurück.
+- [ ] Erzeugt keine Vorher-Nachher-Paare und meldet den Null-Edit.
+- [ ] Fügt keine wertenden Adjektive hinzu und ersetzt keine Fachbegriffe.
+
+**Relevante Muster:** bewusst keine. Der `null_edit_contract` misst unnötige Politur, nicht
+Mustererkennung.
+
+**Warum dieses Szenario zählt:** Ein sauberer Kontrolltext muss den Edit-Pass ohne
+Schönschreibreflex überstehen. Jede Abweichung wird als `unnecessary_edit` sichtbar.
+
+## Szenario 27: Historisches M45-Kollokationscluster (Locker)
+
+**Skill-Modus:** Locker
+**Nutzer-Prompt:** „Humanisiere diesen Blogabschnitt. Ändere nur Stellen, die im Deutschen wirklich übersetzt oder grammatisch schief wirken.“
+
+**Input:**
+```
+Für genau diesen Anwendungsfall bin ich simpler gegangen. Ein API-Call an Grok über xAI's Agent Tools. Der Workflow macht: holen, filtern, senden. Das Modell lieferte Produkt-Updates statt Paradigmen-Shifts. Das ist der Filter bei der Arbeit. Beides Mal waren die Kriterien zu scharf. Der Fast-Tier liefert dünneren Output. Die Reibung fällt auf fast null. Iteriere schnell am Prompt gegen echte Daten. Grok's Agent Tools und OpenAI's Responses API mit Web Search übernehmen die Suche.
+```
+
+**Erwartetes Verhalten (Pass/Fail):**
+- [ ] Erkennt ein M45-Cluster aus Kollokations- und Syntaxtransfers, obwohl der deterministische Sammelcheck dafür keinen Befund liefern muss.
+- [ ] Korrigiert M45-Transfers lokal, etwa zu „habe ich es einfacher gehalten“, „die Agent Tools von xAI“, „der Filter arbeitet“ und „die Reibung sinkt“.
+- [ ] Korrigiert „beides Mal“ und „der Fast-Tier“ als normales Korrektorat, ohne sie M45 zuzuschlagen.
+- [ ] Erhält die offiziellen Namen Grok, xAI, OpenAI, Agent Tools, Responses API und Web Search.
+- [ ] Behandelt reine Grammatik- und Flexionsfehler als Korrektorat, nicht als neue Muster-ID oder Autorschaftsnachweis.
+- [ ] Optimiert weder Satzlängenvarianz noch Subjektinitialquote als Ersatz für den M45-Pass.
+
+**Relevante Muster:** 45 feuert urteilsbasiert als Cluster. Der Sammelcheck darf trotzdem `low`
+mit Score 0 melden, weil M45 bewusst keinen ungeeichten Regex-Detektor besitzt.
+
+**Warum dieses Szenario zählt:** Frühere Humanizer-Pässe entfernten messbare Oberflächenmuster,
+ließen aber dieselben harten Transfers über mehrere Versionen stehen. Der Fall verhindert,
+dass ein grüner Linter-Bericht mit idiomatisch abgeschlossenem Deutsch verwechselt wird.
 
 ## Neue Szenarien hinzufügen
 

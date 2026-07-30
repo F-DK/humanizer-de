@@ -67,14 +67,19 @@ Rhythm: sentences=12, mean=13.5, stddev/mean=0.434, subject_initial=0.5, connect
 StyleProfile: words=162, nominal_style_ratio=0.0, type_token_ratio=0.772, particles=0
 Findings:
 unicode:
-- warning pattern 43 hidden_unicode x1: Remove hidden Unicode character.
-- warning pattern 46 wrong_german_closing_quote x1: Use U+201C after U+201E, not U+201D.
+- warning pattern 43 hidden_unicode x1 spans=124:125: Remove hidden Unicode character.
+- warning pattern 46 wrong_german_closing_quote x1 spans=211:212: Use U+201C after U+201E, not U+201D.
 ```
 
 Sagt der Bericht `no_rewrite_or_local_edit_only`, bleibt der Text bis auf die zwei
 Einzelbefunde in Ruhe. Die Ausgaben sind Verdacht, kein Urteil, und ausdrücklich keine
 Autorenschaftsprüfung – wofür die Zahlen taugen und wofür nicht, steht unter
 [Fakten & Grenzen](#fakten-grenzen-und-datenschutz).
+
+Im JSON tragen adressierbare Befunde ein optionales Feld
+`spans: [{"start": 124, "end": 125}]`. Die Grenzen beziehen sich auf den unveränderten
+Originaltext und zählen Unicode-Codepoints wie Python; `offset_unit` nennt diese Konvention
+explizit. Dokumentweite Rhythmusmetriken erhalten bewusst keine erfundene Einzelposition.
 
 ---
 
@@ -408,7 +413,7 @@ Für Arbeitsordner mit Markdown-Entwürfen kann der neueste Stand automatisch ge
 python3 scripts/humanizer_audit.py --latest <dir> --mode sachlich --format md
 ```
 
-Der Sammelcheck ruft Unicode-, Rhythmus-, Naturalness- und Register-Prüfung in einem Prozess auf und gibt eine kurze gemeinsame Befundliste aus. Mit `--precise` (und installiertem spaCy) fängt er die dokumentierten Fehlalarm-Klassen ab und hängt die Syntax-Analyse als eigene Sektion an. Die Einzelskripte bleiben für gezielte Nachprüfung nutzbar; `scripts/rhythm_lint.py` druckt standardmäßig eine kompakte Dokumentansicht und zeigt volle Absatzdaten nur mit `--include-paragraphs`.
+Der Sammelcheck ruft Unicode-, Rhythmus-, Naturalness- und Register-Prüfung in einem Prozess auf und gibt eine kurze gemeinsame Befundliste aus. Konkrete Fundstellen enthalten optionale Originaltext-Spans; Frontmatter, Code-Fences und andere geschützte Markdown-Bereiche verschieben die Offsets nicht. Mit `--precise` (und installiertem spaCy) fängt der Check die dokumentierten Fehlalarm-Klassen ab und hängt die Syntax-Analyse als eigene Sektion an. Die Einzelskripte bleiben für gezielte Nachprüfung nutzbar; `scripts/rhythm_lint.py` druckt standardmäßig eine kompakte Dokumentansicht und zeigt volle Absatzdaten nur mit `--include-paragraphs`.
 
 Der Report enthält außerdem ein Preflight-Risiko (`low`, `medium`, `high`, `insufficient_text`). Es beschreibt, ob der Text messbar zu gleichförmig wirkt: etwa durch sehr ähnliche Satzlängen, kaum kurze oder lange Sätze, wiederholte Satzanfänge, viele mechanische Übergänge oder Naturalness-Cluster. Das ist eine Qualitätsheuristik, keine Aussage zur Autorenschaft.
 
@@ -910,6 +915,8 @@ Patch-Releases ohne öffentliche Relevanz dürfen im README-Changelog bleiben. M
 ---
 
 ## Was ist neu?
+
+- **5.10.4** - Adressierbare Audits, ein Null-Edit-Negativvertrag und ein historischer M45-Regressionsfall. Konkrete Unicode-, Naturalness- und Registerbefunde liefern jetzt optionale `spans` als Python-Codepoint-Offsets auf den unveränderten Originaltext; die längentreue Markdown-Maskierung hält sie auch hinter Frontmatter und Code-Fences korrekt. Dokumentweite Rhythmusmetriken bleiben bewusst ohne künstliche Position. Das LLM-im-Loop-Harness kennt außerdem einen engen `null_edit_contract`: Bei sauberen Kontrolltexten wird jede unnötige Politur als `unnecessary_edit` sichtbar. Ein reales Vorher/Nachher-Szenario prüft die Gegenrichtung: Ein mechanisch grüner Bericht ersetzt nicht den urteilsbasierten M45-Pass auf wörtlich englische Kollokationen und Anschlussgrammatik. Offizielle Produktnamen bleiben geschützt; aus dem Einzelfall entsteht weder ein neuer Detektor noch eine neue Muster-ID. Die Contract-Fixtures prüfen die Mechanik, belastbare Schadens- oder Trefferquoten benötigen weiterhin separat gehaltene verifizierte Menschentexte.
 
 - **5.10.3** - Positionierungs-Patch, keine Änderung an Prüflogik oder Katalog. Die Startseite sagt jetzt vor der Funktionsliste, woran sich der Skill messen lässt: Die Schwellen der deterministischen Prüfungen sind gegen eine Fehlalarm-Baseline aus verifizierten Menschentexten geeicht, und neue Muster kommen nur über das Marker-Aufnahmeprotokoll hinein. Ein neuer Abschnitt „Messen & Audit“ zeigt einen Beispielbericht des Sammelchecks samt Preflight-Risiko, Stilkarte und Befunden mit Muster-Nummer, weil die Messebene bisher nur zwischen den Installationswegen auftauchte. Dazu steht in der Assistenten-Kurzfassung jetzt der Architektursatz – das Sprachmodell schreibt, der Skill prüft – und die dort veraltete Katalogzahl ist von 69 auf die tatsächlichen 72 Muster korrigiert.
 

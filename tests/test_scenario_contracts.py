@@ -19,7 +19,7 @@ spec.loader.exec_module(run_review_eval)
 class ScenarioContractTests(unittest.TestCase):
     def test_all_scenarios_have_required_contract_fields(self):
         files = run_review_eval.scenario_files(SCENARIOS)
-        self.assertEqual(len(files), 25)
+        self.assertEqual(len(files), 27)
         for file_path in files:
             with self.subTest(file=file_path.name):
                 scenario = run_review_eval.load_scenario(file_path)
@@ -204,6 +204,41 @@ class ScenarioContractTests(unittest.TestCase):
             path.write_text(json.dumps(scenario), encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "non-empty"):
                 run_review_eval.check_scenario(path)
+
+    def test_null_edit_contract_accepts_unchanged_and_rejects_polish(self):
+        scenario = {
+            "input": "Der Dienst speichert die Datei lokal.",
+            "null_edit_contract": {"require_unchanged": True},
+        }
+
+        self.assertEqual(
+            run_review_eval.null_edit_violations(
+                scenario,
+                "Der Dienst speichert die Datei lokal.",
+            ),
+            [],
+        )
+        self.assertEqual(
+            run_review_eval.null_edit_violations(
+                scenario,
+                "Der Dienst speichert die Datei zuverlässig lokal.",
+            ),
+            ["unnecessary_edit"],
+        )
+        self.assertEqual(
+            run_review_eval.null_edit_violations(
+                scenario,
+                "Der Dienst speichert die Datei lokal.\n",
+            ),
+            ["unnecessary_edit"],
+        )
+        self.assertIn(
+            "full_text_output",
+            run_review_eval.invariant_violations(
+                {"input": scenario["input"], "null_edit_contract": {"require_unchanged": False}},
+                scenario["input"],
+            ),
+        )
 
     def test_missing_and_empty_scenario_paths_are_errors(self):
         with tempfile.TemporaryDirectory() as tmp_dir:

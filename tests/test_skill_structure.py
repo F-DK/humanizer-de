@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_VERSION = "5.10.3"
+EXPECTED_VERSION = "5.10.4"
 EXPECTED_PATTERN_COUNT = 72
 
 
@@ -199,6 +199,8 @@ class SkillStructureTests(unittest.TestCase):
         self.assertIn("Deixis und Sprecherposition", naturalness)
         self.assertIn("Diskursmarker und pragmatische Haltung", naturalness)
         self.assertIn("Verbalstil statt Nominalstil", naturalness)
+        self.assertIn("45 Anglizismus-Strukturen", naturalness)
+        self.assertIn("harte Anglizismus-Strukturen (Muster 45", skill)
         self.assertIn("Anti-Entropy-Reflex", naturalness)
         self.assertIn("trotzdem Textqualität, Präzision oder Lesbarkeit verschlechtern", naturalness)
 

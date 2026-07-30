@@ -39,7 +39,7 @@ class GermanPatternLintTests(unittest.TestCase):
 
     def test_ai_marker_mentions_in_quotes_are_not_cluster(self):
         text = (
-            "Im Review ging es um Wörter wie „nahtlos“, „beleuchten“ und "
+            "Im Review ging es um Wörter wie „Nahtlos“, „beleuchten“ und "
             "„maßgeschneidert“, nicht um ihren Einsatz im Text."
         )
         self.assertNotIn("ai_marker_cluster", kinds(german_pattern_lint.lint(text)))
@@ -114,6 +114,16 @@ class GermanPatternLintTests(unittest.TestCase):
     def test_bold_overdose_ignores_single_span(self):
         text = "Dieser Hinweis ist **wichtig** für die Auswertung."
         self.assertNotIn("bold_overdose", kinds(german_pattern_lint.lint(text)))
+
+    def test_colon_heading_spans_keep_splitlines_semantics(self):
+        text = "  # Eins: Inhalt  \u2028## Zwei: Inhalt"
+        report = german_pattern_lint.lint(text)
+        finding = next(item for item in report["findings"] if item["kind"] == "colon_heading_cluster")
+
+        self.assertEqual(
+            [text[span["start"]:span["end"]] for span in finding["spans"]],
+            ["# Eins: Inhalt", "## Zwei: Inhalt"],
+        )
 
     def test_address_validation_candidate_is_info_advisory(self):
         report = german_pattern_lint.lint("Du bist nicht zu sensibel.")
