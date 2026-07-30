@@ -4,7 +4,7 @@ description: 'Edit-Pass für bestehenden deutschen Text: Register/Rhythmus messe
 allowed-tools: [Read, Write, Edit, Grep, Glob, Bash]
 metadata:
   display_name: Humanizer (Deutsch)
-  version: 5.10.2
+  version: 5.10.3
   author: Martin Moeller
   maintainer_website: https://www.martin-moeller.biz
   based_on: 'Deutsche Wikipedia: Anzeichen für KI-generierte Inhalte, Erkennung KI-Einsatz, Schnelltest KI'

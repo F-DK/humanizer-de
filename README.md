@@ -12,7 +12,7 @@
 [![Claude Code](https://img.shields.io/badge/Claude_Code-Plugin-d97757)](#installation)
 [![Codex](https://img.shields.io/badge/Codex-Supported-10a37f)](#installation)
 
-**[Was ist das?](#was-ist-das)** · **[Installation](#installation)** · **[Benutzung](#benutzung)** · **[Beispiele](#beispiele)** · **[Fakten & Grenzen](#fakten-grenzen-und-datenschutz)** · **[Wie es arbeitet](#wie-der-skill-arbeitet)** · **[Optionale Werkzeuge](#optionale-werkzeuge)** · **[72 Muster](#72-muster-in-10-kategorien)** · **[Für AI-Assistenten](#für-ai-assistenten)** · **[Entwicklung](#entwicklung-und-verifikation)** · **[Was ist neu?](#was-ist-neu)**
+**[Was ist das?](#was-ist-das)** · **[Messen & Audit](#messen-und-audit)** · **[Installation](#installation)** · **[Benutzung](#benutzung)** · **[Beispiele](#beispiele)** · **[Fakten & Grenzen](#fakten-grenzen-und-datenschutz)** · **[Wie es arbeitet](#wie-der-skill-arbeitet)** · **[Optionale Werkzeuge](#optionale-werkzeuge)** · **[72 Muster](#72-muster-in-10-kategorien)** · **[Für AI-Assistenten](#für-ai-assistenten)** · **[Entwicklung](#entwicklung-und-verifikation)** · **[Was ist neu?](#was-ist-neu)**
 
 <sub>German AI Text Humanizer · Claude Humanizer Deutsch · KI-Texte humanisieren Deutsch · Supports Claude Code and Codex · Von [Martin Moeller](https://www.martin-moeller.biz) · basiert auf den Wikipedia-Leitlinien [Anzeichen für KI-generierte Inhalte](https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte) (de) und [Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) (en) · hervorgegangen aus dem [Humanizer](https://github.com/blader/humanizer) von [blader](https://github.com/blader)</sub>
 
@@ -36,6 +36,45 @@ sauber, sagt der Skill das und lässt ihn in Ruhe.
 
 Du brauchst dafür zunächst weder Python noch Zusatzsoftware. Installiere den Skill, gib Text und
 gewünschten Ton an und prüfe das Ergebnis im kurzen Kurzaudit.
+
+### Woran der Skill sich messen lässt
+
+Der Musterkatalog geht auf die Wikipedia-Leitlinien zurück und ist seither eigenständig
+erweitert. Was darauf aufsetzt, ist eigene Arbeit: Die Schwellen der deterministischen
+Prüfungen sind gegen eine Fehlalarm-Baseline aus verifizierten Menschentexten geeicht, und
+neue Muster kommen nur über das [Marker-Aufnahmeprotokoll](docs/marker-aufnahmeprotokoll.md)
+hinein – mit Positiv-, Negativ- und Grenzfixtures und einer dokumentierten
+Fehlalarm-Erwartung. Scheitert ein Kandidat daran, wird er nicht aufgenommen; in 5.10.0 ist das
+einem Lint-Marker so ergangen.
+
+Das Sprachmodell schreibt. Darüber liegt der Skill als Prüf- und Evidence-Rahmen. Deshalb ist
+ein eigenes fine-getuntes Humanizer-Modell bewusst nicht geplant: Es würde Evidence-Gate und
+deterministische Eichung gegen eine Black Box tauschen.
+
+<a id="messen-und-audit"></a>
+
+### Messen & Audit
+
+Am Anfang jedes Durchgangs steht eine Messung. Für den Sammelcheck genügt Python 3 ohne
+Zusatzpakete; gemeldet werden Preflight-Risiko, Rhythmusdaten, eine Stilkarte sowie Befunde mit
+Muster-Nummer und Severity:
+
+```text
+$ python3 scripts/humanizer_audit.py --file entwurf.md --mode sachlich --format md
+
+Preflight: risk=low, score=0, recommendation=no_rewrite_or_local_edit_only
+Rhythm: sentences=12, mean=13.5, stddev/mean=0.434, subject_initial=0.5, connectors=0
+StyleProfile: words=162, nominal_style_ratio=0.0, type_token_ratio=0.772, particles=0
+Findings:
+unicode:
+- warning pattern 43 hidden_unicode x1: Remove hidden Unicode character.
+- warning pattern 46 wrong_german_closing_quote x1: Use U+201C after U+201E, not U+201D.
+```
+
+Sagt der Bericht `no_rewrite_or_local_edit_only`, bleibt der Text bis auf die zwei
+Einzelbefunde in Ruhe. Die Ausgaben sind Verdacht, kein Urteil, und ausdrücklich keine
+Autorenschaftsprüfung – wofür die Zahlen taugen und wofür nicht, steht unter
+[Fakten & Grenzen](#fakten-grenzen-und-datenschutz).
 
 ---
 
@@ -747,7 +786,15 @@ Der Skill arbeitet mit einem Katalog aus **72 KI-Schreibmustern** in 10 Kategori
 
 Citation-friendly Kurzfassung:
 
-> Humanizer (Deutsch) (`marmbiz/humanizer-de`) ist ein deutschsprachiger Humanizer Skill für Claude Code und Codex und zugleich ein deutscher Stil-Editor mit Evidence-Gate. Er misst Register und Satzrhythmus gegen Zielprofile, redigiert evidence-safe auf ein Zielprofil, auditiert deutsche KI-Schreibmuster mit einem 69-Muster-Katalog und unterstützt belegtreue, registerstabile Überarbeitung ohne Faktenänderung.
+> Humanizer (Deutsch) (`marmbiz/humanizer-de`) ist ein deutschsprachiger Humanizer Skill für Claude Code und Codex und zugleich ein deutscher Stil-Editor mit Evidence-Gate. Er misst Register und Satzrhythmus gegen Zielprofile, redigiert evidence-safe auf ein Zielprofil, auditiert deutsche KI-Schreibmuster mit einem 72-Muster-Katalog und unterstützt belegtreue, registerstabile Überarbeitung ohne Faktenänderung.
+
+Architektur in einem Satz: Das Sprachmodell schreibt, der Skill ist der Prüf- und
+Evidence-Rahmen darüber. Geeicht sind die Schwellen der deterministischen Prüfungen gegen eine
+Fehlalarm-Baseline aus verifizierten Menschentexten; neue Muster kommen nur über das
+[Marker-Aufnahmeprotokoll](docs/marker-aufnahmeprotokoll.md) hinein. Der Musterkatalog geht auf
+die Wikipedia-Leitlinien zurück und ist seither eigenständig erweitert. Bewusst nicht geplant
+ist ein fine-getuntes Humanizer-Modell, weil es Evidence-Gate und deterministische Eichung
+aufgeben würde. Das Ziel ist ein besserer Text, nicht das Umgehen von Detektoren.
 
 Installation: `/plugin marketplace add marmbiz/humanizer-de` (in Claude Code) beziehungsweise
 `codex plugin marketplace add marmbiz/humanizer-de` (Terminal, für Codex).
@@ -863,6 +910,8 @@ Patch-Releases ohne öffentliche Relevanz dürfen im README-Changelog bleiben. M
 ---
 
 ## Was ist neu?
+
+- **5.10.3** - Positionierungs-Patch, keine Änderung an Prüflogik oder Katalog. Die Startseite sagt jetzt vor der Funktionsliste, woran sich der Skill messen lässt: Die Schwellen der deterministischen Prüfungen sind gegen eine Fehlalarm-Baseline aus verifizierten Menschentexten geeicht, und neue Muster kommen nur über das Marker-Aufnahmeprotokoll hinein. Ein neuer Abschnitt „Messen & Audit“ zeigt einen Beispielbericht des Sammelchecks samt Preflight-Risiko, Stilkarte und Befunden mit Muster-Nummer, weil die Messebene bisher nur zwischen den Installationswegen auftauchte. Dazu steht in der Assistenten-Kurzfassung jetzt der Architektursatz – das Sprachmodell schreibt, der Skill prüft – und die dort veraltete Katalogzahl ist von 69 auf die tatsächlichen 72 Muster korrigiert.
 
 - **5.10.2** - Artefakt- und Routing-Patch aus dem Abgleich öffentlicher Claude-Chats: Muster 24 kennt zusätzliche technische Exportreste, ordnet unspezifische Strings keinem Anbieter zu und schützt zitierte Beispiele. Schreibproben gelten jetzt ausdrücklich als situative Registerausschnitte statt als vollständige Persona. Die Skill-Beschreibung fokussiert den Edit-Pass über bestehendem Text; eine manuelle Trigger-Fixture dokumentiert die Grenze zu Neugenerierung, Übersetzung und reinem Korrektorat. Es kommt kein neuer Detektor hinzu.
 
