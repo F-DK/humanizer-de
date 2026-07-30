@@ -14,7 +14,7 @@
 
 **[Was ist das?](#was-ist-das)** · **[Installation](#installation)** · **[Benutzung](#benutzung)** · **[Beispiele](#beispiele)** · **[Messen & Audit](#messen-und-audit)** · **[Fakten & Grenzen](#fakten-grenzen-und-datenschutz)** · **[Wie es arbeitet](#wie-der-skill-arbeitet)** · **[Optionale Werkzeuge](#optionale-werkzeuge)** · **[72 Muster](#72-muster-in-10-kategorien)** · **[Für AI-Assistenten](#für-ai-assistenten)** · **[Entwicklung](#entwicklung-und-verifikation)** · **[Was ist neu?](#was-ist-neu)**
 
-<sub>German AI Text Humanizer · Claude Humanizer Deutsch · KI-Texte humanisieren Deutsch · Supports Claude Code and Codex · Von [Martin Moeller](https://www.martin-moeller.biz) · basiert auf den Wikipedia-Leitlinien [Anzeichen für KI-generierte Inhalte](https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte) (de) und [Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) (en) · hervorgegangen aus dem [Humanizer](https://github.com/blader/humanizer) von [blader](https://github.com/blader)</sub>
+<sub>German AI Text Humanizer · Claude Humanizer Deutsch · KI-Texte humanisieren Deutsch · Supports Claude Code and Codex · Von [Martin Moeller](https://martin-moeller.biz) · basiert auf den Wikipedia-Leitlinien [Anzeichen für KI-generierte Inhalte](https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte) (de) und [Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) (en) · hervorgegangen aus dem [Humanizer](https://github.com/blader/humanizer) von [blader](https://github.com/blader)</sub>
 
 <sub>Guide (DE): [KI-Texte auf Deutsch natürlicher und glaubwürdiger schreiben](https://martin-moeller.biz/lab/ki/humanizer-deutsch-ki-texte-erkennen-entfernen) · Guide (EN): [Claude Humanizer Skill: Make German AI Text Sound Human](https://martin-moeller.biz/en/lab/ai/claude-humanizer-skill-german) · Hintergrund (DE): [Der KI-Text-Eisberg](https://martin-moeller.biz/lab/ki-text-eisberg)</sub>
 
@@ -928,6 +928,8 @@ Patch-Releases ohne öffentliche Relevanz dürfen im README-Changelog bleiben. M
 
 ## Was ist neu?
 
+- **5.10.7** - Autoren-URL ohne `www`. Sechs Stellen zeigten auf `https://www.martin-moeller.biz`, das nur per Weiterleitung auf die kanonische Adresse führt: die beiden Plugin-Manifeste, der Marktplatz-Eintrag, das `SKILL.md`-Frontmatter und zwei Verweise in dieser Datei. Betroffen ist nur die Adresse, nicht Prüflogik oder Katalog.
+
 - **5.10.6** - Einstieg vor Beweis, plus vier Faktenkorrekturen an der Startseite. Hinter „Was ist das?“ folgt jetzt wieder direkt die Installation; der Messabschnitt sitzt hinter den Beispielen und vor den Grenzen, die seine Zahlen einordnen. Korrigiert: Seit 5.8.0 verschwieg die Liste der Linter-gestützten Muster die Muster 8 und 13 und nannte den spaCy-Pfad für Muster 39 gar nicht. Im Power-User-Block standen vier angeblich reproduzierbare Aufrufe, mitgeliefert ist aber nur die Fixture aus Schritt 4. In der Ausnahmeliste zu `--fail-on` fehlte `doctor.py`; dieses Script kennt stattdessen `--require-full`. Der Beispielbericht weist seine Kürzung jetzt aus, statt sie zu verschweigen. Neu dokumentiert ist außerdem ein Installationsfehler aus der Praxis: Claude Code klont die Kurzform `marmbiz/humanizer-de` über SSH, was ohne hinterlegten GitHub-Schlüssel scheitert; die vollständige HTTPS-Adresse kommt ohne aus.
 
 - **5.10.5** - Register-Fehlalarme aus zitierter Fremdstimme werden im Präzisionspfad kleiner: `register_lint.py --precise` blendet neben Blockquotes jetzt auch eindeutig gepaarte Inline-Zitate aus, bevor `mixed_address` bewertet wird. Die Meldung spricht folgerichtig nur noch von einem möglichen Anredewechsel und verlangt die Prüfung auf Anapher oder Zitat. Pluralisches `Sie` bleibt bewusst ein manueller Prüffall, weil es ohne sichere Coreference nicht deterministisch von der Höflichkeitsform zu trennen ist. M8- und M55-Schwellen bleiben unverändert; die eigenen KI-assistierten Posts sind keine Menschen-Baseline für neues Tuning.
@@ -1004,7 +1006,7 @@ Dieser Skill basiert auf:
 Das Projekt entstand Anfang 2026 als Fork von `blader/humanizer` und entwickelte sich danach zu
 einem eigenständigen System für deutschsprachige Texte mit eigenem Versionsschema.
 
-**Deutsche Version:** Martin Moeller ([www.martin-moeller.biz](https://www.martin-moeller.biz))
+**Deutsche Version:** Martin Moeller ([martin-moeller.biz](https://martin-moeller.biz))
 
 ### Verwandte Ressourcen
 
