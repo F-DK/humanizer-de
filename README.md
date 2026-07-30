@@ -12,7 +12,7 @@
 [![Claude Code](https://img.shields.io/badge/Claude_Code-Plugin-d97757)](#installation)
 [![Codex](https://img.shields.io/badge/Codex-Supported-10a37f)](#installation)
 
-**[Was ist das?](#was-ist-das)** · **[Messen & Audit](#messen-und-audit)** · **[Installation](#installation)** · **[Benutzung](#benutzung)** · **[Beispiele](#beispiele)** · **[Fakten & Grenzen](#fakten-grenzen-und-datenschutz)** · **[Wie es arbeitet](#wie-der-skill-arbeitet)** · **[Optionale Werkzeuge](#optionale-werkzeuge)** · **[72 Muster](#72-muster-in-10-kategorien)** · **[Für AI-Assistenten](#für-ai-assistenten)** · **[Entwicklung](#entwicklung-und-verifikation)** · **[Was ist neu?](#was-ist-neu)**
+**[Was ist das?](#was-ist-das)** · **[Installation](#installation)** · **[Benutzung](#benutzung)** · **[Beispiele](#beispiele)** · **[Messen & Audit](#messen-und-audit)** · **[Fakten & Grenzen](#fakten-grenzen-und-datenschutz)** · **[Wie es arbeitet](#wie-der-skill-arbeitet)** · **[Optionale Werkzeuge](#optionale-werkzeuge)** · **[72 Muster](#72-muster-in-10-kategorien)** · **[Für AI-Assistenten](#für-ai-assistenten)** · **[Entwicklung](#entwicklung-und-verifikation)** · **[Was ist neu?](#was-ist-neu)**
 
 <sub>German AI Text Humanizer · Claude Humanizer Deutsch · KI-Texte humanisieren Deutsch · Supports Claude Code and Codex · Von [Martin Moeller](https://www.martin-moeller.biz) · basiert auf den Wikipedia-Leitlinien [Anzeichen für KI-generierte Inhalte](https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte) (de) und [Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) (en) · hervorgegangen aus dem [Humanizer](https://github.com/blader/humanizer) von [blader](https://github.com/blader)</sub>
 
@@ -51,36 +51,6 @@ Das Sprachmodell schreibt. Darüber liegt der Skill als Prüf- und Evidence-Rahm
 ein eigenes fine-getuntes Humanizer-Modell bewusst nicht geplant: Es würde Evidence-Gate und
 deterministische Eichung gegen eine Black Box tauschen.
 
-<a id="messen-und-audit"></a>
-
-### Messen & Audit
-
-Am Anfang jedes Durchgangs steht eine Messung. Für den Sammelcheck genügt Python 3 ohne
-Zusatzpakete; gemeldet werden Preflight-Risiko, Rhythmusdaten, eine Stilkarte sowie Befunde mit
-Muster-Nummer und Severity:
-
-```text
-$ python3 scripts/humanizer_audit.py --file entwurf.md --mode sachlich --format md
-
-Preflight: risk=low, score=0, recommendation=no_rewrite_or_local_edit_only
-Rhythm: sentences=12, mean=13.5, stddev/mean=0.434, subject_initial=0.5, connectors=0
-StyleProfile: words=162, nominal_style_ratio=0.0, type_token_ratio=0.772, particles=0
-Findings:
-unicode:
-- warning pattern 43 hidden_unicode x1 spans=124:125: Remove hidden Unicode character.
-- warning pattern 46 wrong_german_closing_quote x1 spans=211:212: Use U+201C after U+201E, not U+201D.
-```
-
-Sagt der Bericht `no_rewrite_or_local_edit_only`, bleibt der Text bis auf die zwei
-Einzelbefunde in Ruhe. Die Ausgaben sind Verdacht, kein Urteil, und ausdrücklich keine
-Autorenschaftsprüfung – wofür die Zahlen taugen und wofür nicht, steht unter
-[Fakten & Grenzen](#fakten-grenzen-und-datenschutz).
-
-Im JSON tragen adressierbare Befunde ein optionales Feld
-`spans: [{"start": 124, "end": 125}]`. Die Grenzen beziehen sich auf den unveränderten
-Originaltext und zählen Unicode-Codepoints wie Python; `offset_unit` nennt diese Konvention
-explizit. Dokumentweite Rhythmusmetriken erhalten bewusst keine erfundene Einzelposition.
-
 ---
 
 ## Installation
@@ -104,6 +74,15 @@ In einer laufenden Claude-Code-Sitzung:
 /plugin marketplace add marmbiz/humanizer-de
 /plugin install humanizer-de@humanizer-de
 /reload-plugins
+```
+
+Bricht der erste Befehl mit einem Zugriffs- oder Schlüsselfehler ab (etwa
+`Permission denied (publickey)`), liegt es nicht am Repository: Claude Code übersetzt die
+Kurzform in eine SSH-Adresse, und dafür braucht GitHub einen hinterlegten Schlüssel. Ohne
+Schlüssel funktioniert die vollständige HTTPS-Adresse:
+
+```bash
+/plugin marketplace add https://github.com/marmbiz/humanizer-de.git
 ```
 
 ### Funktioniert es?
@@ -363,7 +342,7 @@ statt Klarheit, Belegtreue oder Stimme zu verbessern.
 
 ### Ein Durchlauf in vier Kommandos
 
-So sieht die Arbeit konkret aus – alle vier Aufrufe sind mit dem geklonten Repo reproduzierbar, die Ausgaben sind gekürzt.
+So sieht die Arbeit konkret aus; die Ausgaben sind gekürzt. Schritt 4 läuft mit dem geklonten Repo sofort, weil er auf einer mitgelieferten Fixture arbeitet. Die Schritte 1 bis 3 brauchen eigene Dateien an der Stelle von `entwurf.md`, `vorher.md` und `nachher.md`.
 
 **1. Der Audit findet echte Cluster.** Ein typischer KI-Entwurf („In der heutigen digitalen Landschaft ist es entscheidend, Prozesse nahtlos zu gestalten. Unsere maßgeschneiderten Lösungen beleuchten vielschichtige Aspekte …“):
 
@@ -495,6 +474,39 @@ Gefüllt wird das Profil auf Wunsch im Abschluss-Dialog: Wenn ein Lauf wiederhol
 **Nachher:** „Die Produktivität fiel positiv auf. Der Umsatz verdreifachte sich.“
 
 </details>
+
+---
+
+<a id="messen-und-audit"></a>
+
+## Messen & Audit
+
+Am Anfang jedes Durchgangs steht eine Messung. Im Agenten übernimmt der Skill sie selbst; als
+Kommandozeilen-Werkzeug genügt dafür Python 3 ohne Zusatzpakete. Gemeldet werden
+Preflight-Risiko, Rhythmusdaten, eine Stilkarte sowie Befunde mit Muster-Nummer und Severity.
+Unten steht eine gekürzte Fassung; vollständig nennt die Ausgabe zusätzlich Modus, Datei und
+alle leeren Prüfsektionen:
+
+```text
+$ python3 scripts/humanizer_audit.py --file entwurf.md --mode sachlich --format md
+
+Preflight: risk=low, score=0, recommendation=no_rewrite_or_local_edit_only
+Rhythm: sentences=12, mean=13.5, stddev/mean=0.434, subject_initial=0.5, connectors=0
+StyleProfile: words=162, nominal_style_ratio=0.0, type_token_ratio=0.772, particles=0
+Findings:
+unicode:
+- warning pattern 43 hidden_unicode x1 spans=124:125: Remove hidden Unicode character.
+- warning pattern 46 wrong_german_closing_quote x1 spans=211:212: Use U+201C after U+201E, not U+201D.
+```
+
+Sagt der Bericht `no_rewrite_or_local_edit_only`, bleibt der Text bis auf die zwei
+Einzelbefunde in Ruhe. Die Ausgaben sind Verdacht, kein Urteil, und ausdrücklich keine
+Autorenschaftsprüfung – wofür die Zahlen taugen und wofür nicht, steht direkt im Anschluss.
+
+Im JSON tragen adressierbare Befunde ein optionales Feld
+`spans: [{"start": 124, "end": 125}]`. Gezählt wird in Unicode-Codepoints wie in Python,
+bezogen auf den unveränderten Originaltext; `offset_unit` nennt diese Konvention
+explizit. Dokumentweite Rhythmusmetriken erhalten bewusst keine erfundene Einzelposition.
 
 ---
 
@@ -631,7 +643,7 @@ davon wird zusammen mit dem Skill installiert oder automatisch aktiviert.
 
 ## 72 Muster in 10 Kategorien
 
-Der Skill arbeitet mit einem Katalog aus **72 KI-Schreibmustern** in 10 Kategorien, priorisiert nach Schweregrad (HIGH / MEDIUM / LOW). Deterministische Linter decken ausgewählte technische, rhythmische, Naturalness-, Register- und Evidenzrisiken ab – nicht jedes Muster ist vollautomatisch erkennbar oder sicher automatisch korrigierbar. Linter-gestützt ist derzeit rund ein Dutzend Muster (u. a. 4, 43, 46, 54, 55, 58, 61, 63–65 sowie ein advisory Kandidatenhinweis für 72) plus Register-, Rhythmus- und Evidenz-Checks; die übrigen Muster prüft das Modell anhand des Katalogs. Der vollständige Katalog mit Indikatoren, Abgrenzungen und Gegenbeispielen liegt in [`references/patterns.md`](references/patterns.md). Für den schnellen Blick ohne Katalog fasst [`assets/checkliste-ki-tells.md`](assets/checkliste-ki-tells.md) die zehn häufigsten Tells auf einer Seite zusammen.
+Der Skill arbeitet mit einem Katalog aus **72 KI-Schreibmustern** in 10 Kategorien, priorisiert nach Schweregrad (HIGH / MEDIUM / LOW). Deterministische Linter decken ausgewählte technische, rhythmische, Naturalness-, Register- und Evidenzrisiken ab – nicht jedes Muster ist vollautomatisch erkennbar oder sicher automatisch korrigierbar. Linter-gestützt sind derzeit rund 15 Muster (4, 8, 13, 39, 43, 46, 54, 55, 58, 61, 63–65 sowie ein advisory Kandidatenhinweis für 72; Muster 39 nur im Präzisionspfad mit spaCy) plus Register-, Rhythmus- und Evidenz-Checks; die übrigen Muster prüft das Modell anhand des Katalogs. Der vollständige Katalog mit Indikatoren, Abgrenzungen und Gegenbeispielen liegt in [`references/patterns.md`](references/patterns.md). Für den schnellen Blick ohne Katalog fasst [`assets/checkliste-ki-tells.md`](assets/checkliste-ki-tells.md) die zehn häufigsten Tells auf einer Seite zusammen.
 
 <details>
 <summary><strong>Sprache und Tonfall (19 Muster)</strong></summary>
@@ -865,7 +877,7 @@ python3 scripts/syntax_lint.py --file <text.md>
 ### Exit-Codes
 
 Alle Scripts folgen der Konvention `0` = ok, `1` = Findings gemäß Fail-Schwelle bzw. Fixture-/Eval-Mismatch, `2` = Aufruffehler (falsche Argumente). Die Fail-Schwelle unterscheidet sich bewusst je Script:
-`--fail-on {never,blocker,any}` übersteuert die Fail-Schwelle pro Aufruf, die Defaults bleiben unverändert; das Flag haben alle Scripts der Tabelle außer `syntax_lint.py` (reine Messstufe) und `run_review_eval.py`.
+`--fail-on {never,blocker,any}` übersteuert die Fail-Schwelle pro Aufruf, die Defaults bleiben unverändert; das Flag haben alle Scripts der Tabelle außer `syntax_lint.py` (reine Messstufe), `run_review_eval.py` und `doctor.py`, das stattdessen `--require-full` kennt.
 
 | Script | Exit `1` bei |
 |---|---|
@@ -915,6 +927,8 @@ Patch-Releases ohne öffentliche Relevanz dürfen im README-Changelog bleiben. M
 ---
 
 ## Was ist neu?
+
+- **5.10.6** - Einstieg vor Beweis, plus vier Faktenkorrekturen an der Startseite. Hinter „Was ist das?“ folgt jetzt wieder direkt die Installation; der Messabschnitt sitzt hinter den Beispielen und vor den Grenzen, die seine Zahlen einordnen. Korrigiert: Seit 5.8.0 verschwieg die Liste der Linter-gestützten Muster die Muster 8 und 13 und nannte den spaCy-Pfad für Muster 39 gar nicht. Im Power-User-Block standen vier angeblich reproduzierbare Aufrufe, mitgeliefert ist aber nur die Fixture aus Schritt 4. In der Ausnahmeliste zu `--fail-on` fehlte `doctor.py`; dieses Script kennt stattdessen `--require-full`. Der Beispielbericht weist seine Kürzung jetzt aus, statt sie zu verschweigen. Neu dokumentiert ist außerdem ein Installationsfehler aus der Praxis: Claude Code klont die Kurzform `marmbiz/humanizer-de` über SSH, was ohne hinterlegten GitHub-Schlüssel scheitert; die vollständige HTTPS-Adresse kommt ohne aus.
 
 - **5.10.5** - Register-Fehlalarme aus zitierter Fremdstimme werden im Präzisionspfad kleiner: `register_lint.py --precise` blendet neben Blockquotes jetzt auch eindeutig gepaarte Inline-Zitate aus, bevor `mixed_address` bewertet wird. Die Meldung spricht folgerichtig nur noch von einem möglichen Anredewechsel und verlangt die Prüfung auf Anapher oder Zitat. Pluralisches `Sie` bleibt bewusst ein manueller Prüffall, weil es ohne sichere Coreference nicht deterministisch von der Höflichkeitsform zu trennen ist. M8- und M55-Schwellen bleiben unverändert; die eigenen KI-assistierten Posts sind keine Menschen-Baseline für neues Tuning.
 
