@@ -20,7 +20,7 @@ import rhythm_lint
 import style_profile
 import syntax_lint
 import unicode_lint
-from cli_output import print_json, resolve_exit_code
+from cli_output import print_json, read_user_text, resolve_exit_code
 import text_scope
 
 
@@ -359,7 +359,7 @@ def analyze_file(
     precise: bool = False,
     profile_path: Path = style_profile.USER_PROFILE_PATH,
 ) -> dict:
-    text = path.read_text(encoding="utf-8")
+    text = read_user_text(path)
 
     unicode_findings = unicode_lint.lint(text)
     rhythm_report = rhythm_lint.analyze(text, file=str(path), scope="user_text", mode=mode)

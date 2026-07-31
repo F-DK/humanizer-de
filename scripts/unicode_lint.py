@@ -16,7 +16,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from cli_output import print_json, resolve_exit_code
+from cli_output import print_json, read_user_text, resolve_exit_code
 import text_scope
 
 
@@ -79,7 +79,7 @@ def codepoint(char: str) -> str:
 
 def protected_ranges(text: str) -> list[tuple[int, int]]:
     ranges = text_scope.protected_ranges(text, scope=text_scope.TYPOGRAPHIC_PROSE)
-    link_title_re = re.compile(r"\]\([^()\s]+[ \t]+(\"[^\"\n]*\")\)")
+    link_title_re = re.compile(r"\]\([^()\s]+[ \t]+(\"[^\"\r\n]*\")\)")
     ranges.extend(match.span(1) for match in link_title_re.finditer(text))
     return text_scope.merge_ranges(ranges)
 
@@ -323,12 +323,13 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv or sys.argv[1:])
-    text = args.text if args.text is not None else args.file.read_text(encoding="utf-8")
+    text = args.text if args.text is not None else read_user_text(args.file)
     findings = lint(text)
     fixed_text = fix(text) if args.fix else text
 
     if args.write and fixed_text != text:
-        args.file.write_text(fixed_text, encoding="utf-8")
+        with args.file.open("w", encoding="utf-8", newline="") as handle:
+            handle.write(fixed_text)
 
     result = {
         "ok": not findings,

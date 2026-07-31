@@ -15,7 +15,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from cli_output import print_json, resolve_exit_code
+from cli_output import print_json, read_user_text, resolve_exit_code
 
 
 SYNTAX_SCRIPT = SCRIPT_DIR / "syntax_lint.py"
@@ -39,7 +39,7 @@ ANCHOR_PATTERNS = {
     "url": re.compile(r"https?://[^\s<>)]+"),
     "doi": re.compile(r"\b(?:doi:\s*)?10\.\d{4,9}/[-._;()/:A-Za-z0-9]+\b", re.IGNORECASE),
     "paragraph": re.compile(r"§+\s*\d+[a-zA-Z]*(?:\s*Abs\.\s*\d+)?"),
-    "code": re.compile(r"`[^`\n]+`"),
+    "code": re.compile(r"`[^`\r\n]+`"),
 }
 
 VALID_QUOTE_PATTERNS = (
@@ -72,7 +72,7 @@ LEGACY_ANCHOR_PATTERNS = {
     "url": re.compile(r"https?://[^\s<>)]+"),
     "doi": re.compile(r"\b(?:doi:\s*)?10\.\d{4,9}/[-._;()/:A-Za-z0-9]+\b", re.IGNORECASE),
     "paragraph": re.compile(r"§+\s*\d+[a-zA-Z]*(?:\s*Abs\.\s*\d+)?"),
-    "code": re.compile(r"`[^`\n]+`"),
+    "code": re.compile(r"`[^`\r\n]+`"),
     "quote": re.compile(r'["„“‚‘”\']([^"„“‚‘”\']{3,})["„“‚‘”\']'),
 }
 
@@ -407,7 +407,7 @@ def lint(before: str, after: str, precise: bool = False) -> list[dict]:
 
 def load_text(value: str | None, path: Path | None) -> str:
     if path is not None:
-        return path.read_text(encoding="utf-8")
+        return read_user_text(path)
     return value or ""
 
 

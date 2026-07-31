@@ -16,7 +16,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from cli_output import print_json
+from cli_output import print_json, read_user_text
 
 NOUN_POS = {"NOUN", "PROPN"}
 VERB_POS = {"VERB", "AUX"}
@@ -82,7 +82,7 @@ def has_morph(token: Any, key: str, value: str) -> bool:
 
 
 def sentence_text(span: Any) -> str:
-    return span.text.strip()
+    return span.text.replace("\r\n", "\n").replace("\r", "\n").strip()
 
 
 def is_passive_aux(token: Any) -> bool:
@@ -234,7 +234,7 @@ def lint(text: str, nlp: Any | None = None) -> dict:
         if nlp is None:
             return unavailable_report(reason or "spacy_missing")
 
-    doc = nlp(prose_text(text))
+    doc = nlp(prose_text(text).replace("\r\n", "\n").replace("\r", "\n"))
     sentences = list(doc.sents)
     passive_findings = detect_passive(doc)
     fragment_findings = detect_subjectless_fragment(doc)
@@ -287,7 +287,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(sys.argv[1:] if argv is None else argv)
-    text = args.file.read_text(encoding="utf-8") if args.file else args.text or ""
+    text = read_user_text(args.file) if args.file else args.text or ""
     print_json(lint(text))
     return 0
 

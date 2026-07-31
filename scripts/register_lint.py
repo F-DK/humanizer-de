@@ -18,7 +18,7 @@ if str(SCRIPT_DIR) not in sys.path:
 
 import evidence_lint
 import text_scope
-from cli_output import print_json, resolve_exit_code
+from cli_output import print_json, read_user_text, resolve_exit_code
 
 
 SYNTAX_SCRIPT = SCRIPT_DIR / "syntax_lint.py"
@@ -323,7 +323,7 @@ def main(argv: list[str] | None = None) -> int:
         print_json({"ok": all(item["ok"] for item in results), "results": results})
         return 0 if all(item["ok"] for item in results) else 1
 
-    text = args.file.read_text(encoding="utf-8") if args.file else args.text or ""
+    text = read_user_text(args.file) if args.file else args.text or ""
     report = lint(text, mode=args.mode, expected_address=args.expected_address, precise=args.precise)
     print_json(report)
     return resolve_exit_code(args.fail_on, report["findings"])

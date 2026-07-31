@@ -17,7 +17,7 @@ SCRIPT_DIR = ROOT / "scripts"
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from cli_output import print_json
+from cli_output import print_json, read_user_text
 
 
 def load_module(name: str):
@@ -43,7 +43,7 @@ def count(items: list[dict], counter: Counter[str]) -> None:
 
 
 def markdown_findings(path: Path, precise: bool) -> dict[str, int]:
-    text = path.read_text(encoding="utf-8")
+    text = read_user_text(path)
     counter: Counter[str] = Counter()
 
     count(register_lint.lint(text, precise=precise)["findings"], counter)

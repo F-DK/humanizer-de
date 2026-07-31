@@ -5,7 +5,13 @@ from __future__ import annotations
 
 import json
 import sys
+from pathlib import Path
 from typing import Any
+
+
+def read_user_text(path: Path) -> str:
+    with path.open(encoding="utf-8", newline="") as handle:
+        return handle.read()
 
 
 def resolve_exit_code(policy: str, findings: list[dict]) -> int:

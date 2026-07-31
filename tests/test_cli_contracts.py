@@ -1,3 +1,4 @@
+import json
 import subprocess
 import sys
 import tempfile
@@ -13,9 +14,26 @@ class CliContractTests(unittest.TestCase):
     def run_script(self, name: str, *args: str) -> subprocess.CompletedProcess[str]:
         return subprocess.run(
             [sys.executable, str(SCRIPTS / name), *args],
+            cwd=ROOT,
             capture_output=True,
             text=True,
         )
+
+    def json_report(self, name: str, *args: str) -> dict | list:
+        proc = self.run_script(name, *args)
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        return json.loads(proc.stdout)
+
+    def without_offsets_or_paths(self, value):
+        if isinstance(value, dict):
+            return {
+                key: self.without_offsets_or_paths(item)
+                for key, item in value.items()
+                if key not in {"start", "end", "index", "file", "source"}
+            }
+        if isinstance(value, list):
+            return [self.without_offsets_or_paths(item) for item in value]
+        return value
 
     def test_text_linters_require_an_explicit_source(self):
         for name in ("register_lint.py", "german_pattern_lint.py", "syntax_lint.py"):
@@ -42,6 +60,98 @@ class CliContractTests(unittest.TestCase):
                     proc = self.run_script(name, "--fixture", tmp)
                     self.assertEqual(proc.returncode, 2)
                     self.assertIn("contains no JSON files", proc.stderr)
+
+    def test_crlf_fixture_spans_round_trip_against_raw_text(self):
+        raw = "Hallo Leser.\r\nHier sprichst du mit uns.\r\nDann kommen Sie vorbei.\r\n"
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "crlf.md"
+            path.write_bytes(raw.encode("utf-8"))
+            report = self.json_report(
+                "register_lint.py", "--file", str(path), "--fail-on", "never"
+            )
+
+        finding = next(item for item in report["findings"] if item["kind"] == "mixed_address")
+        slices = [raw[span["start"]:span["end"]] for span in finding["spans"]]
+        self.assertEqual(slices, ["du", "Sie"])
+
+    def test_lf_and_crlf_user_text_reports_match_except_offsets(self):
+        lf_text = """---
+title: "Geschützt"
+---
+
+Hallo Leser.
+Hier sprichst du mit uns.
+Dann kommen Sie vorbei.
+
+Kein Plan,
+kein Ziel.
+Das ist nicht Wert 1,
+sondern Wirkung 1.
+Das ist nicht Wert 2,
+sondern Wirkung 2.
+Das ist nicht Wert 3,
+sondern Wirkung 3.
+Das ist nicht Wert 4,
+sondern Wirkung 4.
+Du bist
+nicht sensibel.
+
+**Wichtig** und **Dringend** und **Sicher** und **Klar** und **Einfach**.
+| Feld | "geschützt" |
+<p class="intro">Diese Zeile ist technisch.</p>
+
+Die Auswertung wird
+von uns geprüft. Er sagte "Hallo".
+"""
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            lf_path = tmp_path / "lf.md"
+            crlf_path = tmp_path / "crlf.md"
+            lf_path.write_bytes(lf_text.encode("utf-8"))
+            crlf_path.write_bytes(lf_text.replace("\n", "\r\n").encode("utf-8"))
+
+            lf_corpus = tmp_path / "lf-corpus"
+            crlf_corpus = tmp_path / "crlf-corpus"
+            lf_corpus.mkdir()
+            crlf_corpus.mkdir()
+            (lf_corpus / "sample.md").write_bytes(lf_text.encode("utf-8"))
+            (crlf_corpus / "sample.md").write_bytes(
+                lf_text.replace("\n", "\r\n").encode("utf-8")
+            )
+
+            commands = (
+                ("register_lint.py", "--file", "{path}", "--fail-on", "never"),
+                ("german_pattern_lint.py", "--file", "{path}"),
+                ("rhythm_lint.py", "--file", "{path}"),
+                ("style_profile.py", "--file", "{path}"),
+                ("syntax_lint.py", "--file", "{path}"),
+                ("unicode_lint.py", "--file", "{path}", "--fail-on", "never"),
+                ("humanizer_audit.py", "--file", "{path}", "--precise"),
+                (
+                    "evidence_lint.py",
+                    "--before-file",
+                    "{path}",
+                    "--after-file",
+                    "{path}",
+                    "--fail-on",
+                    "never",
+                ),
+                ("spell_lint.py", "--before-file", "{path}", "--after-file", "{path}"),
+                ("fp_corpus_report.py", "--corpus-dir", "{corpus}"),
+            )
+
+            for command in commands:
+                with self.subTest(script=command[0]):
+                    lf_args = [arg.format(path=lf_path, corpus=lf_corpus) for arg in command]
+                    crlf_args = [
+                        arg.format(path=crlf_path, corpus=crlf_corpus) for arg in command
+                    ]
+                    lf_report = self.json_report(*lf_args)
+                    crlf_report = self.json_report(*crlf_args)
+                    self.assertEqual(
+                        self.without_offsets_or_paths(lf_report),
+                        self.without_offsets_or_paths(crlf_report),
+                    )
 
 
 if __name__ == "__main__":

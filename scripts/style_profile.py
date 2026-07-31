@@ -22,7 +22,7 @@ if str(SCRIPT_DIR) not in sys.path:
 import german_pattern_lint
 import register_lint
 import rhythm_lint
-from cli_output import print_json
+from cli_output import print_json, read_user_text
 
 
 TARGETS_PATH = SCRIPT_DIR.parent / "references" / "style-targets.json"
@@ -231,7 +231,7 @@ def main(argv: list[str] | None = None) -> int:
             overridden = frozenset(overrides.get(args.target, {}))
         corridors = targets[args.target]
     if args.file:
-        text = args.file.read_text(encoding="utf-8")
+        text = read_user_text(args.file)
         source = str(args.file)
     else:
         text = args.text

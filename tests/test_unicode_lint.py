@@ -4,6 +4,7 @@ import os
 import random
 import subprocess
 import sys
+import tempfile
 import time
 import unittest
 from pathlib import Path
@@ -193,6 +194,31 @@ class UnicodeLintTests(unittest.TestCase):
 
         self.assertEqual(proc.returncode, 2)
         self.assertIn("--write requires --fix and --file", proc.stderr)
+
+    def test_fix_write_preserves_crlf_line_endings(self):
+        raw = "Er sagte „Hallo”.\r\nZweite Zeile.\r\n"
+        expected = "Er sagte „Hallo“.\r\nZweite Zeile.\r\n"
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "crlf.md"
+            path.write_bytes(raw.encode("utf-8"))
+            proc = subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPT),
+                    "--file",
+                    str(path),
+                    "--fix",
+                    "--write",
+                    "--fail-on",
+                    "never",
+                ],
+                capture_output=True,
+                text=True,
+            )
+            fixed = path.read_bytes().decode("utf-8")
+
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertEqual(fixed, expected)
 
     def test_cli_json_falls_back_to_ascii_when_stdout_cannot_encode_a_finding(self):
         env = os.environ.copy()

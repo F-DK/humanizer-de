@@ -21,7 +21,7 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 import text_scope
-from cli_output import print_json, resolve_exit_code
+from cli_output import print_json, read_user_text, resolve_exit_code
 
 
 SUBJUNCTIONS = {
@@ -571,7 +571,7 @@ def compact_cli_report(report: dict) -> dict:
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv or sys.argv[1:])
     if args.file:
-        text = args.file.read_text(encoding="utf-8")
+        text = read_user_text(args.file)
         file_name = str(args.file)
     else:
         text = args.text

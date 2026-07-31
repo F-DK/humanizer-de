@@ -16,7 +16,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from cli_output import print_json, resolve_exit_code
+from cli_output import print_json, read_user_text, resolve_exit_code
 import evidence_lint
 import text_scope
 
@@ -70,8 +70,8 @@ ABSTRACTA = (
     "prozesse",
 )
 NEGATION_PARALLELISM_RES = (
-    re.compile(r"\b[Kk]eine?[nmrs]?\b[^,.;:!?\n]{1,45},\s*[Kk]eine?[nmrs]?\b"),
-    re.compile(r"\b[Nn]icht\b[^,.;:!?\n]{1,45},\s*[Nn]icht\b"),
+    re.compile(r"\b[Kk]eine?[nmrs]?\b[^,.;:!?\r\n]{1,45},\s*[Kk]eine?[nmrs]?\b"),
+    re.compile(r"\b[Nn]icht\b[^,.;:!?\r\n]{1,45},\s*[Nn]icht\b"),
 )
 FACTUAL_CONTRAST_VALUE_PATTERN = (
     r"(?:(?:am|im|um)\s+)?(?:"
@@ -85,8 +85,8 @@ FACTUAL_CONTRAST_VALUE_PATTERN = (
 ANTITHESIS_OPERAND_PATTERN = rf"(?:{FACTUAL_CONTRAST_VALUE_PATTERN}|[0-9A-Za-zÄÖÜäöüß-]+)"
 ANTITHESIS_RES = (
     re.compile(
-        r"\bnicht\b(?!\s+nur\b)(?P<left>[^,.;:!?\n]{1,80}),\s*"
-        r"sondern\b(?P<right>[^,.;:!?\n]{1,80})",
+        r"\bnicht\b(?!\s+nur\b)(?P<left>[^,.;:!?\r\n]{1,80}),\s*"
+        r"sondern\b(?P<right>[^,.;:!?\r\n]{1,80})",
         re.IGNORECASE,
     ),
     re.compile(
@@ -102,7 +102,7 @@ FACTUAL_CONTRAST_VALUE_RE = re.compile(
 ANTITHESIS_CLUSTER_MIN_COUNT = 4
 ANTITHESIS_CLUSTER_MIN_PER_1000_WORDS = 3.0
 WORD_RE = re.compile(r"[0-9A-Za-zÄÖÜäöüß]+(?:[-'][0-9A-Za-zÄÖÜäöüß]+)?")
-BOLD_SPAN_RE = re.compile(r"\*\*[^*\n]{1,80}\*\*")
+BOLD_SPAN_RE = re.compile(r"\*\*[^*\r\n]{1,80}\*\*")
 BOLD_OVERDOSE_THRESHOLD = 5
 STELLT_DAR_RE = re.compile(
     r"\bstell(?:t|te|ten|en)\b(?:\s+\S+){0,6}?\s+dar\b"
@@ -172,13 +172,13 @@ def mention_ranges(text: str) -> tuple[tuple[int, int], ...]:
     ]
     patterns = [
         r"```.*?```",
-        r"`[^`\n]+`",
+        r"`[^`\r\n]+`",
         # Nachbar-Schutz: Sternchen in **Fettdruck** dürfen keine Spans
         # öffnen oder schließen.
-        r"(?<!\*)\*(?!\*)[^*\n]+(?<!\*)\*(?!\*)",
+        r"(?<!\*)\*(?!\*)[^*\r\n]+(?<!\*)\*(?!\*)",
         # Wortgrenzen-Schutz: Unterstriche in snake_case dürfen keine Spans
         # öffnen oder schließen.
-        r"(?<!\w)_[^_\n]+_(?!\w)",
+        r"(?<!\w)_[^_\r\n]+_(?!\w)",
     ]
     for pattern in patterns:
         for match in re.finditer(pattern, text, re.DOTALL):
@@ -207,6 +207,10 @@ def marker_spans(text: str, marker: str) -> list[tuple[int, int]]:
 
 def count_marker(text: str, marker: str) -> int:
     return len(marker_spans(text, marker))
+
+
+def evidence_text(match: re.Match) -> str:
+    return match.group().replace("\r\n", "\n").replace("\r", "\n").strip()
 
 
 def collect_marker_hits(text: str, markers: tuple[str, ...]) -> tuple[dict[str, int], list[tuple[int, int]]]:
@@ -322,7 +326,7 @@ def lint(text: str, mode: str = "sachlich", precise: bool = False) -> dict:
         (
             match.start(),
             match.end(),
-            match.group().strip(),
+            evidence_text(match),
         )
         for pattern in NEGATION_PARALLELISM_RES
         for match in pattern.finditer(clean_text)
@@ -344,7 +348,7 @@ def lint(text: str, mode: str = "sachlich", precise: bool = False) -> dict:
         (
             match.start(),
             match.end(),
-            match.group().strip(),
+            evidence_text(match),
         )
         for pattern in ANTITHESIS_RES
         for match in pattern.finditer(clean_text)
@@ -415,7 +419,7 @@ def lint(text: str, mode: str = "sachlich", precise: bool = False) -> dict:
                 "severity": "info",
                 "advisory": True,
                 "message": ADDRESS_VALIDATION_MESSAGE,
-                "evidence": [match.group().strip() for match in address_validation_matches],
+                "evidence": [evidence_text(match) for match in address_validation_matches],
                 "spans": text_scope.serialize_spans([match.span() for match in address_validation_matches]),
             }
         )
@@ -460,7 +464,7 @@ def main(argv: list[str] | None = None) -> int:
         print_json({"ok": all(item["ok"] for item in results), "results": results})
         return 0 if all(item["ok"] for item in results) else 1
 
-    text = args.file.read_text(encoding="utf-8") if args.file else args.text or ""
+    text = read_user_text(args.file) if args.file else args.text or ""
     report = lint(text, mode=args.mode, precise=args.precise)
     print_json(report)
     return resolve_exit_code(args.fail_on, report["findings"])

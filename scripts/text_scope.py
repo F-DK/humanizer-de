@@ -11,8 +11,8 @@ AUTHORED_PROSE = "authored_prose"
 TYPOGRAPHIC_PROSE = "typographic_prose"
 SCOPES = {DOCUMENT_PROSE, AUTHORED_PROSE, TYPOGRAPHIC_PROSE}
 
-BLOCKQUOTE_LINE_RE = re.compile(r"(?m)^[ \t]{0,3}>.*(?:\n|$)")
-TABLE_LINE_RE = re.compile(r"(?m)^[ \t]*\|.*\|[ \t]*(?:\n|$)")
+BLOCKQUOTE_LINE_RE = re.compile(r"(?m)^[ \t]{0,3}>.*(?:\r?\n|$)")
+TABLE_LINE_RE = re.compile(r"(?m)^[ \t]*\|.*\|[ \t]*(?:\r?\n|$)")
 FRONTMATTER_RE = re.compile(
     r"\A(?:\ufeff)?---[ \t]*\r?\n.*?\r?\n(?:---|\.\.\.)[ \t]*(?=\r?\n|\Z)",
     re.DOTALL,
@@ -21,17 +21,17 @@ FENCE_OPEN_LINE_RE = re.compile(r"^[ \t]{0,3}(?P<fence>`{3,}|~{3,})(?P<info>.*)$
 FENCE_CLOSE_LINE_RE = re.compile(r"^[ \t]{0,3}(?P<fence>`+|~+)[ \t]*$")
 
 TECHNICAL_PATTERNS = (
-    re.compile(r"`[^`\n]+`"),
+    re.compile(r"`[^`\r\n]+`"),
     re.compile(r"https?://[^\s<>)]+"),
     re.compile(r"\b[\w.-]+@[\w.-]+\.[A-Za-z]{2,}\b"),
     re.compile(r"<!--[\s\S]*?-->"),
     TABLE_LINE_RE,
-    re.compile(r"<[A-Za-z/!][^<>\n]*>"),
+    re.compile(r"<[A-Za-z/!][^<>\r\n]*>"),
 )
 
 STRUCTURAL_BLOCK_PATTERNS = (
-    re.compile(r"(?m)^[ \t]*</?[A-Za-z][^>\n]*>[ \t]*(?:\n|$)"),
-    re.compile(r"(?m)^[ \t]*<[A-Za-z][^>\n]*>.*</[A-Za-z][^>\n]*>[ \t]*(?:\n|$)"),
+    re.compile(r"(?m)^[ \t]*</?[A-Za-z][^>\r\n]*>[ \t]*(?:\r?\n|$)"),
+    re.compile(r"(?m)^[ \t]*<[A-Za-z][^>\r\n]*>.*</[A-Za-z][^>\r\n]*>[ \t]*(?:\r?\n|$)"),
 )
 
 
