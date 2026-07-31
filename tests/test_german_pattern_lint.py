@@ -89,7 +89,9 @@ class GermanPatternLintTests(unittest.TestCase):
 
     def test_negation_parallelism(self):
         text = "Kein Server, keine Datenbank. Kein Dashboard nötig."
-        self.assertIn("negation_parallelism", kinds(german_pattern_lint.lint(text)))
+        report = german_pattern_lint.lint(text)
+        self.assertIn("negation_parallelism", kinds(report))
+        self.assertNotIn("negation_antithesis_cluster", kinds(report))
 
     def test_negation_parallelism_ignores_factual_correction(self):
         text = "Ich will nicht Tee, sondern Kaffee."
@@ -102,6 +104,65 @@ class GermanPatternLintTests(unittest.TestCase):
     def test_negation_parallelism_ignores_quoted_example(self):
         text = "Im Beispiel steht: „Kein Server, keine Datenbank.“"
         self.assertNotIn("negation_parallelism", kinds(german_pattern_lint.lint(text)))
+
+    def test_negation_antithesis_cluster(self):
+        text = (
+            "Nicht abwarten, sondern machen. Nicht erklären, sondern liefern. "
+            "Nicht verwalten, sondern gestalten. Laut und nicht leise lautet die Devise."
+        )
+        self.assertIn("negation_antithesis_cluster", kinds(german_pattern_lint.lint(text)))
+
+    def test_negation_antithesis_cluster_for_repeated_not_but(self):
+        text = (
+            "Nicht reden, sondern handeln. Nicht planen, sondern anfangen. "
+            "Nicht prüfen, sondern glauben. Nicht zweifeln, sondern folgen."
+        )
+        self.assertIn("negation_antithesis_cluster", kinds(german_pattern_lint.lint(text)))
+
+    def test_negation_antithesis_cluster_for_repeated_and_not(self):
+        text = (
+            "Die Ansage ist laut und nicht leise. Der Plan bleibt starr und nicht beweglich. "
+            "Die Antwort wirkt glatt und nicht ehrlich. Der Ton ist scharf und nicht sachlich."
+        )
+        self.assertIn("negation_antithesis_cluster", kinds(german_pattern_lint.lint(text)))
+
+    def test_negation_antithesis_cluster_ignores_single_substantive_contrast(self):
+        text = "Die Auswertung bewertet nicht die Person, sondern das Verfahren."
+        self.assertNotIn("negation_antithesis_cluster", kinds(german_pattern_lint.lint(text)))
+
+    def test_negation_antithesis_cluster_ignores_factual_corrections(self):
+        text = (
+            "Der Termin ist nicht Montag, sondern Dienstag. "
+            "Die Abgabe ist nicht Mittwoch, sondern Donnerstag. "
+            "Das Treffen ist nicht Freitag, sondern Samstag. "
+            "Der Prüfmonat ist nicht Januar, sondern Februar."
+        )
+        self.assertNotIn("negation_antithesis_cluster", kinds(german_pattern_lint.lint(text)))
+
+    def test_negation_antithesis_cluster_ignores_low_document_density(self):
+        text = "Wort " * 1400 + (
+            "Nicht abwarten, sondern machen. Nicht erklären, sondern liefern. "
+            "Nicht verwalten, sondern gestalten. Laut und nicht leise lautet die Devise."
+        )
+        self.assertNotIn("negation_antithesis_cluster", kinds(german_pattern_lint.lint(text)))
+
+    def test_negation_antithesis_cluster_ignores_use_mentions(self):
+        text = (
+            "Im Leitfaden stehen „nicht abwarten, sondern machen“ und "
+            "`nicht erklären, sondern liefern`. Die Varianten "
+            "*nicht verwalten, sondern gestalten* und "
+            "_laut und nicht leise_ werden nur zitiert."
+        )
+        self.assertNotIn("negation_antithesis_cluster", kinds(german_pattern_lint.lint(text)))
+
+    def test_negation_antithesis_cluster_ignores_not_only_correlatives(self):
+        text = (
+            "Nicht nur Tempo, sondern auch Sorgfalt zählt. "
+            "Nicht nur Technik, sondern auch Abstimmung hilft. "
+            "Nicht nur Kosten, sondern auch Nutzen werden geprüft. "
+            "Nicht nur heute, sondern auch morgen bleibt Zeit."
+        )
+        self.assertNotIn("negation_antithesis_cluster", kinds(german_pattern_lint.lint(text)))
 
     def test_bold_overdose(self):
         text = "**Alpha:** eins. **Beta:** zwei. **Gamma:** drei. **Delta:** vier. **Epsilon:** fünf."

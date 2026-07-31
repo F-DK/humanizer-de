@@ -47,6 +47,47 @@ Zu bumpen sind: `.claude-plugin/plugin.json`, `.codex-plugin/plugin.json`, das
 gewinnt `plugin.json` ohne Warnung, und ein vergessener Wert dort verdeckt den gepflegten
 im Marktplatz-Eintrag.
 
+## Erweitert: M8-Negationsantithese als Dichtebefund
+
+1. **Muster-ID, Name, Zweck:** Muster 8, `negation_antithesis_cluster`. Der Befund ergänzt
+   die bestehende lokale `negation_parallelism`-Prüfung um gehäufte Formen „nicht A,
+   sondern B“ und „A und nicht B“, ohne deren Kind oder Schwelle zu ändern.
+2. **Texttypen, Modi, ausgeschlossene Spans:** Aktiv in allen Texttypen und Modi. Code,
+   Inline-Code, Frontmatter, URLs, Markdown-/HTML-Syntax, Inline-Zitate und
+   Markdown-Hervorhebungen werden über die vorhandenen Scope- und Use-Mention-Mechanismen
+   ausgeblendet.
+3. **Erkennungslogik:** Zwei case-insensitive Regexe erfassen die beiden Formen mit
+   höchstens 80 Zeichen je Antithesenarm. „Nicht nur … sondern auch“ bleibt ausgeschlossen.
+   Offensichtliche beidseitige Zeit-, Datums- und Zahlkorrekturen zählen nicht.
+4. **Schwelle:** Warnung erst ab mindestens vier Treffern und mindestens 3,0 Treffern pro
+   1.000 Wörter. Im Repo-Korpus lag das Maximum bei einem Rohkandidaten pro Dokument. Fünf
+   Fachartikel von onlinemarketing.de ergaben 0/0/0/0/1 Kandidaten; das Maximum betrug 0,45
+   pro 1.000 Wörter. Der auslösende Praxistext lag bei 7/1.318 Wörtern = 5,31 pro 1.000.
+5. **Fixtures:**
+
+   | Typ | Textfamilie | Erwartung |
+   |---|---|---|
+   | Positiv | gemischter Cluster aus beiden Formen | neuer Dichtebefund |
+   | Positiv | vier pointierte „nicht A, sondern B“-Sätze | neuer Dichtebefund |
+   | Positiv | vier pointierte „A und nicht B“-Sätze | neuer Dichtebefund |
+   | Negativ | einzelne inhaltlich begründete Antithese | kein Befund |
+   | Negativ | vier eindeutige Wochentags-/Monatskorrekturen | kein Befund |
+   | Negativ | vier Treffer unterhalb der Dokumentdichte | kein Befund |
+   | Grenzfall | Cluster nur in Zitaten, Code und Hervorhebungen | kein Befund |
+   | Grenzfall | vier „nicht nur … sondern auch“-Korrelationen | kein Befund |
+
+6. **Fehlalarmfamilien:** Inhaltliche Abgrenzungen und sachliche Korrekturen sind
+   syntaktisch nicht allgemein von Pointen zu trennen. Automatisch ausgeschlossen wird nur
+   die sichere Teilmenge; das hohe Doppeltor lässt einzelne und dünn verteilte zulässige
+   Antithesen passieren. Dichte fachliche Abgrenzungen bleiben ein manueller Prüffall.
+7. **Severity, Meldung, Aktion:** `warning`; Evidenz enthält Zahl, Dichte, Textstellen und
+   Spans. Erlaubt ist die manuelle Funktionsprüfung, kein Auto-Rewrite.
+8. **Autorschaft:** Der Befund beschreibt eine Wiederholung im Text und erlaubt keine
+   Aussage darüber, ob ein Mensch oder ein Sprachmodell ihn verfasst hat.
+9. **Version und Begründung:** 2026-07-31, Arbeitsstand nach 5.10.7. Ein echter Fachbeitrag
+   enthielt sieben Vorkommen, vier davon im Schlussabschnitt; der bisherige Linter erfasste
+   ausschließlich direkt benachbarte Verneinungsanaphern.
+
 ## Präzisiert: `mixed_address` bei Inline-Zitaten
 
 1. **Name und Zweck:** Bestehender Registerbefund `mixed_address`, kein Katalogmuster.

@@ -72,6 +72,29 @@ NEGATION_PARALLELISM_RES = (
     re.compile(r"\b[Kk]eine?[nmrs]?\b[^,.;:!?\n]{1,45},\s*[Kk]eine?[nmrs]?\b"),
     re.compile(r"\b[Nn]icht\b[^,.;:!?\n]{1,45},\s*[Nn]icht\b"),
 )
+ANTITHESIS_RES = (
+    re.compile(
+        r"\bnicht\b(?!\s+nur\b)(?P<left>[^,.;:!?\n]{1,80}),\s*"
+        r"sondern\b(?P<right>[^,.;:!?\n]{1,80})",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"\b[0-9A-Za-zÄÖÜäöüß-]+\s+und\s+nicht\b(?!\s+nur\b)\s+"
+        r"[0-9A-Za-zÄÖÜäöüß-]+",
+        re.IGNORECASE,
+    ),
+)
+FACTUAL_CONTRAST_VALUE_RE = re.compile(
+    r"\s*(?:(?:am|im|um)\s+)?(?:"
+    r"montags?|dienstags?|mittwochs?|donnerstags?|freitags?|samstags?|sonntags?"
+    r"|januar|februar|märz|maerz|april|mai|juni|juli|august|september|oktober|november|dezember"
+    r"|heute|morgen|gestern|\d{1,4}(?:[:/-]\d{1,4})*(?:\s*uhr)?"
+    r")\s*",
+    re.IGNORECASE,
+)
+ANTITHESIS_CLUSTER_MIN_COUNT = 4
+ANTITHESIS_CLUSTER_MIN_PER_1000_WORDS = 3.0
+WORD_RE = re.compile(r"[0-9A-Za-zÄÖÜäöüß]+(?:[-'][0-9A-Za-zÄÖÜäöüß]+)?")
 BOLD_SPAN_RE = re.compile(r"\*\*[^*\n]{1,80}\*\*")
 BOLD_OVERDOSE_THRESHOLD = 5
 STELLT_DAR_RE = re.compile(
@@ -297,6 +320,43 @@ def lint(text: str, mode: str = "sachlich", precise: bool = False) -> dict:
                 "severity": "warning",
                 "evidence": evidence,
                 "spans": text_scope.serialize_spans([(start, end) for start, end, _ in negation_matches]),
+            }
+        )
+
+    antithesis_matches = sorted(
+        (
+            match.start(),
+            match.end(),
+            match.group().strip(),
+        )
+        for pattern in ANTITHESIS_RES
+        for match in pattern.finditer(clean_text)
+        if not in_mention(match.start(), mention_spans)
+        and not (
+            match.groupdict()
+            and FACTUAL_CONTRAST_VALUE_RE.fullmatch(match.group("left"))
+            and FACTUAL_CONTRAST_VALUE_RE.fullmatch(match.group("right"))
+        )
+    )
+    word_count = len(WORD_RE.findall(clean_text))
+    antithesis_density = len(antithesis_matches) * 1000 / word_count if word_count else 0.0
+    if (
+        len(antithesis_matches) >= ANTITHESIS_CLUSTER_MIN_COUNT
+        and antithesis_density >= ANTITHESIS_CLUSTER_MIN_PER_1000_WORDS
+    ):
+        findings.append(
+            {
+                "pattern": 8,
+                "kind": "negation_antithesis_cluster",
+                "severity": "warning",
+                "evidence": {
+                    "count": len(antithesis_matches),
+                    "per_1000_words": round(antithesis_density, 2),
+                    "matches": [matched_text for _, _, matched_text in antithesis_matches],
+                },
+                "spans": text_scope.serialize_spans(
+                    [(start, end) for start, end, _ in antithesis_matches]
+                ),
             }
         )
 
