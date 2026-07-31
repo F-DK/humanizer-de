@@ -169,7 +169,9 @@ def mention_ranges(text: str) -> tuple[tuple[int, int], ...]:
     patterns = [
         r"```.*?```",
         r"`[^`\n]+`",
-        r"\*[^*\n]+\*",
+        # Nachbar-Schutz: Sternchen in **Fettdruck** dürfen keine Spans
+        # öffnen oder schließen.
+        r"(?<!\*)\*(?!\*)[^*\n]+(?<!\*)\*(?!\*)",
         # Wortgrenzen-Schutz: Unterstriche in snake_case dürfen keine Spans
         # öffnen oder schließen.
         r"(?<!\w)_[^_\n]+_(?!\w)",

@@ -93,6 +93,14 @@ class GermanPatternLintTests(unittest.TestCase):
         self.assertIn("negation_parallelism", kinds(report))
         self.assertNotIn("negation_antithesis_cluster", kinds(report))
 
+    def test_negation_parallelism_between_bold_lead_ins(self):
+        text = "**Setup:** Kein Server, keine Datenbank. **Fazit:** einfach."
+        self.assertIn("negation_parallelism", kinds(german_pattern_lint.lint(text)))
+
+    def test_negation_parallelism_ignores_italic_use_mention(self):
+        text = "Im Beispiel steht: *Kein Server, keine Datenbank.*"
+        self.assertNotIn("negation_parallelism", kinds(german_pattern_lint.lint(text)))
+
     def test_negation_parallelism_ignores_factual_correction(self):
         text = "Ich will nicht Tee, sondern Kaffee."
         self.assertNotIn("negation_parallelism", kinds(german_pattern_lint.lint(text)))
