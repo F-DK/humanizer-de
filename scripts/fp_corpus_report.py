@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import argparse
 import importlib.util
-import json
 import sys
 from collections import Counter
 from pathlib import Path
@@ -17,7 +16,7 @@ SCRIPT_DIR = ROOT / "scripts"
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from cli_output import print_json, read_user_text
+from cli_output import handle_cli_input_errors, print_json, read_json_object, read_user_text
 
 
 def load_module(name: str):
@@ -55,7 +54,7 @@ def markdown_findings(path: Path, precise: bool) -> dict[str, int]:
 
 
 def evidence_findings(path: Path, precise: bool) -> dict[str, int]:
-    data = json.loads(path.read_text(encoding="utf-8"))
+    data = read_json_object(path, label="fixture", required=("before", "after"))
     counter: Counter[str] = Counter()
     count(evidence_lint.lint(data["before"], data["after"], precise=precise), counter)
     return dict(sorted(counter.items()))
@@ -96,6 +95,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
+@handle_cli_input_errors
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv or sys.argv[1:])
     try:

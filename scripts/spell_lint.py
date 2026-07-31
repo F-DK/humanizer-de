@@ -16,7 +16,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from cli_output import print_json, read_user_text, resolve_exit_code
+from cli_output import handle_cli_input_errors, print_json, read_user_text, require_file, resolve_exit_code
 
 
 DICTIONARY = "de_DE"
@@ -104,9 +104,13 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     after.add_argument("--after", help="After passage as inline text.")
     after.add_argument("--after-file", type=Path, help="Read after passage from file.")
     parser.add_argument("--fail-on", choices=["never", "blocker", "any"], default="never")
-    return parser.parse_args(argv)
+    args = parser.parse_args(argv)
+    require_file(parser, args.before_file, "--before-file")
+    require_file(parser, args.after_file, "--after-file")
+    return args
 
 
+@handle_cli_input_errors
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(sys.argv[1:] if argv is None else argv)
     before = load_text(args.before, args.before_file)

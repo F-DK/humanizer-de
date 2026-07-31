@@ -20,7 +20,7 @@ import rhythm_lint
 import style_profile
 import syntax_lint
 import unicode_lint
-from cli_output import print_json, read_user_text, resolve_exit_code
+from cli_output import handle_cli_input_errors, print_json, read_user_text, require_file, resolve_exit_code
 import text_scope
 
 
@@ -77,7 +77,10 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     )
     parser.add_argument("--precise", action="store_true", help="spaCy-gestützte Verfeinerung, wenn installiert; sonst wirkungslos")
     parser.add_argument("--fail-on", choices=["never", "blocker", "any"], default="never")
-    return parser.parse_args(argv)
+    args = parser.parse_args(argv)
+    require_file(parser, args.file, "--file")
+    require_file(parser, args.profile, "--profile")
+    return args
 
 
 def latest_markdown_file(directory: Path) -> Path:
@@ -98,8 +101,6 @@ def latest_markdown_file(directory: Path) -> Path:
 
 def input_path(args: argparse.Namespace) -> Path:
     if args.file:
-        if not args.file.is_file():
-            raise ValueError("--file requires an existing file")
         return args.file
     return latest_markdown_file(args.latest)
 
@@ -488,11 +489,9 @@ def format_markdown(report: dict) -> str:
     return "\n".join(lines)
 
 
+@handle_cli_input_errors
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv or sys.argv[1:])
-    if args.profile is not None and not args.profile.is_file():
-        print(f"error: --profile requires an existing file: {args.profile}", file=sys.stderr)
-        return 2
     profile_path = args.profile if args.profile is not None else style_profile.USER_PROFILE_PATH
     try:
         path = input_path(args)

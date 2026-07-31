@@ -17,6 +17,21 @@ spec.loader.exec_module(run_review_eval)
 
 
 class ScenarioContractTests(unittest.TestCase):
+    def assert_scenario_usage_error(self, scenario: dict, message: str) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            path = Path(tmp_dir) / "invalid.json"
+            path.write_text(json.dumps(scenario), encoding="utf-8")
+            proc = subprocess.run(
+                [sys.executable, str(SCRIPT), str(path)],
+                capture_output=True,
+                text=True,
+            )
+
+        self.assertEqual(proc.returncode, 2, proc.stderr)
+        self.assertIn("error:", proc.stderr)
+        self.assertIn(message, proc.stderr)
+        self.assertNotIn("Traceback", proc.stderr)
+
     def test_all_scenarios_have_required_contract_fields(self):
         files = run_review_eval.scenario_files(SCENARIOS)
         self.assertEqual(len(files), 27)
@@ -285,6 +300,35 @@ class ScenarioContractTests(unittest.TestCase):
         scenario = {"input": "Der Bericht liegt vor."}
         sample = {"text": "Das ist ja halt so."}
         self.assertEqual([], run_review_eval.style_profile_violations(scenario, sample))
+
+    def test_unknown_style_target_is_usage_error(self):
+        scenario = {
+            "id": 99,
+            "mode": "Sachlich",
+            "input": "Der Bericht liegt vor.",
+            "expected_behavior": [],
+            "quality_risks": [],
+            "output_contract": [],
+            "sample_outputs": [{"text": "Der Bericht liegt vor."}],
+            "style_profile_contract": {"target": "unbekannt"},
+        }
+        self.assert_scenario_usage_error(scenario, "unknown style target")
+
+    def test_contract_metric_without_corridor_is_usage_error(self):
+        scenario = {
+            "id": 99,
+            "mode": "Sachlich",
+            "input": "Der Bericht liegt vor.",
+            "expected_behavior": [],
+            "quality_risks": [],
+            "output_contract": [],
+            "sample_outputs": [{"text": "Der Bericht liegt vor."}],
+            "style_profile_contract": {
+                "target": "sachlich",
+                "required_in_range": ["connector_density"],
+            },
+        }
+        self.assert_scenario_usage_error(scenario, "has no corridor")
 
     def test_qgir_detector_wording_is_not_a_contract_violation(self):
         scenario = {

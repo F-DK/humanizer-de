@@ -15,7 +15,15 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from cli_output import print_json, read_user_text, resolve_exit_code
+from cli_output import (
+    CliInputError,
+    handle_cli_input_errors,
+    print_json,
+    read_json_object,
+    read_user_text,
+    require_file,
+    resolve_exit_code,
+)
 
 
 SYNTAX_SCRIPT = SCRIPT_DIR / "syntax_lint.py"
@@ -432,7 +440,11 @@ def write_ledger(text: str, path: Path, precise: bool = False) -> dict[str, set[
         "extraction_policy": policy,
         "anchors": serializable_anchors(before_anchors),
     }
-    path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    try:
+        path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    except OSError as error:
+        reason = error.strerror or str(error)
+        raise CliInputError(f"{path}: cannot write ledger: {reason}") from error
     return before_anchors
 
 
@@ -476,7 +488,7 @@ def load_ledger_document(path: Path) -> tuple[dict[str, set[str]], dict[str, str
 
 
 def check_fixture(path: Path, precise: bool = False) -> list[dict]:
-    data = json.loads(path.read_text(encoding="utf-8"))
+    data = read_json_object(path, label="fixture", required=("before", "after"))
     findings = lint(data["before"], data["after"], precise=precise)
     expected = data.get("expect_kinds")
     ok = True
@@ -505,6 +517,8 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--precise", action="store_true", help="spaCy-gestützte Verfeinerung, wenn installiert; sonst wirkungslos")
     parser.add_argument("--fail-on", choices=["never", "blocker", "any"], default="blocker")
     args = parser.parse_args(argv)
+    require_file(parser, args.before_file, "--before-file")
+    require_file(parser, args.after_file, "--after-file")
     if args.before is not None and args.before_file is not None:
         parser.error("--before and --before-file are mutually exclusive")
     if args.after is not None and args.after_file is not None:
@@ -533,6 +547,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     return args
 
 
+@handle_cli_input_errors
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv or sys.argv[1:])
     if args.fixture:

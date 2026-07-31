@@ -6,7 +6,6 @@ from __future__ import annotations
 import argparse
 import functools
 import importlib.util
-import json
 import re
 import sys
 from pathlib import Path
@@ -16,7 +15,14 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from cli_output import print_json, read_user_text, resolve_exit_code
+from cli_output import (
+    handle_cli_input_errors,
+    print_json,
+    read_json_object,
+    read_user_text,
+    require_file,
+    resolve_exit_code,
+)
 import evidence_lint
 import text_scope
 
@@ -431,7 +437,7 @@ def lint(text: str, mode: str = "sachlich", precise: bool = False) -> dict:
 
 
 def check_fixture(path: Path, precise: bool = False) -> dict:
-    data = json.loads(path.read_text(encoding="utf-8"))
+    data = read_json_object(path, label="fixture", required=("text",))
     report = lint(data["text"], mode=data.get("mode", "sachlich"), precise=precise)
     expected = set(data.get("expect_kinds", []))
     actual = {item["kind"] for item in report["findings"]}
@@ -448,6 +454,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--precise", action="store_true", help="spaCy-gestützte Verfeinerung, wenn installiert; sonst wirkungslos")
     parser.add_argument("--fail-on", choices=["never", "blocker", "any"], default="never")
     args = parser.parse_args(argv)
+    require_file(parser, args.file, "--file")
     if args.fixture:
         if not args.fixture.exists():
             parser.error(f"fixture path does not exist: {args.fixture}")
@@ -456,6 +463,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     return args
 
 
+@handle_cli_input_errors
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv or sys.argv[1:])
     if args.fixture:

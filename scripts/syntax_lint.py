@@ -16,7 +16,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from cli_output import print_json, read_user_text
+from cli_output import handle_cli_input_errors, print_json, read_user_text, require_file
 
 NOUN_POS = {"NOUN", "PROPN"}
 VERB_POS = {"VERB", "AUX"}
@@ -282,9 +282,12 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     source = parser.add_mutually_exclusive_group(required=True)
     source.add_argument("--text")
     source.add_argument("--file", type=Path)
-    return parser.parse_args(argv)
+    args = parser.parse_args(argv)
+    require_file(parser, args.file, "--file")
+    return args
 
 
+@handle_cli_input_errors
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(sys.argv[1:] if argv is None else argv)
     text = read_user_text(args.file) if args.file else args.text or ""

@@ -367,6 +367,26 @@ class EvidenceLintCliTests(unittest.TestCase):
         self.assertEqual(proc.returncode, 2)
         self.assertIn("no JSON fixture files found", proc.stderr)
 
+    def test_write_ledger_to_missing_directory_is_usage_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ledger_path = Path(tmp) / "missing" / "ledger.json"
+            proc = subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPT),
+                    "--before",
+                    "Der Bericht liegt vor.",
+                    "--write-ledger",
+                    str(ledger_path),
+                ],
+                capture_output=True,
+                text=True,
+            )
+
+        self.assertEqual(proc.returncode, 2, proc.stderr)
+        self.assertIn("error:", proc.stderr)
+        self.assertNotIn("Traceback", proc.stderr)
+
     def test_ledger_mode_rejects_extraction_policy_mismatch(self):
         before = "Wir arbeiten mit Mercedes."
         with tempfile.TemporaryDirectory() as tmp:

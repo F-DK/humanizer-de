@@ -21,7 +21,7 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 import text_scope
-from cli_output import print_json, read_user_text, resolve_exit_code
+from cli_output import handle_cli_input_errors, print_json, read_user_text, require_file, resolve_exit_code
 
 
 SUBJUNCTIONS = {
@@ -555,7 +555,9 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--mode", choices=["locker", "sachlich", "formal"], default="sachlich")
     parser.add_argument("--include-paragraphs", action="store_true", help="Print full paragraph-level diagnostics.")
     parser.add_argument("--fail-on", choices=["never", "blocker", "any"], default="never")
-    return parser.parse_args(argv)
+    args = parser.parse_args(argv)
+    require_file(parser, args.file, "--file")
+    return args
 
 
 def compact_cli_report(report: dict) -> dict:
@@ -568,6 +570,7 @@ def compact_cli_report(report: dict) -> dict:
     return compact
 
 
+@handle_cli_input_errors
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv or sys.argv[1:])
     if args.file:

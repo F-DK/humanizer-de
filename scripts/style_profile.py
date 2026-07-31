@@ -22,7 +22,7 @@ if str(SCRIPT_DIR) not in sys.path:
 import german_pattern_lint
 import register_lint
 import rhythm_lint
-from cli_output import print_json, read_user_text
+from cli_output import handle_cli_input_errors, print_json, read_user_text, require_file
 
 
 TARGETS_PATH = SCRIPT_DIR.parent / "references" / "style-targets.json"
@@ -206,14 +206,15 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         action="store_true",
         help="Ignore any user profile; use base targets only.",
     )
-    return parser.parse_args(argv)
+    args = parser.parse_args(argv)
+    require_file(parser, args.file, "--file")
+    require_file(parser, args.profile, "--profile")
+    return args
 
 
+@handle_cli_input_errors
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv or sys.argv[1:])
-    if args.profile is not None and not args.profile.is_file():
-        print(f"error: --profile requires an existing file: {args.profile}", file=sys.stderr)
-        return 2
     profile_path = args.profile if args.profile is not None else USER_PROFILE_PATH
     corridors = None
     overridden: frozenset = frozenset()

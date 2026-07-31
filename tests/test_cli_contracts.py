@@ -24,6 +24,11 @@ class CliContractTests(unittest.TestCase):
         self.assertEqual(proc.returncode, 0, proc.stderr)
         return json.loads(proc.stdout)
 
+    def assert_usage_error(self, proc: subprocess.CompletedProcess[str]) -> None:
+        self.assertEqual(proc.returncode, 2, proc.stderr)
+        self.assertIn("error:", proc.stderr)
+        self.assertNotIn("Traceback", proc.stderr)
+
     def without_offsets_or_paths(self, value):
         if isinstance(value, dict):
             return {
@@ -60,6 +65,89 @@ class CliContractTests(unittest.TestCase):
                     proc = self.run_script(name, "--fixture", tmp)
                     self.assertEqual(proc.returncode, 2)
                     self.assertIn("contains no JSON files", proc.stderr)
+
+    def test_non_utf8_user_files_are_usage_errors(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            latin1 = root / "latin1.md"
+            latin1.write_bytes(b"Der Text ist sch\xf6n und gut.\n")
+            corpus = root / "corpus"
+            corpus.mkdir()
+            (corpus / "latin1.md").write_bytes(latin1.read_bytes())
+            commands = (
+                ("register_lint.py", "--file", str(latin1)),
+                ("rhythm_lint.py", "--file", str(latin1)),
+                ("syntax_lint.py", "--file", str(latin1)),
+                ("unicode_lint.py", "--file", str(latin1)),
+                ("style_profile.py", "--file", str(latin1)),
+                ("german_pattern_lint.py", "--file", str(latin1)),
+                ("humanizer_audit.py", "--file", str(latin1)),
+                (
+                    "spell_lint.py",
+                    "--before-file",
+                    str(latin1),
+                    "--after-file",
+                    str(latin1),
+                ),
+                (
+                    "evidence_lint.py",
+                    "--before-file",
+                    str(latin1),
+                    "--after-file",
+                    str(latin1),
+                ),
+                ("fp_corpus_report.py", "--corpus-dir", str(corpus)),
+            )
+
+            for command in commands:
+                with self.subTest(script=command[0]):
+                    self.assert_usage_error(self.run_script(*command))
+
+    def test_missing_and_directory_file_arguments_are_usage_errors(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            missing = str(Path(tmp) / "missing.md")
+            for value in (missing, tmp):
+                commands = (
+                    ("register_lint.py", "--file", value),
+                    ("rhythm_lint.py", "--file", value),
+                    ("syntax_lint.py", "--file", value),
+                    ("unicode_lint.py", "--file", value),
+                    ("style_profile.py", "--file", value),
+                    ("german_pattern_lint.py", "--file", value),
+                    ("humanizer_audit.py", "--file", value),
+                )
+                for command in commands:
+                    with self.subTest(script=command[0], value=value):
+                        self.assert_usage_error(self.run_script(*command))
+
+    def test_malformed_fixture_json_is_usage_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Path(tmp) / "malformed.json"
+            fixture.write_text("{", encoding="utf-8")
+            for name in ("register_lint.py", "german_pattern_lint.py", "evidence_lint.py"):
+                with self.subTest(script=name):
+                    self.assert_usage_error(self.run_script(name, "--fixture", str(fixture)))
+
+    def test_fixture_entry_missing_text_is_usage_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Path(tmp) / "missing-text.json"
+            fixture.write_text("{}", encoding="utf-8")
+            for name in ("register_lint.py", "german_pattern_lint.py"):
+                with self.subTest(script=name):
+                    self.assert_usage_error(self.run_script(name, "--fixture", str(fixture)))
+
+    def test_genuine_fixture_expectation_mismatch_exits_one(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Path(tmp) / "mismatch.json"
+            fixture.write_text(
+                json.dumps({"text": "Ein kurzer Text.", "expect_kinds": ["mixed_address"]}),
+                encoding="utf-8",
+            )
+            proc = self.run_script("register_lint.py", "--fixture", str(fixture))
+
+        self.assertEqual(proc.returncode, 1, proc.stderr)
+        self.assertNotIn("error:", proc.stderr)
+        self.assertNotIn("Traceback", proc.stderr)
 
     def test_crlf_fixture_spans_round_trip_against_raw_text(self):
         raw = "Hallo Leser.\r\nHier sprichst du mit uns.\r\nDann kommen Sie vorbei.\r\n"

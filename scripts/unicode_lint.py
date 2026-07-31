@@ -16,7 +16,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from cli_output import print_json, read_user_text, resolve_exit_code
+from cli_output import handle_cli_input_errors, print_json, read_user_text, require_file, resolve_exit_code
 import text_scope
 
 
@@ -316,11 +316,13 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--write", action="store_true", help="Write fixed text back to --file. Requires --fix.")
     parser.add_argument("--fail-on", choices=["never", "blocker", "any"], default="any")
     args = parser.parse_args(argv)
+    require_file(parser, args.file, "--file")
     if args.write and (not args.fix or not args.file):
         parser.error("--write requires --fix and --file")
     return args
 
 
+@handle_cli_input_errors
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv or sys.argv[1:])
     text = args.text if args.text is not None else read_user_text(args.file)

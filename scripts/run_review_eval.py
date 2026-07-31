@@ -260,7 +260,11 @@ def style_profile_violations(scenario: dict, sample: dict) -> list[str]:
 
     violations: list[str] = []
     output = sample_output(sample)
-    corridors = style_profile.load_targets()[contract["target"]]
+    target = contract.get("target")
+    targets = style_profile.load_targets()
+    if target not in targets:
+        raise ValueError(f"unknown style target: {target!r}")
+    corridors = targets[target]
     report = style_profile.delta(style_profile.profile(output, "<sample>")["metrics"], corridors)
 
     max_out_of_range = contract.get("max_out_of_range")
@@ -270,6 +274,8 @@ def style_profile_violations(scenario: dict, sample: dict) -> list[str]:
             violations.append("profile_out_of_range")
 
     for metric in contract.get("required_in_range", []):
+        if metric not in report:
+            raise ValueError(f"style target {target!r} has no corridor for metric: {metric!r}")
         if not report[metric]["in_range"]:
             violations.append("profile_required_metric_failed")
             break
