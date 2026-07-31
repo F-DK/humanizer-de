@@ -55,10 +55,12 @@ im Marktplatz-Eintrag.
 2. **Texttypen, Modi, ausgeschlossene Spans:** Aktiv in allen Texttypen und Modi. Code,
    Inline-Code, Frontmatter, URLs, Markdown-/HTML-Syntax, Inline-Zitate und
    Markdown-Hervorhebungen werden über die vorhandenen Scope- und Use-Mention-Mechanismen
-   ausgeblendet.
+   ausgeblendet. Auch Treffer, die einen solchen Span nur teilweise überlappen, zählen nicht.
 3. **Erkennungslogik:** Zwei case-insensitive Regexe erfassen die beiden Formen mit
-   höchstens 80 Zeichen je Antithesenarm. „Nicht nur … sondern auch“ bleibt ausgeschlossen.
-   Offensichtliche beidseitige Zeit-, Datums- und Zahlkorrekturen zählen nicht.
+   höchstens 80 Zeichen je Antithesenarm. Überlappende Treffer der beiden Regexe zählen
+   einmal. „Nicht nur … sondern auch“ bleibt ausgeschlossen.
+   Offensichtliche beidseitige Zeit-, Datums- und Zahlkorrekturen einschließlich geläufiger
+   Einheiten sowie Monat-Jahr-Angaben zählen nicht.
 4. **Schwelle:** Warnung erst ab mindestens vier Treffern und mindestens 3,0 Treffern pro
    1.000 Wörter. Im Repo-Korpus lag das Maximum bei einem Rohkandidaten pro Dokument. Fünf
    Fachartikel von onlinemarketing.de ergaben 0/0/0/0/1 Kandidaten; das Maximum betrug 0,45
@@ -72,8 +74,11 @@ im Marktplatz-Eintrag.
    | Positiv | vier pointierte „A und nicht B“-Sätze | neuer Dichtebefund |
    | Negativ | einzelne inhaltlich begründete Antithese | kein Befund |
    | Negativ | vier eindeutige Wochentags-/Monatskorrekturen | kein Befund |
+   | Negativ | vier Zahlkorrekturen mit Einheiten oder Monat-Jahr-Angaben | kein Befund |
    | Negativ | vier Treffer unterhalb der Dokumentdichte | kein Befund |
    | Grenzfall | Cluster nur in Zitaten, Code und Hervorhebungen | kein Befund |
+   | Grenzfall | Schutzspan nur in einem Antithesenarm | kein Befund |
+   | Grenzfall | zwei Sätze mit je zwei überlappenden Formen | zwei statt vier Treffer, kein Befund |
    | Grenzfall | vier „nicht nur … sondern auch“-Korrelationen | kein Befund |
 
 6. **Fehlalarmfamilien:** Inhaltliche Abgrenzungen und sachliche Korrekturen sind
@@ -84,7 +89,7 @@ im Marktplatz-Eintrag.
    Spans. Erlaubt ist die manuelle Funktionsprüfung, kein Auto-Rewrite.
 8. **Autorschaft:** Der Befund beschreibt eine Wiederholung im Text und erlaubt keine
    Aussage darüber, ob ein Mensch oder ein Sprachmodell ihn verfasst hat.
-9. **Version und Begründung:** 2026-07-31, Arbeitsstand nach 5.10.7. Ein echter Fachbeitrag
+9. **Version und Begründung:** 2026-07-31, Version 5.11.0. Ein echter Fachbeitrag
    enthielt sieben Vorkommen, vier davon im Schlussabschnitt; der bisherige Linter erfasste
    ausschließlich direkt benachbarte Verneinungsanaphern.
 

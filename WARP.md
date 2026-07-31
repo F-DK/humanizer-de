@@ -1,4 +1,4 @@
-# WARP - Humanizer (Deutsch) Entwicklerleitfaden (v5.10.7)
+# WARP - Humanizer (Deutsch) Entwicklerleitfaden (v5.11.0)
 
 WARP = Workflow, Architecture, References, Principles.
 

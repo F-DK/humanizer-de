@@ -139,6 +139,19 @@ class GermanPatternLintTests(unittest.TestCase):
         )
         self.assertNotIn("negation_antithesis_cluster", kinds(german_pattern_lint.lint(text)))
 
+    def test_negation_antithesis_cluster_ignores_unit_and_month_year_corrections(self):
+        for text in (
+            "Nicht 10 Prozent, sondern 12 Prozent. " * 4,
+            "Nicht 10 Euro, sondern 12 Euro. " * 4,
+            "Nicht 10 Minuten, sondern 12 Minuten. " * 4,
+            "Nicht 10 Kilogramm, sondern 12 Kilogramm. " * 4,
+            "Nicht 10 Meter, sondern 12 Meter. " * 4,
+            "Nicht 10 Gigabyte, sondern 12 Gigabyte. " * 4,
+            "Nicht Juli 2025, sondern August 2025. " * 4,
+        ):
+            with self.subTest(text=text):
+                self.assertNotIn("negation_antithesis_cluster", kinds(german_pattern_lint.lint(text)))
+
     def test_negation_antithesis_cluster_ignores_low_document_density(self):
         text = "Wort " * 1400 + (
             "Nicht abwarten, sondern machen. Nicht erklären, sondern liefern. "
@@ -153,6 +166,34 @@ class GermanPatternLintTests(unittest.TestCase):
             "*nicht verwalten, sondern gestalten* und "
             "_laut und nicht leise_ werden nur zitiert."
         )
+        self.assertNotIn("negation_antithesis_cluster", kinds(german_pattern_lint.lint(text)))
+
+    def test_negation_antithesis_cluster_ignores_shared_quote_pairs(self):
+        for opener, closer in (("«", "»"), ("“", "”")):
+            text = " ".join(
+                f"Im Beispiel steht {opener}{example}{closer}."
+                for example in (
+                    "nicht abwarten, sondern machen",
+                    "nicht erklären, sondern liefern",
+                    "nicht verwalten, sondern gestalten",
+                    "laut und nicht leise",
+                )
+            )
+            with self.subTest(opener=opener):
+                self.assertNotIn("negation_antithesis_cluster", kinds(german_pattern_lint.lint(text)))
+
+    def test_negation_antithesis_cluster_ignores_partially_protected_arms(self):
+        for text in (
+            "Nicht `abwarten`, sondern machen. " * 4,
+            "Nicht «abwarten», sondern machen. " * 4,
+            "Nicht https://example.com, sondern lokal. " * 4,
+            "Nicht <code>remote</code>, sondern lokal. " * 4,
+        ):
+            with self.subTest(text=text):
+                self.assertNotIn("negation_antithesis_cluster", kinds(german_pattern_lint.lint(text)))
+
+    def test_negation_antithesis_cluster_counts_overlapping_forms_once(self):
+        text = "Nicht laut und nicht leise, sondern klar. " * 2
         self.assertNotIn("negation_antithesis_cluster", kinds(german_pattern_lint.lint(text)))
 
     def test_negation_antithesis_cluster_ignores_not_only_correlatives(self):

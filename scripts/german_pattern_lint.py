@@ -17,6 +17,7 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 from cli_output import print_json, resolve_exit_code
+import evidence_lint
 import text_scope
 
 
@@ -87,8 +88,10 @@ ANTITHESIS_RES = (
 FACTUAL_CONTRAST_VALUE_RE = re.compile(
     r"\s*(?:(?:am|im|um)\s+)?(?:"
     r"montags?|dienstags?|mittwochs?|donnerstags?|freitags?|samstags?|sonntags?"
-    r"|januar|februar|märz|maerz|april|mai|juni|juli|august|september|oktober|november|dezember"
-    r"|heute|morgen|gestern|\d{1,4}(?:[:/-]\d{1,4})*(?:\s*uhr)?"
+    r"|(?:januar|februar|märz|maerz|april|mai|juni|juli|august|september|oktober|november|dezember)"
+    r"(?:\s+\d{4})?"
+    r"|heute|morgen|gestern|\d{1,4}(?:[:/-]\d{1,4})*"
+    r"(?:\s*(?:[%€]|[A-Za-zÄÖÜäöüß]{1,20}\.?)(?:/[A-Za-zÄÖÜäöüß]{1,10})?)?"
     r")\s*",
     re.IGNORECASE,
 )
@@ -158,17 +161,17 @@ def marker_stem(marker: str) -> str:
 
 @functools.lru_cache(maxsize=8)
 def mention_ranges(text: str) -> tuple[tuple[int, int], ...]:
-    ranges: list[tuple[int, int]] = []
+    ranges = [
+        match.span()
+        for pattern in evidence_lint.VALID_QUOTE_PATTERNS
+        for match in pattern.finditer(text)
+    ]
     patterns = [
         r"```.*?```",
         r"`[^`\n]+`",
-        r"„[^“\n]+“",
-        r"‚[^‘\n]+‘",
-        r'"[^"\n]+"',
-        # Wortgrenzen-Schutz: Apostrophe in Kontraktionen („gibt's") und
-        # Unterstriche in snake_case dürfen keine Spans öffnen/schließen.
-        r"(?<!\w)'[^'\n]+'(?!\w)",
         r"\*[^*\n]+\*",
+        # Wortgrenzen-Schutz: Unterstriche in snake_case dürfen keine Spans
+        # öffnen oder schließen.
         r"(?<!\w)_[^_\n]+_(?!\w)",
     ]
     for pattern in patterns:
@@ -180,6 +183,10 @@ def mention_ranges(text: str) -> tuple[tuple[int, int], ...]:
 
 def in_mention(index: int, ranges: tuple[tuple[int, int], ...]) -> bool:
     return any(start <= index < end for start, end in ranges)
+
+
+def overlaps_mention(start: int, end: int, ranges: tuple[tuple[int, int], ...]) -> bool:
+    return any(start < mention_end and end > mention_start for mention_start, mention_end in ranges)
 
 
 def marker_spans(text: str, marker: str) -> list[tuple[int, int]]:
@@ -300,7 +307,11 @@ def lint(text: str, mode: str = "sachlich", precise: bool = False) -> dict:
             }
         )
 
-    mention_spans = mention_ranges(clean_text)
+    excluded_spans = tuple(
+        text_scope.merge_ranges(
+            [*text_scope.protected_ranges(text), *mention_ranges(text)]
+        )
+    )
     negation_matches = sorted(
         (
             match.start(),
@@ -309,7 +320,7 @@ def lint(text: str, mode: str = "sachlich", precise: bool = False) -> dict:
         )
         for pattern in NEGATION_PARALLELISM_RES
         for match in pattern.finditer(clean_text)
-        if not in_mention(match.start(), mention_spans)
+        if not in_mention(match.start(), excluded_spans)
     )
     evidence = [matched_text for _, _, matched_text in negation_matches]
     if evidence:
@@ -323,7 +334,7 @@ def lint(text: str, mode: str = "sachlich", precise: bool = False) -> dict:
             }
         )
 
-    antithesis_matches = sorted(
+    antithesis_candidates = sorted(
         (
             match.start(),
             match.end(),
@@ -331,13 +342,20 @@ def lint(text: str, mode: str = "sachlich", precise: bool = False) -> dict:
         )
         for pattern in ANTITHESIS_RES
         for match in pattern.finditer(clean_text)
-        if not in_mention(match.start(), mention_spans)
+        if not overlaps_mention(match.start(), match.end(), excluded_spans)
         and not (
             match.groupdict()
             and FACTUAL_CONTRAST_VALUE_RE.fullmatch(match.group("left"))
             and FACTUAL_CONTRAST_VALUE_RE.fullmatch(match.group("right"))
         )
     )
+    antithesis_matches = []
+    covered_until = -1
+    for candidate in antithesis_candidates:
+        start, end, _ = candidate
+        if start >= covered_until:
+            antithesis_matches.append(candidate)
+        covered_until = max(covered_until, end)
     word_count = len(WORD_RE.findall(clean_text))
     antithesis_density = len(antithesis_matches) * 1000 / word_count if word_count else 0.0
     if (
@@ -381,7 +399,7 @@ def lint(text: str, mode: str = "sachlich", precise: bool = False) -> dict:
     address_validation_matches = [
         match
         for match in ADDRESS_VALIDATION_RE.finditer(clean_text)
-        if not in_mention(match.start(), mention_spans)
+        if not in_mention(match.start(), excluded_spans)
     ]
     if address_validation_matches:
         findings.append(

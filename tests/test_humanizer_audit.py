@@ -282,6 +282,27 @@ class HumanizerAuditTests(unittest.TestCase):
         self.assertEqual(driver["detail"], "max_connector_density_per_paragraph=2")
         self.assertEqual(driver["weight"], 1)
 
+    def test_negation_antithesis_cluster_contributes_to_preflight(self):
+        text = (
+            "Nicht abwarten, sondern machen. Der Plan ist mutig und nicht vorsichtig. "
+            "Wir sollten nicht erklären, sondern liefern. Die Antwort bleibt klar und nicht beliebig. "
+            "Kurz danach beginnt die Prüfung. Eine ausführliche Diskussion mit allen Beteiligten "
+            "klärt anschließend die offenen fachlichen Fragen. Am Ende steht ein Befund. "
+            "Nach der Freigabe liest jemand sämtliche Verweise noch einmal sorgfältig. "
+            "Später endet die Arbeit."
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "text.md"
+            path.write_text(text, encoding="utf-8")
+
+            exit_code, report = run_json(["--file", str(path)])
+
+        self.assertEqual(exit_code, 0)
+        preflight = report["summary"]["preflight"]
+        driver = next(item for item in preflight["drivers"] if item["kind"] == "negation_antithesis_cluster")
+        self.assertEqual(driver["weight"], 2)
+        self.assertIn(preflight["risk"], {"medium", "high"})
+
     def test_markdown_format_is_compact_and_grouped(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "text.md"

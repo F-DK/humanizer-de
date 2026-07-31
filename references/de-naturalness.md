@@ -25,14 +25,14 @@ Diese Karten operationalisieren die Muster 7, 8, 13, 45, 54, 55, 58, 60, 63, 64 
 
 ## 7 Dichotomie-Zuspitzung
 
-- Signal: Sätze oder Absatzschlüsse als „nicht X, sondern Y“-Zuspitzung, gehäuft oder als wiederkehrende Pointe. Kein Detektor — bewusst nur Urteil, weil die Konstruktion normales Deutsch ist.
+- Signal: Sätze oder Absatzschlüsse als „nicht X, sondern Y“-Zuspitzung, gehäuft oder als wiederkehrende Pointe. Die Einzelkonstruktion bleibt bewusst Urteil; nur ein dichtes Dokumentcluster läuft als M8-Befund.
 - Schlechter Reflex: jede „nicht X, sondern Y“-Konstruktion umschreiben.
 - Sicherer Eingriff: nur die gehäufte oder pointierende Wiederholung auflösen und als normale Aussage führen; eine einzelne Gegenüberstellung stehen lassen.
 - Nicht anfassen: echte Sachkorrektur („nicht Montag, sondern Dienstag“), einzelner sachlicher Kontrast.
 
 ## 8 Negative Parallelismen
 
-- Signal: gepaarte Verneinungsreihen „kein X, kein Y (, nur Z)“ oder „nicht X, nicht Y“ als Rhythmus- oder Pointenmittel. `german_pattern_lint` meldet `negation_parallelism`.
+- Signal: gepaarte Verneinungsreihen „kein X, kein Y (, nur Z)“ oder „nicht X, nicht Y“ als Rhythmus- oder Pointenmittel. `german_pattern_lint` meldet `negation_parallelism`; dichte Cluster aus „nicht A, sondern B“ oder „A und nicht B“ meldet er als `negation_antithesis_cluster`.
 - Schlechter Reflex: jede Verneinung tilgen.
 - Sicherer Eingriff: die parallele Reihung in eine normale Aussage auflösen; eine Verneinung genügt meist.
 - Nicht anfassen: einzelne Verneinung, „nicht X, sondern Y“-Sachkorrektur, belegte Aufzählung.
