@@ -73,6 +73,16 @@ NEGATION_PARALLELISM_RES = (
     re.compile(r"\b[Kk]eine?[nmrs]?\b[^,.;:!?\n]{1,45},\s*[Kk]eine?[nmrs]?\b"),
     re.compile(r"\b[Nn]icht\b[^,.;:!?\n]{1,45},\s*[Nn]icht\b"),
 )
+FACTUAL_CONTRAST_VALUE_PATTERN = (
+    r"(?:(?:am|im|um)\s+)?(?:"
+    r"montags?|dienstags?|mittwochs?|donnerstags?|freitags?|samstags?|sonntags?"
+    r"|(?:januar|februar|märz|maerz|april|mai|juni|juli|august|september|oktober|november|dezember)"
+    r"(?:\s+\d{4})?"
+    r"|heute|morgen|gestern|\d{1,4}(?:[:/-]\d{1,4})*"
+    r"(?:\s*(?:[%€]|[A-Za-zÄÖÜäöüß]{1,20}\.?)(?:/[A-Za-zÄÖÜäöüß]{1,10})?)?"
+    r")"
+)
+ANTITHESIS_OPERAND_PATTERN = rf"(?:{FACTUAL_CONTRAST_VALUE_PATTERN}|[0-9A-Za-zÄÖÜäöüß-]+)"
 ANTITHESIS_RES = (
     re.compile(
         r"\bnicht\b(?!\s+nur\b)(?P<left>[^,.;:!?\n]{1,80}),\s*"
@@ -80,19 +90,13 @@ ANTITHESIS_RES = (
         re.IGNORECASE,
     ),
     re.compile(
-        r"\b[0-9A-Za-zÄÖÜäöüß-]+\s+und\s+nicht\b(?!\s+nur\b)\s+"
-        r"[0-9A-Za-zÄÖÜäöüß-]+",
+        rf"\b(?P<left>{ANTITHESIS_OPERAND_PATTERN})\s+und\s+"
+        rf"nicht\b(?!\s+nur\b)\s+(?P<right>{ANTITHESIS_OPERAND_PATTERN})",
         re.IGNORECASE,
     ),
 )
 FACTUAL_CONTRAST_VALUE_RE = re.compile(
-    r"\s*(?:(?:am|im|um)\s+)?(?:"
-    r"montags?|dienstags?|mittwochs?|donnerstags?|freitags?|samstags?|sonntags?"
-    r"|(?:januar|februar|märz|maerz|april|mai|juni|juli|august|september|oktober|november|dezember)"
-    r"(?:\s+\d{4})?"
-    r"|heute|morgen|gestern|\d{1,4}(?:[:/-]\d{1,4})*"
-    r"(?:\s*(?:[%€]|[A-Za-zÄÖÜäöüß]{1,20}\.?)(?:/[A-Za-zÄÖÜäöüß]{1,10})?)?"
-    r")\s*",
+    rf"\s*{FACTUAL_CONTRAST_VALUE_PATTERN}\s*",
     re.IGNORECASE,
 )
 ANTITHESIS_CLUSTER_MIN_COUNT = 4
@@ -346,7 +350,7 @@ def lint(text: str, mode: str = "sachlich", precise: bool = False) -> dict:
         for match in pattern.finditer(clean_text)
         if not overlaps_mention(match.start(), match.end(), excluded_spans)
         and not (
-            match.groupdict()
+            {"left", "right"} <= match.groupdict().keys()
             and FACTUAL_CONTRAST_VALUE_RE.fullmatch(match.group("left"))
             and FACTUAL_CONTRAST_VALUE_RE.fullmatch(match.group("right"))
         )

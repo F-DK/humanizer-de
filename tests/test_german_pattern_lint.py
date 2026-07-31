@@ -134,6 +134,24 @@ class GermanPatternLintTests(unittest.TestCase):
         )
         self.assertIn("negation_antithesis_cluster", kinds(german_pattern_lint.lint(text)))
 
+    def test_negation_antithesis_cluster_keeps_rhetorical_and_not_matches(self):
+        text = (
+            "Die Richtung bleibt vorwärts und nicht rückwärts. "
+            "Die Antwort wirkt ehrlich und nicht taktisch. "
+            "Der Ton ist mutig und nicht zaghaft. Die Lösung bleibt offen und nicht starr."
+        )
+        report = german_pattern_lint.lint(text)
+        finding = next(item for item in report["findings"] if item["kind"] == "negation_antithesis_cluster")
+        self.assertEqual(
+            finding["evidence"]["matches"],
+            [
+                "vorwärts und nicht rückwärts",
+                "ehrlich und nicht taktisch",
+                "mutig und nicht zaghaft",
+                "offen und nicht starr",
+            ],
+        )
+
     def test_negation_antithesis_cluster_ignores_single_substantive_contrast(self):
         text = "Die Auswertung bewertet nicht die Person, sondern das Verfahren."
         self.assertNotIn("negation_antithesis_cluster", kinds(german_pattern_lint.lint(text)))
@@ -147,6 +165,15 @@ class GermanPatternLintTests(unittest.TestCase):
         )
         self.assertNotIn("negation_antithesis_cluster", kinds(german_pattern_lint.lint(text)))
 
+    def test_negation_antithesis_cluster_ignores_and_not_weekday_corrections(self):
+        text = (
+            "Der Termin ist Montag und nicht Dienstag. "
+            "Die Abgabe ist Mittwoch und nicht Donnerstag. "
+            "Das Treffen ist Freitag und nicht Samstag. "
+            "Der Monat ist Januar und nicht Februar."
+        )
+        self.assertNotIn("negation_antithesis_cluster", kinds(german_pattern_lint.lint(text)))
+
     def test_negation_antithesis_cluster_ignores_unit_and_month_year_corrections(self):
         for text in (
             "Nicht 10 Prozent, sondern 12 Prozent. " * 4,
@@ -156,6 +183,20 @@ class GermanPatternLintTests(unittest.TestCase):
             "Nicht 10 Meter, sondern 12 Meter. " * 4,
             "Nicht 10 Gigabyte, sondern 12 Gigabyte. " * 4,
             "Nicht Juli 2025, sondern August 2025. " * 4,
+        ):
+            with self.subTest(text=text):
+                self.assertNotIn("negation_antithesis_cluster", kinds(german_pattern_lint.lint(text)))
+
+    def test_negation_antithesis_cluster_ignores_and_not_unit_month_and_number_corrections(self):
+        for text in (
+            "Wir liefern 10 Prozent und nicht 12 Prozent. " * 4,
+            "Wir berechnen 10 Euro und nicht 12 Euro. " * 4,
+            "Wir planen 10 Minuten und nicht 12 Minuten. " * 4,
+            "Wir wiegen 10 Kilogramm und nicht 12 Kilogramm. " * 4,
+            "Wir messen 10 Meter und nicht 12 Meter. " * 4,
+            "Wir speichern 10 Gigabyte und nicht 12 Gigabyte. " * 4,
+            "Wir planen Juli 2025 und nicht August 2025. " * 4,
+            "Der Wert ist 10 und nicht 12. " * 4,
         ):
             with self.subTest(text=text):
                 self.assertNotIn("negation_antithesis_cluster", kinds(german_pattern_lint.lint(text)))
