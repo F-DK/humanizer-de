@@ -26,6 +26,14 @@ def run_cli(argv):
 
 
 class RhythmLintTests(unittest.TestCase):
+    def test_tokens_keep_unicode_words_and_existing_joiner_semantics(self):
+        text = "Résumé Émile Première Café Erdoğan Škoda Ørsted Nord-Süd-Achse gibt's"
+
+        self.assertEqual(
+            rhythm_lint.tokens(text),
+            ["Résumé", "Émile", "Première", "Café", "Erdoğan", "Škoda", "Ørsted", "Nord-Süd", "Achse", "gibt's"],
+        )
+
     def test_sentence_split_does_not_mask_words_ending_like_abbreviations(self):
         text = "Das ist ein Haus. Danach geht es nach Mallorca. Anschließend folgt der Schluss."
 

@@ -29,6 +29,14 @@ SPACY_MODEL_AVAILABLE = spacy_model_available()
 
 
 class GermanPatternLintTests(unittest.TestCase):
+    def test_word_regex_keeps_unicode_words_and_existing_joiner_semantics(self):
+        text = "Résumé Émile Première Café Erdoğan Škoda Ørsted Nord-Süd-Achse gibt's"
+
+        self.assertEqual(
+            german_pattern_lint.WORD_RE.findall(text),
+            ["Résumé", "Émile", "Première", "Café", "Erdoğan", "Škoda", "Ørsted", "Nord-Süd", "Achse", "gibt's"],
+        )
+
     def test_ai_marker_cluster(self):
         text = "Der Text beleuchtet das vielschichtige Zusammenspiel in einer dynamischen Landschaft."
         self.assertIn("ai_marker_cluster", kinds(german_pattern_lint.lint(text)))

@@ -147,7 +147,7 @@ MONTH_DATE_RE = re.compile(
 )
 DECIMAL_RE = re.compile(r"\b(\d+)\.(\d+)\b")
 
-WORD_RE = re.compile(r"[A-Za-zÄÖÜäöüß0-9]+(?:[-'][A-Za-zÄÖÜäöüß0-9]+)?")
+WORD_RE = re.compile(r"[^\W_]+(?:[-'][^\W_]+)?")
 CLAUSE_PUNCT_RE = re.compile(r"[,;:()]")
 DOT = "<RH_DOT>"
 SENTENCE_BREAK = "<RH_SENTENCE_BREAK>"

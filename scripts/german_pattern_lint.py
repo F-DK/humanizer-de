@@ -107,7 +107,7 @@ FACTUAL_CONTRAST_VALUE_RE = re.compile(
 )
 ANTITHESIS_CLUSTER_MIN_COUNT = 4
 ANTITHESIS_CLUSTER_MIN_PER_1000_WORDS = 3.0
-WORD_RE = re.compile(r"[0-9A-Za-zÄÖÜäöüß]+(?:[-'][0-9A-Za-zÄÖÜäöüß]+)?")
+WORD_RE = re.compile(r"[^\W_]+(?:[-'][^\W_]+)?")
 BOLD_SPAN_RE = re.compile(r"\*\*[^*\r\n]{1,80}\*\*")
 BOLD_OVERDOSE_THRESHOLD = 5
 STELLT_DAR_RE = re.compile(
