@@ -877,7 +877,7 @@ python3 scripts/syntax_lint.py --file <text.md>
 ### Exit-Codes
 
 Alle Scripts folgen der Konvention `0` = ok, `1` = Findings gemäß Fail-Schwelle bzw. Fixture-/Eval-Mismatch, `2` = Aufruffehler (falsche Argumente). Die Fail-Schwelle unterscheidet sich bewusst je Script:
-`--fail-on {never,blocker,any}` übersteuert die Fail-Schwelle pro Aufruf, die Defaults bleiben unverändert; das Flag haben alle Scripts der Tabelle außer `syntax_lint.py` (reine Messstufe), `run_review_eval.py` und `doctor.py`, das stattdessen `--require-full` kennt.
+`--fail-on` übersteuert die Fail-Schwelle pro Aufruf; die Defaults bleiben unverändert. Blocker kennen nur `register_lint.py`, `evidence_lint.py` und `humanizer_audit.py`, deshalb akzeptieren allein sie `{never,blocker,any}`. Für `unicode_lint.py`, `rhythm_lint.py`, `german_pattern_lint.py` und `spell_lint.py` gilt `{never,any}`; ein `blocker` dort wäre eine Schwelle, die nie greift, und wird als Aufruffehler abgewiesen. Ohne das Flag arbeiten `syntax_lint.py` (reine Messstufe) und `run_review_eval.py`; `doctor.py` kennt stattdessen `--require-full`.
 
 | Script | Exit `1` bei |
 |---|---|

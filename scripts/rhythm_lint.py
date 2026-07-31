@@ -554,7 +554,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--scope", choices=["skill_doc", "user_text", "changed_passages"], default="user_text")
     parser.add_argument("--mode", choices=["locker", "sachlich", "formal"], default="sachlich")
     parser.add_argument("--include-paragraphs", action="store_true", help="Print full paragraph-level diagnostics.")
-    parser.add_argument("--fail-on", choices=["never", "blocker", "any"], default="never")
+    parser.add_argument("--fail-on", choices=["never", "any"], default="never")
     args = parser.parse_args(argv)
     require_file(parser, args.file, "--file")
     return args

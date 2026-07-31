@@ -196,6 +196,65 @@ class ExitCodeTests(unittest.TestCase):
         self.assertEqual(resolver.call_args.args[0], "any")
         self.assertEqual(resolver.call_args.args[1], warning_report["findings"])
 
+    def test_blocker_policy_is_rejected_by_warning_only_scripts(self):
+        cases = [
+            (unicode_lint, ["--text", 'Er sagte "Hallo".']),
+            (rhythm_lint, ["--text", "Zudem prüft das Team die Werte."]),
+            (german_pattern_lint, ["--text", "Der Text beleuchtet das Thema."]),
+            (spell_lint, ["--before", "Das Team prüft.", "--after", "Das Team prüft."]),
+        ]
+
+        for module, argv in cases:
+            stderr = io.StringIO()
+            with self.subTest(module=module.__name__), redirect_stderr(stderr):
+                code = module.main(argv + ["--fail-on", "blocker"])
+            self.assertEqual(code, 2)
+            self.assertIn("invalid choice: 'blocker'", stderr.getvalue())
+
+    def test_blocker_policy_still_gates_blocker_capable_scripts(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            blocker_path = Path(tmp) / "blocker.md"
+            blocker_path.write_text("Klingt spannend?", encoding="utf-8")
+            warning_path = Path(tmp) / "warning.md"
+            warning_path.write_text("Das ist ja schon wichtig.", encoding="utf-8")
+            cases = [
+                (
+                    register_lint,
+                    ["--text", "Klingt spannend?", "--mode", "formal"],
+                    ["--text", "Das ist ja schon wichtig.", "--mode", "sachlich"],
+                ),
+                (
+                    evidence_lint,
+                    [
+                        "--before",
+                        "Die Wartezeit sank laut Bericht.",
+                        "--after",
+                        "Die Wartezeit sank laut Bericht um 63 Prozent.",
+                    ],
+                    [
+                        "--before",
+                        "Das Team prüft den Text.",
+                        "--after",
+                        "Das Team von Acme prüft den Text.",
+                    ],
+                ),
+                (
+                    humanizer_audit,
+                    ["--file", str(blocker_path), "--mode", "formal", "--no-profile"],
+                    ["--file", str(warning_path), "--mode", "sachlich", "--no-profile"],
+                ),
+            ]
+
+            for module, blocker_argv, warning_argv in cases:
+                with self.subTest(module=module.__name__):
+                    blocker_code, blocker_report = run_cli(module, blocker_argv + ["--fail-on", "blocker"])
+                    warning_code, warning_report = run_cli(module, warning_argv + ["--fail-on", "blocker"])
+                    self.assertEqual(blocker_code, 1)
+                    self.assertTrue(any(item.get("severity") == "blocker" for item in blocker_report["findings"]))
+                    self.assertEqual(warning_code, 0)
+                    self.assertTrue(warning_report["findings"])
+                    self.assertEqual({item.get("severity") for item in warning_report["findings"]}, {"warning"})
+
 
 if __name__ == "__main__":
     unittest.main()
