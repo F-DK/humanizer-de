@@ -261,6 +261,7 @@ def lint(text: str) -> list[dict]:
     ranges = protected_ranges(text)
     in_range = range_checker(ranges)
 
+    # Hidden Unicode is unsafe even in code and URLs; meaningful emoji ZWJ stays exempt.
     for index, char in enumerate(text):
         if is_hidden_at(text, index):
             add_finding(findings, 43, "hidden_unicode", index, char, "Remove hidden Unicode character.")
@@ -324,7 +325,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 
 @handle_cli_input_errors
 def main(argv: list[str] | None = None) -> int:
-    args = parse_args(argv or sys.argv[1:])
+    args = parse_args(sys.argv[1:] if argv is None else argv)
     text = args.text if args.text is not None else read_user_text(args.file)
     findings = lint(text)
     fixed_text = fix(text) if args.fix else text

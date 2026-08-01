@@ -82,14 +82,6 @@ def strip_protected(text: str, exclude_blockquotes: bool = False) -> str:
     return clean_text
 
 
-def blockquote_ranges(text: str) -> list[tuple[int, int]]:
-    return text_scope.blockquote_ranges(text)
-
-
-def is_in_ranges(start: int, end: int, ranges: Iterable[tuple[int, int]]) -> bool:
-    return any(start < range_end and end > range_start for range_start, range_end in ranges)
-
-
 def count_words(text: str, words: Iterable[str]) -> int:
     return len(word_spans(text, words))
 
@@ -160,12 +152,9 @@ def is_anaphoric_sie(match: re.Match, text: str, doc: object) -> bool:
 
 
 def sie_formal_spans(text: str, nlp: object | None = None) -> list[tuple[int, int]]:
-    blockquotes = blockquote_ranges(text) if nlp is not None else []
     doc = nlp(text) if nlp is not None else None
     spans: list[tuple[int, int]] = []
     for match in SIE_FORMS_RE.finditer(text):
-        if is_in_ranges(match.start(), match.end(), blockquotes):
-            continue
         if doc is not None and is_anaphoric_sie(match, text, doc):
             continue
         spans.append(match.span())
@@ -324,7 +313,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 
 @handle_cli_input_errors
 def main(argv: list[str] | None = None) -> int:
-    args = parse_args(argv or sys.argv[1:])
+    args = parse_args(sys.argv[1:] if argv is None else argv)
     if args.fixture:
         files = sorted(args.fixture.glob("*.json")) if args.fixture.is_dir() else [args.fixture]
         results = [check_fixture(file_path, precise=args.precise) for file_path in files]

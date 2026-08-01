@@ -492,7 +492,7 @@ def format_markdown(report: dict) -> str:
 
 @handle_cli_input_errors
 def main(argv: list[str] | None = None) -> int:
-    args = parse_args(argv or sys.argv[1:])
+    args = parse_args(sys.argv[1:] if argv is None else argv)
     profile_path = args.profile if args.profile is not None else style_profile.USER_PROFILE_PATH
     try:
         path = input_path(args)

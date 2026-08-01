@@ -97,7 +97,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 
 @handle_cli_input_errors
 def main(argv: list[str] | None = None) -> int:
-    args = parse_args(argv or sys.argv[1:])
+    args = parse_args(sys.argv[1:] if argv is None else argv)
     try:
         report = build_report(args.corpus_dir, precise=args.precise)
     except ValueError as error:

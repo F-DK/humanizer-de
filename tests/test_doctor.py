@@ -130,6 +130,52 @@ class DoctorTests(unittest.TestCase):
         with mock.patch.object(cli_output.sys, "stdout", LegacyStdout()):
             self.assertEqual(cli_output.text_for_stdout("A\u200bB"), "A\\u200bB")
 
+    def test_human_report_pads_after_legacy_encoding_escape(self):
+        report = {
+            "version": "1.0",
+            "summary": "base_only",
+            "checks": [
+                {"label": "de_DE-Wörterbuch", "status": "available"},
+                {"label": "LanguageTool", "status": "available"},
+            ],
+        }
+
+        class AsciiStdout:
+            encoding = "ascii"
+
+        with mock.patch.object(cli_output.sys, "stdout", AsciiStdout()):
+            lines = doctor.format_report(report).splitlines()
+
+        self.assertEqual(lines[3].index("AVAILABLE"), lines[4].index("AVAILABLE"))
+
+    def test_missing_marketplace_manifest_breaks_version_sync(self):
+        def read_json(path):
+            if path.name == "marketplace.json":
+                raise FileNotFoundError(path)
+            return {"name": "humanizer-de", "version": "1.0"}
+
+        with mock.patch.object(doctor, "skill_version", return_value="1.0"):
+            with mock.patch.object(doctor, "read_json", side_effect=read_json):
+                checks, _ = doctor.package_checks(Path("/missing-package"))
+
+        version_sync = next(item for item in checks if item["id"] == "version_sync")
+        self.assertEqual(version_sync["status"], "error")
+        self.assertEqual(json.loads(version_sync["detail"])["marketplace"], None)
+
+    def test_malformed_marketplace_plugins_breaks_version_sync_without_crashing(self):
+        def read_json(path):
+            if path.name == "marketplace.json":
+                return {"plugins": {}}
+            return {"name": "humanizer-de", "version": "1.0"}
+
+        with mock.patch.object(doctor, "skill_version", return_value="1.0"):
+            with mock.patch.object(doctor, "read_json", side_effect=read_json):
+                checks, _ = doctor.package_checks(Path("/malformed-package"))
+
+        version_sync = next(item for item in checks if item["id"] == "version_sync")
+        self.assertEqual(version_sync["status"], "error")
+        self.assertEqual(json.loads(version_sync["detail"])["marketplace"], None)
+
     def test_human_report_has_clear_summary(self):
         output = doctor.format_report(self.report)
 

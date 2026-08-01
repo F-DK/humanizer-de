@@ -214,7 +214,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 
 @handle_cli_input_errors
 def main(argv: list[str] | None = None) -> int:
-    args = parse_args(argv or sys.argv[1:])
+    args = parse_args(sys.argv[1:] if argv is None else argv)
     profile_path = args.profile if args.profile is not None else USER_PROFILE_PATH
     corridors = None
     overridden: frozenset = frozenset()

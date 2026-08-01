@@ -19,7 +19,7 @@ SCRIPT_DIR = ROOT / "scripts"
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from cli_output import print_json, print_text
+from cli_output import print_json, print_text, text_for_stdout
 
 
 SUCCESS_STATUSES = {"ok", "available", "active"}
@@ -118,13 +118,19 @@ def package_checks(root: Path) -> tuple[list[dict[str, Any]], str | None]:
             checks.append(check(check_id, label, "error", required=True, detail=str(error), path=str(path)))
 
     marketplace_path = root / ".claude-plugin" / "marketplace.json"
+    marketplace_valid = True
     try:
         marketplace = read_json(marketplace_path)
-        plugins = marketplace.get("plugins", [])
-        marketplace_version = plugins[0].get("version") if plugins else None
-    except (OSError, json.JSONDecodeError, AttributeError):
+        plugins = marketplace["plugins"]
+        if not isinstance(plugins, list) or not plugins or not isinstance(plugins[0], dict):
+            raise TypeError("plugins must be a non-empty list of objects")
+        marketplace_version = plugins[0].get("version")
+    except (OSError, json.JSONDecodeError, KeyError, TypeError):
         marketplace_version = None
-    if marketplace_version:
+        marketplace_valid = False
+    if not marketplace_valid:
+        versions["marketplace"] = None
+    elif marketplace_version:
         versions["marketplace"] = marketplace_version
 
     known_versions = [value for value in versions.values() if value]
@@ -217,6 +223,8 @@ print(json.dumps(payload))
             "--text",
             "Die Idee war neu. Sie überzeugte sofort.",
             "--precise",
+            "--fail-on",
+            "never",
         ]
     )
     precise: dict[str, Any] = {}
@@ -375,8 +383,9 @@ def build_report(root: Path = ROOT) -> dict[str, Any]:
 
 def format_report(report: dict[str, Any]) -> str:
     lines = ["Humanizer-DE Doctor", f"Version: {report.get('version') or 'unknown'}", ""]
-    width = max((len(item["label"]) for item in report["checks"]), default=0)
-    for item in report["checks"]:
+    labels = [text_for_stdout(item["label"]) for item in report["checks"]]
+    width = max((len(label) for label in labels), default=0)
+    for item, label in zip(report["checks"], labels):
         extras = []
         if item.get("version"):
             extras.append(str(item["version"]))
@@ -385,7 +394,7 @@ def format_report(report: dict[str, Any]) -> str:
         if item.get("detail"):
             extras.append(str(item["detail"]))
         suffix = f" · {' · '.join(extras)}" if extras else ""
-        lines.append(f"{item['label']:<{width}}  {item['status'].upper():<9}{suffix}")
+        lines.append(f"{label:<{width}}  {item['status'].upper():<9}{suffix}")
     lines.extend(
         [
             "",
@@ -408,7 +417,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 
 
 def main(argv: list[str] | None = None) -> int:
-    args = parse_args(argv or sys.argv[1:])
+    args = parse_args(sys.argv[1:] if argv is None else argv)
     report = build_report()
     if args.json:
         print_json(report)

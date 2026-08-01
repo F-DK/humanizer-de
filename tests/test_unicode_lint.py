@@ -28,7 +28,7 @@ class UnicodeLintTests(unittest.TestCase):
         self.assertEqual(unicode_lint.fix(text), "AlphaBeta")
 
     def test_emoji_zwj_sequence_is_preserved(self):
-        for text in ("👩‍💻", "👩🏽‍💻", "❤️‍🔥"):
+        for text in ("👨‍👩‍👧‍👦", "👩‍💻", "👩🏽‍💻", "❤️‍🔥"):
             with self.subTest(text=text):
                 self.assertEqual(unicode_lint.lint(text), [])
                 self.assertEqual(unicode_lint.fix(text), text)

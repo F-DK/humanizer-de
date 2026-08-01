@@ -1,9 +1,11 @@
+import importlib.util
 import json
 import subprocess
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -39,6 +41,34 @@ class CliContractTests(unittest.TestCase):
         if isinstance(value, list):
             return [self.without_offsets_or_paths(item) for item in value]
         return value
+
+    def test_explicit_empty_argv_never_reads_host_arguments(self):
+        scripts = (
+            "register_lint",
+            "rhythm_lint",
+            "evidence_lint",
+            "unicode_lint",
+            "style_profile",
+            "doctor",
+            "fp_corpus_report",
+            "run_review_eval",
+            "german_pattern_lint",
+            "humanizer_audit",
+        )
+
+        class Parsed(Exception):
+            pass
+
+        for name in scripts:
+            with self.subTest(script=name):
+                spec = importlib.util.spec_from_file_location(f"argv_{name}", SCRIPTS / f"{name}.py")
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
+                with mock.patch.object(module, "parse_args", side_effect=Parsed) as parse_args:
+                    with mock.patch.object(sys, "argv", ["pytest", "-k", "something", "--tb=short"]):
+                        with self.assertRaises(Parsed):
+                            module.main([])
+                parse_args.assert_called_once_with([])
 
     def test_text_linters_require_an_explicit_source(self):
         for name in ("register_lint.py", "german_pattern_lint.py", "syntax_lint.py"):
