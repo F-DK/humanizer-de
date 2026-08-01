@@ -1,6 +1,6 @@
 # Deutsch-spezifische Naturalness Rule Cards
 
-Diese Karten operationalisieren die Muster 7, 8, 13, 45, 54, 55, 58, 60, 63, 64 und 65 sowie registerbezogene Naturalness-Gates. Sie ersetzen keine Cluster-Regel.
+Diese Karten operationalisieren die Muster 7, 8, 13, 45, 54, 55, 58, 60, 61, 63, 64 und 65 sowie registerbezogene Naturalness-Gates. Sie ersetzen keine Cluster-Regel.
 
 ## Deixis und Sprecherposition
 
@@ -61,7 +61,7 @@ Diese Karten operationalisieren die Muster 7, 8, 13, 45, 54, 55, 58, 60, 63, 64 
 ## 55 / 61 Rhythmus und Isometrie
 
 - Signal: enge Satzlaengen, gleiche Satzanfaenge, gleich lange Absaetze oder Listen.
-- Schlechter Reflex: Fuellwoerter, Nebenbemerkungen oder falsche Muen­dlichkeit einstreuen.
+- Schlechter Reflex: Fuellwoerter, Nebenbemerkungen oder falsche Muendlichkeit einstreuen.
 - Sicherer Eingriff: vorhandene Saetze teilen oder zusammenziehen, Vorfeld rotieren, Gewichtung an vorhandene Substanz koppeln.
 - Nicht anfassen: formale, technische oder juristische Gleichmaessigkeit ohne Lesbarkeitsproblem.
 

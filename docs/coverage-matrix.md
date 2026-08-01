@@ -10,7 +10,7 @@ This matrix prevents one common documentation error: treating the 72-pattern cat
 |---|---|---|---|---|
 | Pattern catalog | `references/patterns.md` | 72 named German AI-writing and text-quality patterns with severity, indicators, examples, and rewrite guidance | Complete catalog of the current rule vocabulary | Deterministic detection, safe auto-fix, or empirical validation for every pattern |
 | Decision tables | `references/decision-tables.md` | Overlap logic, mode matrix, evidence cases, structure cases, phrase/template cases, profile conflicts | Binding short logic for common ambiguous cases | Exhaustive handling of every text genre or edge case |
-| Naturalness cards | `references/de-naturalness.md` | Operational cards for patterns 7, 8, 13, 54, 55, 58, 60, 63, 64, 65 plus DACH and QGIR stop notes | Practical guardrails for late-stage German naturalness work | Full readability model or complete German stylistics |
+| Naturalness cards | `references/de-naturalness.md` | Operational cards for patterns 7, 8, 13, 45, 54, 55, 58, 60, 61, 63, 64, 65 plus DACH and QGIR stop notes | Practical guardrails for late-stage German naturalness work | Full readability model or complete German stylistics |
 | Register profiles | `references/register-profiles.md` | Address form, distance, sentence/paragraph shape, terms, particles, punctuation, profile conflicts | Guardrails against generic looseness and profile drift | Automatic inference of every target audience |
 | Evidence ledger | `references/evidence-ledger.md` | Protected factual anchors, claim-delta operations, QGIR invariants | Strong safeguard against obvious factual drift | Full semantic equivalence or source verification |
 | QGIR | `references/qgir.md`, `SKILL.md` | Bounded second revision loop, pass limits, edit budget, stop rules | Process gate for proportional revision | Default full rewrite workflow |
@@ -30,6 +30,7 @@ This matrix prevents one common documentation error: treating the 72-pattern cat
 |---|---|---|
 | `unicode_lint.py` | 43, 46, 49-adjacent quote/apostrophe safeguards | Focused technical/typographic checks |
 | `rhythm_lint.py` | 4, 54, 55, 61 | Returns suspicions; cluster interpretation stays outside the script |
+| `syntax_lint.py` | 39; `subjectless_fragment` has no catalog number | spaCy-only; reports `available=false` when the model is missing; called by `humanizer_audit.py` |
 | `german_pattern_lint.py` | 8, 13, 54, 58, 63, 64, 65; 72 advisory | Naturalness cluster checks plus a context-dependent `info` candidate for pattern 72 |
 | `register_lint.py` | 63 plus register/profile drift | Pattern IDs are secondary to profile safeguards |
 | `evidence_lint.py` | 11, 26, 42, 53-adjacent claim-delta risks | Detects anchor drift; does not verify external sources |
