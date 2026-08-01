@@ -50,6 +50,35 @@ class RhythmLintTests(unittest.TestCase):
             ["Das gilt z. B. für Berlin.", "Siehe S. 12.", "Danach folgt mehr."],
         )
 
+    def test_sentence_split_keeps_german_ordinals(self):
+        texts = (
+            "Im 19. Jahrhundert begann die Industrialisierung.",
+            "Die 3. Auflage erschien später.",
+            "Am 1. Advent beginnt die Feier.",
+        )
+
+        for text in texts:
+            with self.subTest(text=text):
+                self.assertEqual(rhythm_lint.split_sentences(text), [text])
+
+    def test_sentence_split_keeps_genuine_boundary_after_number(self):
+        text = "Das Team bestand aus 3. Danach begann die Auswertung."
+
+        self.assertEqual(
+            rhythm_lint.split_sentences(text),
+            ["Das Team bestand aus 3.", "Danach begann die Auswertung."],
+        )
+
+    def test_bom_prefixed_markdown_heading_keeps_document_metrics(self):
+        base = "# Titel: Kontext\n\nErster Satz hier. Zweiter Satz dort.\n"
+
+        plain = rhythm_lint.analyze(base)["document"]
+        with_bom = rhythm_lint.analyze("\ufeff" + base)["document"]
+
+        self.assertEqual(with_bom, plain)
+        self.assertEqual(with_bom["heading_count"], 1)
+        self.assertEqual(with_bom["sentence_count"], 2)
+
     def test_sir_cluster_flags_pattern_55(self):
         # SIR fires only when high ratio AND (low variance OR repeated openers).
         # All 8 sentences subjektinitial + identical 2-token opener = cluster condition met.

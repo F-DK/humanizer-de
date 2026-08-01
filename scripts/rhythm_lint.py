@@ -146,9 +146,14 @@ MONTH_DATE_RE = re.compile(
     rf"\b(\d{{1,2}})\.\s+(?=(?:{'|'.join(re.escape(month) for month in MONTHS)})\b)"
 )
 DECIMAL_RE = re.compile(r"\b(\d+)\.(\d+)\b")
+ORDINAL_RE = re.compile(
+    r"(?<!\w)(?P<lead>(?i:am|beim|im|vom|zum|zur|der|die|das|den|dem|des|ein|eine|einer|einem|einen|eines)\s+)"
+    r"(?P<number>\d+)\.(?=\s+[A-ZÄÖÜ][a-zäöüß])"
+)
 
 WORD_RE = re.compile(r"[^\W_]+(?:[-'][^\W_]+)?")
 CLAUSE_PUNCT_RE = re.compile(r"[,;:()]")
+MARKDOWN_HEADING_RE = re.compile(r"^(?:\ufeff)?\s{0,3}#{1,6}\s+(?P<text>\S.*)$")
 DOT = "<RH_DOT>"
 SENTENCE_BREAK = "<RH_SENTENCE_BREAK>"
 
@@ -158,7 +163,7 @@ def strip_protected(text: str) -> str:
 
 
 def is_markdown_heading(line: str) -> bool:
-    return bool(re.match(r"^\s{0,3}#{1,6}\s+\S", line))
+    return bool(MARKDOWN_HEADING_RE.match(line))
 
 
 def is_wikitext_heading(line: str) -> bool:
@@ -166,9 +171,10 @@ def is_wikitext_heading(line: str) -> bool:
 
 
 def heading_text(line: str) -> str:
+    markdown = MARKDOWN_HEADING_RE.match(line)
+    if markdown:
+        return markdown.group("text").strip()
     stripped = line.strip()
-    if is_markdown_heading(stripped):
-        return re.sub(r"^#{1,6}\s+", "", stripped).strip()
     if is_wikitext_heading(stripped):
         return re.sub(r"^\s*=+\s*|\s*=+\s*$", "", stripped).strip()
     return stripped
@@ -247,6 +253,7 @@ def protect_sentence_periods(text: str) -> str:
         masked,
     )
     masked = DECIMAL_RE.sub(lambda match: match.group(1) + DOT + match.group(2), masked)
+    masked = ORDINAL_RE.sub(lambda match: match.group(0).replace(".", DOT), masked)
     return masked
 
 

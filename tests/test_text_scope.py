@@ -9,6 +9,7 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 import register_lint
+import german_pattern_lint
 import rhythm_lint
 import style_profile
 import text_scope
@@ -56,6 +57,29 @@ class TextScopeTests(unittest.TestCase):
         self.assertEqual(scoped_report["document"], base_report["document"])
         self.assertEqual(scoped_profile["meta"]["word_count"], base_profile["meta"]["word_count"])
         self.assertEqual(scoped_profile["metrics"], base_profile["metrics"])
+
+    def test_leading_thematic_break_is_not_frontmatter(self):
+        text = "---\n\nDer Text beleuchtet das vielschichtige Zusammenspiel dynamisch.\n\n---\n\nZweiter Teil.\n"
+
+        self.assertEqual(text_scope.protected_ranges(text), [])
+        self.assertIn("ai_marker_cluster", {item["kind"] for item in german_pattern_lint.lint(text)["findings"]})
+
+    def test_real_frontmatter_shapes_remain_protected(self):
+        cases = (
+            ("", "\n", "---"),
+            ("", "\n", "..."),
+            ("", "\r\n", "---"),
+            ("\ufeff", "\r\n", "..."),
+        )
+
+        for bom, newline, closer in cases:
+            with self.subTest(bom=bool(bom), newline=repr(newline), closer=closer):
+                frontmatter = f"{bom}---{newline}title: Beispiel{newline}{closer}"
+                text = frontmatter + newline * 2 + "Eigene Prosa bleibt."
+
+                self.assertEqual(text_scope.protected_ranges(text), [(0, len(frontmatter))])
+                self.assertNotIn("title", text_scope.mask_text(text))
+                self.assertIn("Eigene Prosa bleibt.", text_scope.mask_text(text))
 
     def test_table_content_does_not_change_register_or_style_metrics(self):
         base = "Ein kurzer Satz bleibt. Danach folgt eine sachliche Erklärung."
