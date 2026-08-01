@@ -524,6 +524,11 @@ erhalten bleiben müssen oder ein Text sachlich, aber nicht maschinell wirken so
 ist nötig** bei literarischen Texten, stark etablierter Autorenstimme und Fachkonventionen, die
 absichtlich wiederholen, nominal formulieren oder passiv schreiben.
 
+Dafür gibt es einen messbaren Grund. Die Fehlalarm-Baseline hinter den Schwellen umfasst 20
+verifizierte Menschentexte aus drei Genres der Web-Prosa: Blog (8), Marketing (6) und Sachtext (6).
+Urteile, Bescheide, technische Dokumentation, Leichte Sprache und Literatur sind darin nicht
+vertreten. Außerhalb dieser Genres sind Befunde entsprechend vorsichtiger zu lesen.
+
 **Rote Linien:**
 
 - Kein Detektor-Bypass und keine Garantie für Herkunfts-Scores.
@@ -643,7 +648,7 @@ davon wird zusammen mit dem Skill installiert oder automatisch aktiviert.
 
 ## 72 Muster in 10 Kategorien
 
-Der Skill arbeitet mit einem Katalog aus **72 KI-Schreibmustern** in 10 Kategorien, priorisiert nach Schweregrad (HIGH / MEDIUM / LOW). Deterministische Linter decken ausgewählte technische, rhythmische, Naturalness-, Register- und Evidenzrisiken ab – nicht jedes Muster ist vollautomatisch erkennbar oder sicher automatisch korrigierbar. Linter-gestützt sind derzeit rund 15 Muster (4, 8, 13, 39, 43, 46, 54, 55, 58, 61, 63–65 sowie ein advisory Kandidatenhinweis für 72; Muster 39 nur im Präzisionspfad mit spaCy) plus Register-, Rhythmus- und Evidenz-Checks; die übrigen Muster prüft das Modell anhand des Katalogs. Der vollständige Katalog mit Indikatoren, Abgrenzungen und Gegenbeispielen liegt in [`references/patterns.md`](references/patterns.md). Für den schnellen Blick ohne Katalog fasst [`assets/checkliste-ki-tells.md`](assets/checkliste-ki-tells.md) die zehn häufigsten Tells auf einer Seite zusammen.
+Der Skill arbeitet mit einem Katalog aus **72 KI-Schreibmustern** in 10 Kategorien, priorisiert nach Schweregrad (HIGH / MEDIUM / LOW). Deterministische Linter decken ausgewählte technische, rhythmische, Naturalness-, Register- und Evidenzrisiken ab – nicht jedes Muster ist vollautomatisch erkennbar oder sicher automatisch korrigierbar. Linter-gestützt sind derzeit rund 15 Muster (4, 8, 13, 39, 43, 46, 54, 55, 58, 61, 63–65 sowie ein advisory Kandidatenhinweis für 72; Muster 39: Erkennung im Präzisionspfad mit spaCy, kein Gate-Anschluss) plus Register-, Rhythmus- und Evidenz-Checks; die übrigen Muster prüft das Modell anhand des Katalogs. Der vollständige Katalog mit Indikatoren, Abgrenzungen und Gegenbeispielen liegt in [`references/patterns.md`](references/patterns.md). Für den schnellen Blick ohne Katalog fasst [`assets/checkliste-ki-tells.md`](assets/checkliste-ki-tells.md) die zehn häufigsten Tells auf einer Seite zusammen.
 
 <details>
 <summary><strong>Sprache und Tonfall (19 Muster)</strong></summary>
