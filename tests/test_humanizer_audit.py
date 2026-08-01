@@ -303,6 +303,35 @@ class HumanizerAuditTests(unittest.TestCase):
         self.assertEqual(driver["weight"], 2)
         self.assertIn(preflight["risk"], {"medium", "high"})
 
+    def test_antithesis_summary_keeps_density_before_long_matches(self):
+        text = (
+            "Nicht abwarten, sondern machen. Der Plan ist mutig und nicht vorsichtig. "
+            "Wir sollten nicht erklären, sondern liefern. Die Antwort bleibt klar und nicht beliebig. "
+            "Die Prüfung ist sorgfältig und nicht flüchtig. Wir wollen nicht vertagen, sondern entscheiden. "
+            "Kurz danach beginnt die Prüfung. Eine ausführliche Diskussion mit allen Beteiligten "
+            "klärt anschließend die offenen fachlichen Fragen. Am Ende steht ein Befund. "
+            "Nach der Freigabe liest jemand sämtliche Verweise noch einmal sorgfältig. "
+            "Später endet die Arbeit."
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "text.md"
+            path.write_text(text, encoding="utf-8")
+
+            exit_code, report = run_json(["--file", str(path)])
+
+        self.assertEqual(exit_code, 0)
+        finding = next(
+            item for item in report["findings"] if item.get("kind") == "negation_antithesis_cluster"
+        )
+        driver = next(
+            item
+            for item in report["summary"]["preflight"]["drivers"]
+            if item["kind"] == "negation_antithesis_cluster"
+        )
+        self.assertIn("per_1000_words=", finding["summary"])
+        self.assertIn("per_1000_words=", driver["detail"])
+        self.assertLessEqual(len(finding["summary"]), 140)
+
     def test_markdown_format_is_compact_and_grouped(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "text.md"

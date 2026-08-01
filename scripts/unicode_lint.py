@@ -16,7 +16,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from cli_output import handle_cli_input_errors, print_json, read_user_text, require_file, resolve_exit_code
+from cli_output import atomic_write_text, handle_cli_input_errors, print_json, read_user_text, require_file, resolve_exit_code
 import text_scope
 
 
@@ -330,8 +330,7 @@ def main(argv: list[str] | None = None) -> int:
     fixed_text = fix(text) if args.fix else text
 
     if args.write and fixed_text != text:
-        with args.file.open("w", encoding="utf-8", newline="") as handle:
-            handle.write(fixed_text)
+        atomic_write_text(args.file, fixed_text, newline="")
 
     result = {
         "ok": not findings,

@@ -131,6 +131,14 @@ class EvidenceLintTests(unittest.TestCase):
         after = "Die Stadt Köln veröffentlichte den Bericht."
         self.assertIn("added_proper_name", kinds(evidence_lint.lint(before, after)))
 
+    def test_warns_when_accented_proper_name_is_removed(self):
+        for name in ("Škoda", "Ørsted", "Émile"):
+            with self.subTest(name=name):
+                before = f"Wir arbeiten mit {name}."
+                findings = evidence_lint.lint(before, "Wir arbeiten mit dem Anbieter.")
+                removed = next(item for item in findings if item["kind"] == "removed_proper_name")
+                self.assertIn(name, removed["values"])
+
     def test_common_noun_after_article_is_not_proper_name(self):
         before = "Es ist wichtig, das Problem zügig zu lösen. Danach geht es weiter."
         after = "Die Lösung des Problems hat Priorität. Danach geht es weiter."
@@ -261,7 +269,7 @@ class EvidenceLintTests(unittest.TestCase):
         self.assertNotIn("authority_strengthened", found)
         self.assertNotIn("hedge_removed", found)
 
-    def test_write_and_load_ledger_roundtrip_preserves_anchors(self):
+    def test_atomic_write_and_load_ledger_roundtrip_preserves_anchors(self):
         before = (
             "Die Wartezeit sank am 3. Mai 2024 um 12 Prozent. "
             "Details stehen unter https://example.org/bericht."
@@ -272,11 +280,13 @@ class EvidenceLintTests(unittest.TestCase):
             expected = evidence_lint.write_ledger(before, ledger_path)
             loaded = evidence_lint.load_ledger_document(ledger_path)[0]
             document = json.loads(ledger_path.read_text(encoding="utf-8"))
+            remaining_files = [item.name for item in Path(tmp).iterdir()]
 
         self.assertEqual(loaded, expected)
         self.assertEqual(loaded, evidence_lint.anchors(before))
         self.assertEqual(document["schema_version"], 2)
         self.assertEqual(document["extraction_policy"], {"mode": "default"})
+        self.assertEqual(remaining_files, ["ledger.json"])
 
     def test_ledger_catches_multi_pass_number_drift_against_original(self):
         original = "Die Fehlerquote sank laut Bericht um 12 Prozent."

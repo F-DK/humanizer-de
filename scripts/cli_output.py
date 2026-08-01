@@ -5,9 +5,11 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from functools import wraps
 from pathlib import Path
+from tempfile import NamedTemporaryFile
 from typing import Any, Callable
 
 
@@ -49,6 +51,20 @@ def read_user_text(path: Path) -> str:
     except OSError as error:
         reason = error.strerror or str(error)
         raise CliInputError(f"{path}: cannot read file: {reason}") from error
+
+
+def atomic_write_text(path: Path, text: str, *, newline: str | None = None) -> None:
+    temp_path = None
+    try:
+        with NamedTemporaryFile(
+            "w", encoding="utf-8", newline=newline, dir=path.parent, prefix=f".{path.name}.", delete=False
+        ) as handle:
+            temp_path = Path(handle.name)
+            handle.write(text)
+        os.replace(temp_path, path)
+    finally:
+        if temp_path is not None:
+            temp_path.unlink(missing_ok=True)
 
 
 def read_json_object(

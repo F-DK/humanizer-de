@@ -17,6 +17,7 @@ if str(SCRIPT_DIR) not in sys.path:
 
 from cli_output import (
     CliInputError,
+    atomic_write_text,
     handle_cli_input_errors,
     print_json,
     read_json_object,
@@ -149,7 +150,15 @@ DIRECTION_MARKERS = {
     },
 }
 
-CAPITALIZED_RE = re.compile(r"\b(?:[A-ZÄÖÜ][\wÄÖÜäöüß-]+(?:\s+[A-ZÄÖÜ][\wÄÖÜäöüß-]+){0,3})\b")
+# German proper names only need the Latin blocks through Latin Extended-B.
+UNICODE_UPPERCASE = "".join(
+    chr(codepoint)
+    for codepoint in range(0x250)
+    if chr(codepoint).isalpha() and chr(codepoint).isupper()
+)
+CAPITALIZED_RE = re.compile(
+    rf"\b(?:[{UNICODE_UPPERCASE}][\wÄÖÜäöüß-]+(?:\s+[{UNICODE_UPPERCASE}][\wÄÖÜäöüß-]+){{0,3}})\b"
+)
 DETERMINERS = {
     "der", "die", "das", "des", "dem", "den",
     "ein", "eine", "einer", "eines", "einem", "einen",
@@ -441,7 +450,7 @@ def write_ledger(text: str, path: Path, precise: bool = False) -> dict[str, set[
         "anchors": serializable_anchors(before_anchors),
     }
     try:
-        path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        atomic_write_text(path, json.dumps(data, ensure_ascii=False, indent=2) + "\n")
     except OSError as error:
         reason = error.strerror or str(error)
         raise CliInputError(f"{path}: cannot write ledger: {reason}") from error

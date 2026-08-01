@@ -114,7 +114,8 @@ def short_text(value: object, width: int = 140) -> str:
 
 def evidence_summary(evidence: object) -> str:
     if isinstance(evidence, dict):
-        parts = [f"{key}={value}" for key, value in sorted(evidence.items())[:5]]
+        items = sorted(evidence.items(), key=lambda item: (isinstance(item[1], (list, dict)), item[0]))
+        parts = [f"{key}={value}" for key, value in items[:5]]
         if len(evidence) > 5:
             parts.append(f"+{len(evidence) - 5} more")
         return ", ".join(parts)

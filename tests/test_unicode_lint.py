@@ -195,7 +195,7 @@ class UnicodeLintTests(unittest.TestCase):
         self.assertEqual(proc.returncode, 2)
         self.assertIn("--write requires --fix and --file", proc.stderr)
 
-    def test_fix_write_preserves_crlf_line_endings(self):
+    def test_atomic_fix_write_preserves_crlf_and_leaves_no_temp_file(self):
         raw = "Er sagte „Hallo”.\r\nZweite Zeile.\r\n"
         expected = "Er sagte „Hallo“.\r\nZweite Zeile.\r\n"
         with tempfile.TemporaryDirectory() as tmp:
@@ -216,9 +216,11 @@ class UnicodeLintTests(unittest.TestCase):
                 text=True,
             )
             fixed = path.read_bytes().decode("utf-8")
+            remaining_files = [item.name for item in Path(tmp).iterdir()]
 
         self.assertEqual(proc.returncode, 0, proc.stderr)
         self.assertEqual(fixed, expected)
+        self.assertEqual(remaining_files, ["crlf.md"])
 
     def test_cli_json_falls_back_to_ascii_when_stdout_cannot_encode_a_finding(self):
         env = os.environ.copy()
