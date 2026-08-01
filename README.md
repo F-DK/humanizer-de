@@ -937,6 +937,17 @@ GitHub Release.
 
 ## Was ist neu?
 
+- **5.13.0** - Befunde von `syntax_lint` erscheinen jetzt als Hinweise mit Severity `info` im
+  kompakten Audit-Report; bisher war Muster 39 nur in einer internen Sektion sichtbar.
+  **Achtung für CI-Nutzer:** Advisory-Befunde sind ab sofort gate-neutral, `--fail-on any`
+  schlägt darauf also nicht mehr an. Ohne diese Regel würde jeder deutsche Text mit einer
+  Passivkonstruktion das Gate reißen, denn ein Hinweis liefert Kontext und keinen Defekt.
+  Betroffen ist auch der Kandidatenhinweis für Muster 72, der bisher für sich genommen Exit-Code
+  `1` auslöste. Künftig werden unbelegte oder erfundene Quellen immer markiert, selbst wenn der Text
+  sonst unangetastet bleibt; weil Markieren kein Eingriff ist, bleibt der Null-Edit-Vertrag
+  intakt. Klarstellung zur Modussteuerung: Die deterministischen Linter melden modusunabhängig,
+  nur die Preflight-Empfehlung wertet den Modus aus. Katalog und Schwellen bleiben unverändert.
+
 - **5.12.0** - Wartungsrelease mit zwei geschlossenen Detektor-Lücken: Fettdruck-Marker
   schlossen die Prosa zwischen zwei Fett-Spannen als Zitat aus, und der Fakten-Carve-out griff
   nur für „nicht A, sondern B“. Wochentags-, Monats- und Einheitenkorrekturen bleiben jetzt in
