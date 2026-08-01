@@ -19,10 +19,16 @@ This matrix prevents one common documentation error: treating the 72-pattern cat
 | German pattern linter | `scripts/german_pattern_lint.py` | Cluster checks for patterns 8, 13, 54, 58, 63, 64, 65 plus an `info` advisory candidate for pattern 72 | Deterministic cluster findings for selected naturalness signals; candidate-only context prompt for pattern 72 | Most of the 72-pattern catalog; no confirmed pattern-72 verdict |
 | Register linter | `scripts/register_lint.py` | Mixed address, expected address blockers, modal particles, formal voice intrusion | Deterministic profile-drift warnings/blockers; `--precise` excludes singular anaphora and clearly paired quoted voice | Plural coreference and full register modeling |
 | Evidence linter | `scripts/evidence_lint.py` | Before/after anchor drift: numbers, dates, URLs, DOI, paragraphs, code, quotes, proper names, authority, direction | Conservative drift warnings/blockers | Full factual checking or semantic preservation |
-| Audit aggregator | `scripts/humanizer_audit.py` | Compact findings from Unicode, rhythm, naturalness, and register checks; original-text spans where a concrete location exists | Python-codepoint offsets remain valid across masked Markdown structure | Artificial locations for document-wide metrics or semantic proof |
+| Audit aggregator | `scripts/humanizer_audit.py` | Compact findings from Unicode, rhythm, naturalness, and register checks; original-text spans where a concrete location exists; mode-aware Preflight recommendation | Linter detection remains mode-independent; only the Preflight recommendation evaluates mode | Artificial locations for document-wide metrics or semantic proof |
 | Scenario contracts | `tests/scenarios/`, `scripts/run_review_eval.py` | LLM-in-loop invariants for output discipline, QGIR traces, edit budget, anchors, register, detector wording, and a historical M45 before/after case | Regression checks for known failure modes, including linter-green translationese | A complete benchmark of German writing quality |
 | Trigger-routing fixture | `tests/trigger_eval.json` | Curated should-/should-not-trigger requests around the edit-pass boundary | Manual review set for description changes | Automatic platform invocation or routing accuracy |
 | Human reviewer / LLM judgment | `SKILL.md`, scenario docs | Cluster interpretation, context, register tradeoffs, rewrite choices, subtle structure | Required for judgment-only patterns and proportional edits | Deterministic reproducibility without tests |
+
+Open calibration question: `combing_auto` is currently suppressed only in `formal` mode.
+Technical documentation normally uses `sachlich`. Norm-conforming uniformity can therefore
+receive a combing recommendation. The naturalness card protects such uniformity when readability
+is intact. Whether suppression should follow the mode or the active drivers is an open calibration
+decision and is deliberately left unresolved here.
 
 ## Script Pattern Coverage
 

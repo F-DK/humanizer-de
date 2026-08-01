@@ -450,6 +450,7 @@ def lint(text: str, mode: str = "sachlich", precise: bool = False) -> dict:
             }
         )
 
+    # mode is report metadata only and does not control detection.
     report = {"ok": not findings, "mode": mode, "findings": findings}
     if status is not None:
         report["precise"] = status

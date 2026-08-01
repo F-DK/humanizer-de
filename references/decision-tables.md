@@ -174,6 +174,9 @@ Substantive themenfremd ersetzen. Funktioniert der Satz unverändert, anschließ
 
 ## Modusmatrix
 
+Die Matrix steuert die Eingriffsentscheidung des Modells. Die deterministischen Linter melden
+modusunabhängig, während nur die Preflight-Empfehlung den Modus maschinell auswertet.
+
 | Musterklasse | Locker | Sachlich | Formal |
 |---|---|---|---|
 | HIGH Artefakt, Chatbot, Technik | ändern/entfernen | ändern/entfernen | ändern/entfernen |
