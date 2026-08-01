@@ -67,7 +67,7 @@ python3 scripts/unicode_lint.py --file path/to/text.md
 python3 scripts/unicode_lint.py --file path/to/text.md --fix --write
 ```
 
-Fuer echten Nutzertext immer `--file` verwenden. `--text` ist nur fuer statische Smoke-Tests wie `AB` gedacht; Rohtext nie direkt in Shell-Kommandos einsetzen.
+Für echten Nutzertext immer `--file` verwenden. `--text` ist nur für statische Smoke-Tests wie `AB` gedacht; Rohtext nie direkt in Shell-Kommandos einsetzen.
 
 Der Linter darf versteckte Unicode-Zeichen entfernen und sichere `U+201E ... U+201D`-Paare zu `U+201E ... U+201C` korrigieren. ASCII-Quotes werden gemeldet, aber nicht automatisch in deutsche Quotes umgewandelt.
 
@@ -83,7 +83,7 @@ python3 scripts/rhythm_lint.py --file path/to/text.md --scope user_text --mode s
 python3 scripts/rhythm_lint.py --text "Kurzer Test. Noch ein Satz."
 ```
 
-Der Rhythmus-Linter ist ein reines Mess-Tool. Er schreibt nichts, korrigiert nichts und meldet nur Verdachtsmomente. `--scope skill_doc` und `--mode formal` unterdruecken Stilverdachte, die fuer SOP-, Rechts-, Technik- oder Wissenschaftstexte nicht handlungsleitend sind. Bei Nutzertexten `--file` verwenden; `--text` bleibt Smoke-Tests vorbehalten.
+Der Rhythmus-Linter ist ein reines Mess-Tool. Er schreibt nichts, korrigiert nichts und meldet nur Verdachtsmomente. `--scope skill_doc` und `--mode formal` unterdrücken Stilverdachte, die für SOP-, Rechts-, Technik- oder Wissenschaftstexte nicht handlungsleitend sind. Bei Nutzertexten `--file` verwenden; `--text` bleibt Smoke-Tests vorbehalten.
 
 ## Claim-, Register- und Naturalness-Checks
 
@@ -94,17 +94,17 @@ python3 scripts/german_pattern_lint.py --file text.md --mode locker
 python3 scripts/run_review_eval.py tests/scenarios
 ```
 
-Diese Checks sind konservative Reviewer-Hilfen. Sie sollen Faktenanker, Registerbrueche und Cluster melden, aber keine Rewrite-Automatik ersetzen.
+Diese Checks sind konservative Reviewer-Hilfen. Sie sollen Faktenanker, Registerbrüche und Cluster melden, aber keine Rewrite-Automatik ersetzen.
 
 ## QGIR
 
-QGIR steht fuer Quality-Guided Iterative Revision. Es ist ein begrenzter zweiter Revisionsmodus fuer proportionale, belegtreue Qualitaetsverbesserung:
+QGIR steht für Quality-Guided Iterative Revision. Es ist ein begrenzter zweiter Revisionsmodus für proportionale, belegtreue Qualitätsverbesserung:
 
 ```bash
 python3 scripts/run_review_eval.py tests/scenarios
 ```
 
-QGIR-Contracts liegen in `tests/scenarios/*qgir*.yaml`. Neue QGIR-Regeln zuerst in `references/qgir.md` beschreiben und nur dann in `SKILL.md` aufnehmen, wenn sie fuer die Runtime zwingend sind.
+QGIR-Contracts liegen in `tests/scenarios/*qgir*.yaml`. Neue QGIR-Regeln zuerst in `references/qgir.md` beschreiben und nur dann in `SKILL.md` aufnehmen, wenn sie für die Runtime zwingend sind.
 
 ## Verification
 
@@ -130,7 +130,7 @@ Zusätzlich manuell prüfen:
 
 ## Release-Prozess
 
-Der README-Abschnitt "Was ist neu?" ist der vollständige Changelog. GitHub Releases sind die öffentlichen Meilensteine fuer installierbare oder sichtbare Versionen.
+Der README-Abschnitt "Was ist neu?" ist der vollständige Changelog. GitHub Releases sind die öffentlichen Meilensteine für installierbare oder sichtbare Versionen.
 
 Bei jedem Version-Bump:
 

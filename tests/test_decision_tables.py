@@ -18,20 +18,20 @@ class DecisionTableTests(unittest.TestCase):
     def test_v40_rows_are_present(self):
         text = (ROOT / "references" / "decision-tables.md").read_text(encoding="utf-8")
         self.assertIn("Hypernym/Nominalstil ersetzt eine im Text belegte Konkretion", text)
-        self.assertIn("Rotierende Bezeichnungen fuer denselben Referenten", text)
-        self.assertIn("Anekdote/Ich-Erfahrung ohne Traeger im Autorenkontext", text)
-        self.assertIn("Absaetze/Sektionen/Listen durchgehend gleich lang und symmetrisch", text)
+        self.assertIn("Rotierende Bezeichnungen für denselben Referenten", text)
+        self.assertIn("Anekdote/Ich-Erfahrung ohne Träger im Autorenkontext", text)
+        self.assertIn("Absätze/Sektionen/Listen durchgehend gleich lang und symmetrisch", text)
         self.assertIn("Bewertender Abschlusssatz ohne neue Information am Absatzende", text)
         self.assertIn(
-            '| Frequenz-Marker-Vokabeln in Haeufung ("beleuchten", "spannend", "nahtlos", "Landschaft" figurativ) | 64 | Durch gewoehnliches Wort ersetzen; fachgebundene Verwendung stehen lassen |',
+            '| Frequenz-Marker-Vokabeln in Häufung ("beleuchten", "spannend", "nahtlos", "Landschaft" figurativ) | 64 | Durch gewöhnliches Wort ersetzen; fachgebundene Verwendung stehen lassen |',
             text,
         )
         self.assertIn(
-            '| Ersatzkonstruktion statt "ist"/"hat" ("fungiert als", "verfuegt ueber") in Haeufung | 65 | Auf Kopula zurueckfuehren, wenn keine Information verloren geht |',
+            '| Ersatzkonstruktion statt "ist"/"hat" ("fungiert als", "verfügt über") in Häufung | 65 | Auf Kopula zurückführen, wenn keine Information verloren geht |',
             text,
         )
         self.assertIn(
-            "| Symbolische Aufladung statt nuechterner Ersatzkonstruktion | 1, nicht 65 | Siehe Muster 1 |",
+            "| Symbolische Aufladung statt nüchterner Ersatzkonstruktion | 1, nicht 65 | Siehe Muster 1 |",
             text,
         )
         self.assertIn("Nicht Glyph tauschen", text)

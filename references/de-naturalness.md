@@ -60,29 +60,29 @@ Diese Karten operationalisieren die Muster 7, 8, 13, 45, 54, 55, 58, 60, 61, 63,
 
 ## 55 / 61 Rhythmus und Isometrie
 
-- Signal: enge Satzlaengen, gleiche Satzanfaenge, gleich lange Absaetze oder Listen.
-- Schlechter Reflex: Fuellwoerter, Nebenbemerkungen oder falsche Muendlichkeit einstreuen.
-- Sicherer Eingriff: vorhandene Saetze teilen oder zusammenziehen, Vorfeld rotieren, Gewichtung an vorhandene Substanz koppeln.
-- Nicht anfassen: formale, technische oder juristische Gleichmaessigkeit ohne Lesbarkeitsproblem.
+- Signal: enge Satzlängen, gleiche Satzanfänge, gleich lange Absätze oder Listen.
+- Schlechter Reflex: Füllwörter, Nebenbemerkungen oder falsche Mündlichkeit einstreuen.
+- Sicherer Eingriff: vorhandene Sätze teilen oder zusammenziehen, Vorfeld rotieren, Gewichtung an vorhandene Substanz koppeln.
+- Nicht anfassen: formale, technische oder juristische Gleichmäßigkeit ohne Lesbarkeitsproblem.
 
 ## 58 Abstrakta und Hypernyme
 
-- Signal: Oberbegriffe wie "Massnahmen", "Aspekte", "Loesungen" ersetzen eine im Text belegte konkrete Sache.
+- Signal: Oberbegriffe wie "Maßnahmen", "Aspekte", "Lösungen" ersetzen eine im Text belegte konkrete Sache.
 - Schlechter Reflex: Beispiele erfinden.
 - Sicherer Eingriff: nur aus vorhandenen Ankern konkretisieren oder `[KONKRETION NOETIG]` markieren.
 - Nicht anfassen: echte Sammelbegriffe mit nachfolgender Liste oder fehlender Konkretion.
 
 ## 60 Synonym-Rotation
 
-- Signal: mehrere dekorative Beinamen fuer denselben Referenten.
+- Signal: mehrere dekorative Beinamen für denselben Referenten.
 - Schlechter Reflex: neue Synonyme suchen.
 - Sicherer Eingriff: Grundwort plus Pronomen stabilisieren.
 - Nicht anfassen: offizieller Beiname mit Informationswert.
 
 ## 63 Modalpartikeln
 
-- Signal: partikelarmes Naehe-Register oder Partikel-Ueberdosis.
-- Schlechter Reflex: "ja", "doch", "eben", "halt" ueber den Text streuen, um Menschlichkeit zu simulieren.
+- Signal: partikelarmes Nähe-Register oder Partikel-Überdosis.
+- Schlechter Reflex: "ja", "doch", "eben", "halt" über den Text streuen, um Menschlichkeit zu simulieren.
 - Sicherer Eingriff: maximal eine passende Partikel pro Absatz im Locker-Modus.
 - Nicht anfassen: Sachlich/Formal.
 
@@ -96,23 +96,23 @@ Diese Karten operationalisieren die Muster 7, 8, 13, 45, 54, 55, 58, 60, 61, 63,
 
 ## 64 KI-Marker-Vokabular
 
-- Signal: Cluster aus Woertern wie "beleuchten", "nahtlos", "vielschichtig", "ganzheitlich", "dynamische Landschaft".
+- Signal: Cluster aus Wörtern wie "beleuchten", "nahtlos", "vielschichtig", "ganzheitlich", "dynamische Landschaft".
 - Schlechter Reflex: jedes Einzelwort bestrafen.
-- Sicherer Eingriff: gewoehnliche Woerter nutzen oder das gemeinte konkrete Feld benennen.
+- Sicherer Eingriff: gewöhnliche Wörter nutzen oder das gemeinte konkrete Feld benennen.
 - Nicht anfassen: fachgebundene Verwendung, zum Beispiel robuste Statistik oder dynamisches Routing.
 
 ## 65 Kopula-Vermeidung
 
-- Signal: gehauftes "fungiert als", "stellt dar", "verfuegt ueber", "zeichnet sich aus".
+- Signal: gehauftes "fungiert als", "stellt dar", "verfügt über", "zeichnet sich aus".
 - Schlechter Reflex: "ist" und "hat" vermeiden.
-- Sicherer Eingriff: auf "ist" oder "hat" zurueckfuehren, wenn keine Information verloren geht.
+- Sicherer Eingriff: auf "ist" oder "hat" zurückführen, wenn keine Information verloren geht.
 - Nicht anfassen: echte Funktionsbeschreibung, etwa "dient als Notausgang".
 
 ## Scriptseitige Carve-outs
-- `register_lint --precise` faengt anaphorisches satzinitiales „Sie“ und Blockquotes wie `> Bitte pruefen Sie das.` ab.
-- `german_pattern_lint --precise` faengt `stellt`-Vollverb- und Satzgrenzen-Faelle wie `stellt sicher. ... legte er dar` ab.
+- `register_lint --precise` fängt anaphorisches satzinitiales „Sie“ und Blockquotes wie `> Bitte pruefen Sie das.` ab.
+- `german_pattern_lint --precise` fängt `stellt`-Vollverb- und Satzgrenzen-Fälle wie `stellt sicher. ... legte er dar` ab.
 - `evidence_lint --precise` filtert Einzeltoken-`proper_name`-Fehlalarme wie `hat Relevanz`.
-- Use-Mention bei Muster 64 ist seit P-AP-4 immer abgefangen, auch ohne `--precise`: `"nahtlos"` als Wortbeispiel zaehlt nicht.
+- Use-Mention bei Muster 64 ist seit P-AP-4 immer abgefangen, auch ohne `--precise`: `"nahtlos"` als Wortbeispiel zählt nicht.
 
 ## DACH-Regionalstil
 
@@ -124,7 +124,7 @@ Diese Karten operationalisieren die Muster 7, 8, 13, 45, 54, 55, 58, 60, 61, 63,
 
 ## QGIR-Stop: akzeptable Textur
 
-- Signal: Nach einem Pass bleiben nur kleine Ecken, Registerspuren oder fachliche Gleichmaessigkeit.
+- Signal: Nach einem Pass bleiben nur kleine Ecken, Registerspuren oder fachliche Gleichmäßigkeit.
 - Schlechter Reflex: noch eine Runde Politur, damit der Text "menschlicher" klingt.
 - Sicherer Eingriff: stoppen und Restbefund als toleriert notieren.
-- Nicht anfassen: menschlich-holprige, aber belegtreue Saetze; formale Dichte; autorentypische Satzzeichen.
+- Nicht anfassen: menschlich-holprige, aber belegtreue Sätze; formale Dichte; autorentypische Satzzeichen.
