@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import bisect
 import functools
 import importlib.util
 import re
@@ -76,8 +77,14 @@ ABSTRACTA = (
     "prozesse",
 )
 NEGATION_PARALLELISM_RES = (
-    re.compile(r"\b[Kk]eine?[nmrs]?\b[^,.;:!?\r\n]{1,45},\s*[Kk]eine?[nmrs]?\b"),
-    re.compile(r"\b[Nn]icht\b[^,.;:!?\r\n]{1,45},\s*[Nn]icht\b"),
+    re.compile(
+        r"\b[Kk]eine?[nmrs]?\b[^,.;:!?\r\n]{1,45},\s*"
+        r"[Kk]eine?[nmrs]?\b[^,.;:!?\r\n]{0,45}"
+    ),
+    re.compile(
+        r"\b[Nn]icht\b[^,.;:!?\r\n]{1,45},\s*"
+        r"[Nn]icht\b[^,.;:!?\r\n]{0,45}"
+    ),
 )
 FACTUAL_CONTRAST_VALUE_PATTERN = (
     r"(?:(?:am|im|um)\s+)?(?:"
@@ -91,13 +98,15 @@ FACTUAL_CONTRAST_VALUE_PATTERN = (
 ANTITHESIS_OPERAND_PATTERN = rf"(?:{FACTUAL_CONTRAST_VALUE_PATTERN}|[0-9A-Za-zÄÖÜäöüß-]+)"
 ANTITHESIS_RES = (
     re.compile(
-        r"\bnicht\b(?!\s+nur\b)(?P<left>[^,.;:!?\r\n]{1,80}),\s*"
-        r"sondern\b(?P<right>[^,.;:!?\r\n]{1,80})",
+        r"\bnicht\b(?!\s+(?:nur|allein|bloß|bloss|ausschließlich|ausschliesslich)\b)"
+        r"(?P<left>[^,.;:!?\r\n]{1,80}),\s*"
+        r"sondern\b(?!\s+auch\b)(?P<right>[^,.;:!?\r\n]{1,80})",
         re.IGNORECASE,
     ),
     re.compile(
         rf"\b(?P<left>{ANTITHESIS_OPERAND_PATTERN})\s+und\s+"
-        rf"nicht\b(?!\s+nur\b)\s+(?P<right>{ANTITHESIS_OPERAND_PATTERN})",
+        rf"nicht\b(?!\s+(?:nur|allein|bloß|bloss|ausschließlich|ausschliesslich)\b)\s+"
+        rf"(?P<right>{ANTITHESIS_OPERAND_PATTERN})",
         re.IGNORECASE,
     ),
 )
@@ -189,16 +198,17 @@ def mention_ranges(text: str) -> tuple[tuple[int, int], ...]:
     for pattern in patterns:
         for match in re.finditer(pattern, text, re.DOTALL):
             ranges.append(match.span())
-    ranges.sort()
-    return tuple(ranges)
+    return tuple(text_scope.merge_ranges(ranges))
 
 
 def in_mention(index: int, ranges: tuple[tuple[int, int], ...]) -> bool:
-    return any(start <= index < end for start, end in ranges)
+    position = bisect.bisect_left(ranges, (index + 1,)) - 1
+    return position >= 0 and index < ranges[position][1]
 
 
 def overlaps_mention(start: int, end: int, ranges: tuple[tuple[int, int], ...]) -> bool:
-    return any(start < mention_end and end > mention_start for mention_start, mention_end in ranges)
+    position = bisect.bisect_left(ranges, (end,)) - 1
+    return position >= 0 and ranges[position][1] > start
 
 
 def marker_spans(text: str, marker: str) -> list[tuple[int, int]]:
@@ -325,7 +335,11 @@ def lint(text: str, mode: str = "sachlich", precise: bool = False) -> dict:
 
     excluded_spans = tuple(
         text_scope.merge_ranges(
-            [*text_scope.protected_ranges(text), *mention_ranges(text)]
+            [
+                *text_scope.protected_ranges(text),
+                *mention_ranges(text),
+                *text_scope.blockquote_ranges(text),
+            ]
         )
     )
     negation_matches = sorted(
@@ -336,6 +350,8 @@ def lint(text: str, mode: str = "sachlich", precise: bool = False) -> dict:
         )
         for pattern in NEGATION_PARALLELISM_RES
         for match in pattern.finditer(clean_text)
+        # Start-only protection keeps an incidental inline quotation from blinding
+        # an authored whole-sentence figure.
         if not in_mention(match.start(), excluded_spans)
     )
     evidence = [matched_text for _, _, matched_text in negation_matches]
@@ -358,6 +374,8 @@ def lint(text: str, mode: str = "sachlich", precise: bool = False) -> dict:
         )
         for pattern in ANTITHESIS_RES
         for match in pattern.finditer(clean_text)
+        # Operand-level protection needs overlap because a protected arm can sit
+        # inside an otherwise unprotected match.
         if not overlaps_mention(match.start(), match.end(), excluded_spans)
         and not (
             {"left", "right"} <= match.groupdict().keys()
@@ -371,7 +389,7 @@ def lint(text: str, mode: str = "sachlich", precise: bool = False) -> dict:
         start, end, _ = candidate
         if start >= covered_until:
             antithesis_matches.append(candidate)
-        covered_until = max(covered_until, end)
+            covered_until = max(covered_until, end)
     word_count = len(WORD_RE.findall(clean_text))
     antithesis_density = len(antithesis_matches) * 1000 / word_count if word_count else 0.0
     if (
@@ -415,6 +433,8 @@ def lint(text: str, mode: str = "sachlich", precise: bool = False) -> dict:
     address_validation_matches = [
         match
         for match in ADDRESS_VALIDATION_RE.finditer(clean_text)
+        # Start-only protection keeps an incidental inline quotation from blinding
+        # the whole authored statement.
         if not in_mention(match.start(), excluded_spans)
     ]
     if address_validation_matches:

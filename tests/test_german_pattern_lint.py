@@ -121,6 +121,24 @@ class GermanPatternLintTests(unittest.TestCase):
         text = "Im Beispiel steht: „Kein Server, keine Datenbank.“"
         self.assertNotIn("negation_parallelism", kinds(german_pattern_lint.lint(text)))
 
+    def test_negation_parallelism_keeps_inline_quoted_term(self):
+        text = "Kein Server, keine „Datenbank im Keller“ mehr."
+        self.assertIn("negation_parallelism", kinds(german_pattern_lint.lint(text)))
+
+    def test_negation_parallelism_ignores_figure_starting_in_quoted_material(self):
+        text = "Im Text steht: „Kein Server“, keine Datenbank."
+        self.assertNotIn("negation_parallelism", kinds(german_pattern_lint.lint(text)))
+
+    def test_negation_parallelism_three_part_span_round_trips_with_inline_quote(self):
+        text = "Kein Auto-Rewrite, kein künstlicher Konnektor-„Fix“, kein nummeriertes Muster."
+        report = german_pattern_lint.lint(text)
+        finding = next(item for item in report["findings"] if item["kind"] == "negation_parallelism")
+
+        self.assertEqual(
+            [text[span["start"]:span["end"]] for span in finding["spans"]],
+            finding["evidence"],
+        )
+
     def test_negation_antithesis_cluster(self):
         text = (
             "Nicht abwarten, sondern machen. Nicht erklären, sondern liefern. "
@@ -253,14 +271,55 @@ class GermanPatternLintTests(unittest.TestCase):
         text = "Nicht laut und nicht leise, sondern klar. " * 2
         self.assertNotIn("negation_antithesis_cluster", kinds(german_pattern_lint.lint(text)))
 
-    def test_negation_antithesis_cluster_ignores_not_only_correlatives(self):
+    def test_negation_antithesis_rejected_overlap_does_not_extend_coverage(self):
+        text = "Klar und nicht laut, sondern nicht leise und nicht schrill. " * 4
+        report = german_pattern_lint.lint(text)
+        finding = next(item for item in report["findings"] if item["kind"] == "negation_antithesis_cluster")
+
+        self.assertEqual(finding["evidence"]["count"], 8)
+
+    def test_negation_antithesis_cluster_ignores_correlatives(self):
+        for adverb in ("nur", "allein", "bloß", "bloss", "ausschließlich", "ausschliesslich"):
+            for form, text in (
+                (
+                    "sondern_auch",
+                    f"Nicht {adverb} Tempo, sondern auch Sorgfalt zählt. "
+                    f"Nicht {adverb} Technik, sondern auch Abstimmung hilft. "
+                    f"Nicht {adverb} Kosten, sondern auch Nutzen werden geprüft. "
+                    f"Nicht {adverb} heute, sondern auch morgen bleibt Zeit.",
+                ),
+                (
+                    "sondern_without_auch",
+                    f"Nicht {adverb} abwarten, sondern machen. " * 4,
+                ),
+                (
+                    "und_nicht",
+                    f"Tempo und nicht {adverb} Sorgfalt zählt. "
+                    f"Technik und nicht {adverb} Abstimmung hilft. "
+                    f"Kosten und nicht {adverb} Nutzen werden geprüft. "
+                    f"Heute und nicht {adverb} morgen bleibt Zeit.",
+                ),
+            ):
+                with self.subTest(adverb=adverb, form=form):
+                    self.assertNotIn("negation_antithesis_cluster", kinds(german_pattern_lint.lint(text)))
+
+    def test_mention_detectors_ignore_blockquotes(self):
         text = (
-            "Nicht nur Tempo, sondern auch Sorgfalt zählt. "
-            "Nicht nur Technik, sondern auch Abstimmung hilft. "
-            "Nicht nur Kosten, sondern auch Nutzen werden geprüft. "
-            "Nicht nur heute, sondern auch morgen bleibt Zeit."
+            "> Kein Server, keine Datenbank.\n"
+            "> Nicht reden, sondern handeln.\n"
+            "> Nicht planen, sondern anfangen.\n"
+            "> Nicht prüfen, sondern glauben.\n"
+            "> Nicht zweifeln, sondern folgen.\n"
+            "> Du bist nicht zu sensibel.\n"
         )
-        self.assertNotIn("negation_antithesis_cluster", kinds(german_pattern_lint.lint(text)))
+
+        self.assertTrue(
+            {
+                "negation_parallelism",
+                "negation_antithesis_cluster",
+                "address_validation_candidate",
+            }.isdisjoint(kinds(german_pattern_lint.lint(text)))
+        )
 
     def test_bold_overdose(self):
         text = "**Alpha:** eins. **Beta:** zwei. **Gamma:** drei. **Delta:** vier. **Epsilon:** fünf."
