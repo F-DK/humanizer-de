@@ -133,7 +133,7 @@ class HumanizerAuditTests(unittest.TestCase):
         )
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "scoped.md"
-            path.write_text(text, encoding="utf-8")
+            path.write_bytes(text.encode("utf-8"))
 
             exit_code, report = run_json(["--file", str(path)])
 
