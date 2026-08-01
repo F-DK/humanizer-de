@@ -58,7 +58,7 @@ QGIR ist kein Pass-0-Zweig, sondern eine optionale Erweiterung nach Pass 5, wenn
 - Substanz erhalten. Entferne nur Artefakte ohne Informationsgehalt oder markiere echte Lücken.
 - Statistische Detektoren (GPTZero u. a.) messen Perplexity und Satzrhythmus, nicht diese Muster. Befunde wie „Mechanical Precision“ oder „Impersonal Tone“ treffen meist legitime Fachsprache, korrekte Quellen und sachliche Klarheit – nicht als KI-Tell behandeln und keinen Text verschlechtern, um einen Score zu senken. Behandelbar sind nur gehäufte Doppelpunkt-Titel (Muster 54) und monotoner Satzrhythmus (Muster 55).
 - Detector-Bezug ist Kontext. Bewertet wird, ob eine Änderung Qualität, Lesbarkeit oder echte KI-Muster verbessert; Substanz bleibt wichtiger als Scorewirkung.
-- **Null-Edit:** Wenn der Text sauber ist oder nur False Positives bleiben, sage das, nenne höchstens die verworfenen Kandidaten und höre auf.
+- **Null-Edit:** Wenn der Text sauber ist oder nur False Positives bleiben, sage das, nenne höchstens die verworfenen Kandidaten und höre auf. Ausnahme: unbelegte oder erfundene Quellen werden immer markiert.
 
 ## Carve-outs: bekannte False Positives
 
