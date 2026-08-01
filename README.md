@@ -932,6 +932,17 @@ GitHub Release.
 
 ## Was ist neu?
 
+- **5.12.0** - Wartungsrelease mit zwei geschlossenen Detektor-Lücken: Fettdruck-Marker
+  schlossen die Prosa zwischen zwei Fett-Spannen als Zitat aus, und der Fakten-Carve-out griff
+  nur für „nicht A, sondern B“. Wochentags-, Monats- und Einheitenkorrekturen bleiben jetzt in
+  beiden Antithesenformen unbeanstandet. Zeilenenden überleben Lesen und Schreiben, damit
+  Positionsangaben zur Datei passen; unlesbare Dateien und defekte Fixtures enden
+  vertragsgemäß mit Exit-Code `2`. **Für CI-Nutzer wichtig:** `--fail-on blocker` entfällt bei
+  `unicode_lint.py`, `rhythm_lint.py`, `german_pattern_lint.py` und `spell_lint.py`, weil
+  diese Scripts keine Blocker erzeugen und die Option das Gate still abschaltete. Dazu
+  kleinere Korrekturen an Scope, Segmentierung und Tokenisierung sowie durchgehend korrekte
+  Orthografie in den ausgelieferten Skill-Dateien. Katalog und Schwellen bleiben unverändert.
+
 - **5.11.0** - Der Naturalness-Linter erkennt dichte M8-Cluster aus „nicht A, sondern B“
   und „A und nicht B“ und berücksichtigt sie im Preflight. Gemeinsames Scope-Handling schützt
   Zitate, Code, URLs und HTML; eindeutige Zahlen- und Datumskorrekturen bleiben unbeanstandet.
