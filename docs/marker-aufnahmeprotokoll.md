@@ -42,7 +42,9 @@ brauchen keinen.
 Zu bumpen sind: `.claude-plugin/plugin.json`, `.codex-plugin/plugin.json`, das
 `SKILL.md`-Frontmatter, die Kopfzeilen von `references/patterns.md` und
 `references/decision-tables.md`, `docs/coverage-matrix.md`, `WARP.md` sowie die Pins in
-`tests/`. Der Versions-Sync-Test und `scripts/doctor.py` erzwingen die Vollständigkeit.
+`tests/`. `test_release_metadata_stays_in_sync` erzwingt diese vollständige Liste;
+`scripts/doctor.py` prüft separat den Versions-Sync von `SKILL.md` und den beiden
+Plugin-Manifesten.
 `.claude-plugin/marketplace.json` führt bewusst keine Version: Steht sie an beiden Stellen,
 gewinnt `plugin.json` ohne Warnung, und ein vergessener Wert dort verdeckt den gepflegten
 im Marktplatz-Eintrag.

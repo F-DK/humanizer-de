@@ -22,7 +22,7 @@ verify: test lint
 	git diff --check
 
 bench:
-	python3 scripts/bench.py --check
+	$(PYTHON) scripts/bench.py --check
 
 doctor:
 	$(PYTHON) scripts/doctor.py

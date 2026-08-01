@@ -19,6 +19,26 @@ spec.loader.exec_module(unicode_lint)
 
 
 class UnicodeLintTests(unittest.TestCase):
+    def test_delivered_markdown_has_no_hidden_unicode(self):
+        paths = (
+            ROOT / "SKILL.md",
+            ROOT / "README.md",
+            ROOT / "WARP.md",
+            ROOT / "skills" / "humanizer-de" / "SKILL.md",
+            *sorted((ROOT / "references").glob("*.md")),
+            *sorted((ROOT / "assets").glob("*.md")),
+            ROOT / "docs" / "coverage-matrix.md",
+        )
+
+        for path in paths:
+            with self.subTest(path=path.relative_to(ROOT)):
+                hidden = [
+                    item
+                    for item in unicode_lint.lint(path.read_text(encoding="utf-8"))
+                    if item["kind"] == "hidden_unicode"
+                ]
+                self.assertEqual(hidden, [])
+
     def test_hidden_unicode_is_found_and_removed(self):
         hidden = chr(0x200B)
         text = f"Alpha{hidden}Beta"

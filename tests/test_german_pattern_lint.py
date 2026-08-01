@@ -271,6 +271,26 @@ class GermanPatternLintTests(unittest.TestCase):
         text = "Nicht laut und nicht leise, sondern klar. " * 2
         self.assertNotIn("negation_antithesis_cluster", kinds(german_pattern_lint.lint(text)))
 
+    def test_negation_antithesis_overlapping_candidate_spans_round_trip(self):
+        text = "Nicht laut und nicht leise, sondern klar. " * 4
+        candidates = sorted(
+            match.span()
+            for pattern in german_pattern_lint.ANTITHESIS_RES
+            for match in pattern.finditer(text)
+        )
+        self.assertTrue(
+            any(right[0] < left[1] for left, right in zip(candidates, candidates[1:]))
+        )
+
+        report = german_pattern_lint.lint(text)
+        finding = next(item for item in report["findings"] if item["kind"] == "negation_antithesis_cluster")
+
+        self.assertEqual(finding["evidence"]["count"], 4)
+        self.assertEqual(
+            [text[span["start"]:span["end"]] for span in finding["spans"]],
+            finding["evidence"]["matches"],
+        )
+
     def test_negation_antithesis_rejected_overlap_does_not_extend_coverage(self):
         text = "Klar und nicht laut, sondern nicht leise und nicht schrill. " * 4
         report = german_pattern_lint.lint(text)

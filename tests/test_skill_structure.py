@@ -136,6 +136,7 @@ class SkillStructureTests(unittest.TestCase):
         decision_text = read_utf8(ROOT / "references" / "decision-tables.md")
         coverage_text = read_utf8(ROOT / "docs" / "coverage-matrix.md")
         warp_text = read_utf8(ROOT / "WARP.md")
+        checklist_text = read_utf8(ROOT / "assets" / "checkliste-ki-tells.md")
 
         self.assertRegex(skill_text, rf"version:\s+['\"]?{re.escape(EXPECTED_VERSION)}['\"]?")
         self.assertEqual(plugin["version"], EXPECTED_VERSION)
@@ -150,11 +151,20 @@ class SkillStructureTests(unittest.TestCase):
         self.assertIn(f"v{EXPECTED_VERSION}", patterns_text.splitlines()[2])
         self.assertIn(f"v{EXPECTED_VERSION}", decision_text.splitlines()[2])
         self.assertIn(f"v{EXPECTED_VERSION}", coverage_text)
+        self.assertEqual(
+            warp_text.splitlines()[0],
+            f"# WARP - Humanizer (Deutsch) Entwicklerleitfaden (v{EXPECTED_VERSION})",
+        )
 
         expected_pattern_label = f"{EXPECTED_PATTERN_COUNT} Muster"
         self.assertIn(expected_pattern_label, plugin["description"])
         self.assertIn(expected_pattern_label, codex_plugin["description"])
+        self.assertIn(expected_pattern_label, codex_plugin["interface"]["longDescription"])
         self.assertIn(expected_pattern_label, marketplace_plugin["description"])
+        self.assertIn(
+            f"vollständige Katalog mit {EXPECTED_PATTERN_COUNT} Mustern",
+            checklist_text,
+        )
         self.assertIn("Supports Claude Code and Codex", plugin["description"])
         self.assertIn("Supports Claude Code and Codex", codex_plugin["description"])
         self.assertIn("Supports Claude Code and Codex", marketplace_plugin["description"])
