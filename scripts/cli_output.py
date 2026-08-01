@@ -89,8 +89,8 @@ def resolve_exit_code(policy: str, findings: list[dict]) -> int:
     if policy == "never":
         return 0
     if policy == "blocker":
-        return 1 if any(item.get("severity") == "blocker" for item in findings) else 0
-    return 1 if findings else 0
+        return 1 if any(not item.get("advisory") and item.get("severity") == "blocker" for item in findings) else 0
+    return 1 if any(not item.get("advisory") for item in findings) else 0
 
 
 def json_for_stdout(payload: Any, *, indent: int = 2, sort_keys: bool = False) -> str:

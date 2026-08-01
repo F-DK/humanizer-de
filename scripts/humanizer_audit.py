@@ -24,7 +24,7 @@ from cli_output import handle_cli_input_errors, print_json, read_user_text, requ
 import text_scope
 
 
-SOURCES = ("unicode", "rhythm", "german_pattern", "register")
+SOURCES = ("unicode", "rhythm", "german_pattern", "register", "syntax")
 RHYTHM_KEYS = (
     "sentence_count",
     "mean_sentence_length",
@@ -325,6 +325,20 @@ def compact_register_findings(findings: list[dict]) -> list[dict]:
     return compact
 
 
+def compact_syntax_findings(findings: list[dict]) -> list[dict]:
+    return [
+        {
+            "source": "syntax",
+            "pattern": item.get("pattern", 0),
+            "kind": item.get("kind", "unknown"),
+            "severity": "info",
+            "advisory": True,
+            "summary": short_text(item.get("sentence", "")),
+        }
+        for item in findings
+    ]
+
+
 def style_profile_section(
     text: str,
     path: Path,
@@ -385,6 +399,7 @@ def analyze_file(
         + compact_rhythm_findings(rhythm_report["suspicions"])
         + compact_german_pattern_findings(german_report["findings"])
         + compact_register_findings(register_report["findings"])
+        + compact_syntax_findings(syntax_report["findings"] if syntax_report else [])
     )
     preflight = preflight_assessment(
         rhythm_report,

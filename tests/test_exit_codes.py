@@ -64,6 +64,31 @@ class ExitCodeTests(unittest.TestCase):
                     exit_code,
                 )
 
+    def test_advisory_findings_are_gate_neutral(self):
+        findings = [
+            {"severity": "info", "advisory": True},
+            {"severity": "blocker", "advisory": True},
+        ]
+
+        self.assertEqual(cli_output.resolve_exit_code("any", findings), 0)
+        self.assertEqual(cli_output.resolve_exit_code("blocker", findings), 0)
+
+    def test_any_policy_still_gates_non_advisory_findings(self):
+        findings = [
+            {"severity": "info", "advisory": True},
+            {"severity": "warning"},
+        ]
+
+        self.assertEqual(cli_output.resolve_exit_code("any", findings), 1)
+
+    def test_blocker_policy_still_gates_non_advisory_blockers(self):
+        findings = [
+            {"severity": "blocker", "advisory": True},
+            {"severity": "blocker"},
+        ]
+
+        self.assertEqual(cli_output.resolve_exit_code("blocker", findings), 1)
+
     def test_cli_defaults(self):
         with tempfile.TemporaryDirectory() as tmp:
             audit_path = Path(tmp) / "finding.md"

@@ -88,12 +88,12 @@ class HumanizerAuditTests(unittest.TestCase):
         self.assertEqual(sum(report["summary"]["counts"].values()), 0)
         self.assertEqual(report["summary"]["preflight"]["risk"], "insufficient_text")
 
-    def test_address_validation_candidate_stays_info_advisory(self):
+    def test_address_validation_candidate_is_gate_neutral_advisory(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "candidate.md"
             path.write_text("Du bist nicht zu sensibel.", encoding="utf-8")
 
-            exit_code, report = run_json(["--file", str(path)])
+            exit_code, report = run_json(["--file", str(path), "--fail-on", "any"])
 
         finding = next(
             item for item in report["findings"] if item["kind"] == "address_validation_candidate"
@@ -103,6 +103,7 @@ class HumanizerAuditTests(unittest.TestCase):
         self.assertEqual(finding["severity"], "info")
         self.assertTrue(finding["advisory"])
         self.assertIn("Kandidat für unbelegte Adressaten-Validierung", finding["summary"])
+        self.assertFalse(report["ok"])
 
     def test_without_precise_keeps_default_report_shape(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -197,6 +198,65 @@ class HumanizerAuditTests(unittest.TestCase):
         self.assertEqual(
             precise_report["syntax"],
             {"available": False, "reason": "spacy_missing", "metrics": None, "findings": []},
+        )
+
+    def test_precise_syntax_findings_are_visible_advisory_and_do_not_change_ok(self):
+        syntax_report = {
+            "available": True,
+            "metrics": {},
+            "findings": [
+                {
+                    "pattern": 39,
+                    "kind": "passive_sentence",
+                    "severity": "info",
+                    "sentence": "Der Bericht wird geprüft.",
+                },
+                {
+                    "kind": "subjectless_fragment",
+                    "severity": "info",
+                    "sentence": "Nach sorgfältiger Prüfung.",
+                },
+            ],
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "text.md"
+            path.write_text("Das Team prüft die Datei. Danach endet der Test.", encoding="utf-8")
+
+            clear_precise_cache()
+            with mock.patch.object(
+                humanizer_audit.syntax_lint,
+                "load_nlp",
+                return_value=(None, "spacy_missing"),
+            ), mock.patch.object(humanizer_audit.syntax_lint, "lint", return_value=syntax_report):
+                exit_code, report = run_json(
+                    ["--file", str(path), "--precise", "--fail-on", "any"]
+                )
+            clear_precise_cache()
+
+        self.assertEqual(exit_code, 0)
+        self.assertTrue(report["ok"])
+        self.assertEqual(sum(report["summary"]["counts"].values()), 0)
+        self.assertNotIn("syntax", report["summary"]["counts"])
+        self.assertEqual(
+            [item for item in report["findings"] if item["source"] == "syntax"],
+            [
+                {
+                    "source": "syntax",
+                    "pattern": 39,
+                    "kind": "passive_sentence",
+                    "severity": "info",
+                    "advisory": True,
+                    "summary": "Der Bericht wird geprüft.",
+                },
+                {
+                    "source": "syntax",
+                    "pattern": 0,
+                    "kind": "subjectless_fragment",
+                    "severity": "info",
+                    "advisory": True,
+                    "summary": "Nach sorgfältiger Prüfung.",
+                },
+            ],
         )
 
     @unittest.skipUnless(SPACY_AVAILABLE, "spaCy German model not installed")
