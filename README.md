@@ -937,6 +937,18 @@ GitHub Release.
 
 ## Was ist neu?
 
+- **5.14.0** - Acht Robustheitsfehler behoben, die das Werkzeug an Stellen blind oder falsch
+  machten, an denen niemand nachgesehen hatte. Enthielt ein unveränderter Text sowohl
+  Steigerungs- als auch Sinkwörter, blockierte ihn das Evidence-Gate; jetzt blockt nur eine echte
+  Richtungsänderung. In einzeiligem HTML wird die Prosa wieder geprüft, was den Parsedown-Weg
+  betrifft, ganze fett gesetzte Sätze zählen nun mit, und zwischen benachbarten Fett-Spannen
+  entstehen keine Phantom-Treffer mehr. Zitierte Fremdrede zählt nicht mehr zur Autorenstimme.
+  An juristischen Abkürzungen wie Abs. oder Art. bricht die Satztrennung
+  nicht mehr, und nummerierte Listen bleiben ganz. Im Präzisionspfad unterscheidet der
+  Register-Check jetzt das informelle Plural-ihr von der Höflichkeitsform. Dazu kommen kleinere
+  Korrekturen bei Abstrakta im Singular und bei Mehrwortmarkern mit ungewöhnlichem Leerzeichen.
+  Katalog und Schwellen bleiben unverändert. Die Fehlalarm-Baseline ist byte-identisch geblieben.
+
 - **5.13.0** - Befunde von `syntax_lint` erscheinen jetzt als Hinweise mit Severity `info` im
   kompakten Audit-Report; bisher war Muster 39 nur in einer internen Sektion sichtbar.
   **Achtung für CI-Nutzer:** Advisory-Befunde sind ab sofort gate-neutral, `--fail-on any`
