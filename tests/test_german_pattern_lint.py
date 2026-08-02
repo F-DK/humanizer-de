@@ -357,6 +357,24 @@ class GermanPatternLintTests(unittest.TestCase):
         text = "**Alpha:** eins. **Beta:** zwei. **Gamma:** drei. **Delta:** vier. **Epsilon:** fünf."
         self.assertIn("bold_overdose", kinds(german_pattern_lint.lint(text)))
 
+    def test_bold_overdose_counts_six_long_spans(self):
+        text = "\n".join(f"**{letter * 81}**" for letter in "abcdef")
+        self.assertIn("bold_overdose", kinds(german_pattern_lint.lint(text)))
+
+    def test_bold_overdose_does_not_count_cross_span_phantoms(self):
+        spans = ["kurz", "A" * 81, "knapp", "B" * 81, "klein", "C" * 81]
+        text = " ".join(f"**{span}**" for span in spans)
+        finding = next(
+            item
+            for item in german_pattern_lint.lint(text)["findings"]
+            if item["kind"] == "bold_overdose"
+        )
+        self.assertEqual(finding["evidence"]["count"], 6)
+
+    def test_bold_overdose_threshold_remains_five_for_long_spans(self):
+        text = "\n".join(f"**{letter * 81}**" for letter in "abcd")
+        self.assertNotIn("bold_overdose", kinds(german_pattern_lint.lint(text)))
+
     def test_bold_overdose_ignores_four_spans(self):
         text = "**Alpha:** eins. **Beta:** zwei. **Gamma:** drei. **Delta:** vier."
         self.assertNotIn("bold_overdose", kinds(german_pattern_lint.lint(text)))
