@@ -50,6 +50,29 @@ class RhythmLintTests(unittest.TestCase):
             ["Das gilt z. B. für Berlin.", "Siehe S. 12.", "Danach folgt mehr."],
         )
 
+    def test_sentence_split_keeps_abs_abbreviation(self):
+        text = "Nach § 12 Abs. 3 gilt die Frist."
+
+        self.assertEqual(rhythm_lint.split_sentences(text), [text])
+
+    def test_sentence_split_keeps_art_abbreviation(self):
+        text = "Gemäß Art. 5 der Verordnung entfällt."
+
+        self.assertEqual(rhythm_lint.split_sentences(text), [text])
+
+    def test_sentence_split_keeps_msp_abbreviation(self):
+        text = "Siehe Msp. 14 des Kommentars."
+
+        self.assertEqual(rhythm_lint.split_sentences(text), [text])
+
+    def test_sentence_split_keeps_numbered_list_items_whole(self):
+        text = "1. Erster Punkt\n2. Zweiter Punkt\n3. Dritter Punkt"
+
+        self.assertEqual(
+            rhythm_lint.split_sentences(text),
+            ["1. Erster Punkt", "2. Zweiter Punkt", "3. Dritter Punkt"],
+        )
+
     def test_sentence_split_keeps_german_ordinals(self):
         texts = (
             "Im 19. Jahrhundert begann die Industrialisierung.",
@@ -62,11 +85,11 @@ class RhythmLintTests(unittest.TestCase):
                 self.assertEqual(rhythm_lint.split_sentences(text), [text])
 
     def test_sentence_split_keeps_genuine_boundary_after_number(self):
-        text = "Das Team bestand aus 3. Danach begann die Auswertung."
+        text = "Wir zählten 3. Danach war Schluss."
 
         self.assertEqual(
             rhythm_lint.split_sentences(text),
-            ["Das Team bestand aus 3.", "Danach begann die Auswertung."],
+            ["Wir zählten 3.", "Danach war Schluss."],
         )
 
     def test_bom_prefixed_markdown_heading_keeps_document_metrics(self):

@@ -119,6 +119,37 @@ ABBREVIATIONS = (
     "Prof.",
     "Nr.",
     "vgl.",
+    "Abs.",
+    "Art.",
+    "Msp.",
+    "Rn.",
+    "lit.",
+    "Bd.",
+    "Aufl.",
+    "Hrsg.",
+    "Ziff.",
+    "Buchst.",
+    "i.V.m.",
+    "ggf.",
+    "inkl.",
+    "zzgl.",
+    "evtl.",
+    "Tel.",
+    "Str.",
+    "Abb.",
+    "Tab.",
+    "Kap.",
+    "Anl.",
+    "Anh.",
+    "Anm.",
+    "Az.",
+    "Beschl.",
+    "Diss.",
+    "ff.",
+    "Fn.",
+    "gem.",
+    "Jg.",
+    "Urt.",
 )
 
 MONTHS = (
@@ -150,6 +181,7 @@ ORDINAL_RE = re.compile(
     r"(?<!\w)(?P<lead>(?i:am|beim|im|vom|zum|zur|der|die|das|den|dem|des|ein|eine|einer|einem|einen|eines)\s+)"
     r"(?P<number>\d+)\.(?=\s+[A-ZÄÖÜ][a-zäöüß])"
 )
+LIST_MARKER_RE = re.compile(r"(?m)^(?P<number>[ \t]*\d+)\.(?=[ \t]+\S)")
 
 WORD_RE = re.compile(r"[^\W_]+(?:[-'][^\W_]+)?")
 CLAUSE_PUNCT_RE = re.compile(r"[,;:()]")
@@ -254,6 +286,10 @@ def protect_sentence_periods(text: str) -> str:
     )
     masked = DECIMAL_RE.sub(lambda match: match.group(1) + DOT + match.group(2), masked)
     masked = ORDINAL_RE.sub(lambda match: match.group(0).replace(".", DOT), masked)
+    masked = LIST_MARKER_RE.sub(
+        lambda match: (SENTENCE_BREAK if match.start() else "") + match.group("number") + DOT,
+        masked,
+    )
     return masked
 
 
