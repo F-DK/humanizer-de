@@ -151,11 +151,30 @@ def is_anaphoric_sie(match: re.Match, text: str, doc: object) -> bool:
     )
 
 
+def is_informal_plural_ihr(match: re.Match, text: str, doc: object) -> bool:
+    if match.group(0) != "Ihr" or not is_sentence_initial_sie(text, match.start()):
+        return False
+
+    token = token_for_match(doc, match.start(), match.end())
+    if token is None:
+        return False
+    # Das Wort selbst trennt die Fälle: informelles "ihr" ist ein Pronomen in
+    # zweiter Person Plural, die Höflichkeitsform ein Possessiv-Determinativ.
+    # Am Verb hängt es nicht, dort vertaggt das kleine Modell "könnt".
+    return (
+        token.pos_ == "PRON"
+        and has_morph(token, "Person", "2")
+        and has_morph(token, "Number", "Plur")
+    )
+
+
 def sie_formal_spans(text: str, nlp: object | None = None) -> list[tuple[int, int]]:
     doc = nlp(text) if nlp is not None else None
     spans: list[tuple[int, int]] = []
     for match in SIE_FORMS_RE.finditer(text):
-        if doc is not None and is_anaphoric_sie(match, text, doc):
+        if doc is not None and (
+            is_anaphoric_sie(match, text, doc) or is_informal_plural_ihr(match, text, doc)
+        ):
             continue
         spans.append(match.span())
     return spans

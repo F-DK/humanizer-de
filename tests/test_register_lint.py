@@ -129,6 +129,16 @@ class RegisterLintTests(unittest.TestCase):
 
         self.assertIn("mixed_address", kinds(report))
 
+    def test_sentence_initial_ihr_stays_counted_without_precise(self):
+        texts = (
+            "Du prüfst das. Ihr habt Fragen.",
+            "Du prüfst das. Ihr Passwort ist abgelaufen.",
+        )
+
+        for text in texts:
+            with self.subTest(text=text):
+                self.assertIn("mixed_address", kinds(register_lint.lint(text)))
+
     def test_precise_without_spacy_keeps_blockquote_sie(self):
         text = "Du prüfst die Daten.\n\n> Bitte prüfen Sie Ihre Angaben.\n\nDann passt es."
         default_report = register_lint.lint(text)
@@ -164,6 +174,24 @@ class RegisterLintPreciseTests(unittest.TestCase):
 
     def test_precise_keeps_real_sie_address(self):
         text = "Bitte prüfen Sie das. Du siehst es dann."
+        report = register_lint.lint(text, precise=True)
+
+        self.assertIn("mixed_address", kinds(report))
+
+    def test_precise_ignores_sentence_initial_informal_plural_ihr(self):
+        # "könnt" gehört dazu, weil das kleine Modell das Verb dort als dritte
+        # Person Singular vertaggt. Erkannt wird deshalb am Pronomen, nicht am Verb.
+        for text in (
+            "Du prüfst das. Ihr habt Fragen.",
+            "Du prüfst das. Ihr seid dran.",
+            "Du prüfst das. Ihr könnt loslegen.",
+            "Du prüfst das. Ihr wollt mehr.",
+        ):
+            with self.subTest(text=text):
+                self.assertNotIn("mixed_address", kinds(register_lint.lint(text, precise=True)))
+
+    def test_precise_keeps_sentence_initial_possessive_ihr(self):
+        text = "Du prüfst das. Ihr Passwort ist abgelaufen."
         report = register_lint.lint(text, precise=True)
 
         self.assertIn("mixed_address", kinds(report))
