@@ -236,7 +236,7 @@ def marker_spans(text: str, marker: str) -> list[tuple[int, int]]:
     if override is not None:
         matches = override.finditer(text)
     elif " " in marker:
-        matches = re.finditer(rf"\b{re.escape(marker)}\w*\b", text, re.IGNORECASE)
+        matches = re.finditer(r"\b" + re.escape(marker).replace(r"\ ", r"\s+") + r"\w*\b", text, re.IGNORECASE)
     else:
         stem = marker_stem(marker)
         matches = re.finditer(rf"\b{re.escape(stem)}\w*\b", text, re.IGNORECASE)

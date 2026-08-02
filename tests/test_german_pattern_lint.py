@@ -80,6 +80,21 @@ class GermanPatternLintTests(unittest.TestCase):
         text = "Die Plattform fungiert als Werkzeug und verfügt über mehrere Module."
         self.assertIn("copula_avoidance_cluster", kinds(german_pattern_lint.lint(text)))
 
+    def test_multiword_marker_counts_line_break(self):
+        self.assertEqual(german_pattern_lint.count_marker("fungiert\nals", "fungiert als"), 1)
+
+    def test_multiword_marker_counts_non_breaking_space(self):
+        self.assertEqual(german_pattern_lint.count_marker("fungiert\u00a0als", "fungiert als"), 1)
+
+    def test_multiword_marker_counts_repeated_spaces(self):
+        self.assertEqual(german_pattern_lint.count_marker("fungiert  als", "fungiert als"), 1)
+
+    def test_multiword_marker_span_references_original_text(self):
+        text = "fungiert\u00a0als"
+        spans = german_pattern_lint.marker_spans(text, "fungiert als")
+
+        self.assertEqual([text[start:end] for start, end in spans], [text])
+
     def test_copula_avoidance_cluster_ignores_blockquote(self):
         text = "> Die Plattform fungiert als Werkzeug und verfügt über mehrere Module.\n"
         self.assertNotIn("copula_avoidance_cluster", kinds(german_pattern_lint.lint(text)))
