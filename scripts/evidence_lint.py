@@ -132,6 +132,7 @@ DIRECTION_MARKERS = {
         "erhöhte",
         "gestiegen",
         "stieg",
+        "stiegen",
         "steigt",
         "verbessert",
         "verbesserte",
@@ -143,6 +144,7 @@ DIRECTION_MARKERS = {
         "reduziert",
         "reduzierte",
         "sank",
+        "sanken",
         "senkt",
         "senkte",
         "verringert",
@@ -408,8 +410,11 @@ def lint(before: str, after: str, precise: bool = False) -> list[dict]:
     before_direction = direction_profile(before)
     after_direction = direction_profile(after)
     if (
-        ("increase" in before_direction and "decrease" in after_direction)
-        or ("decrease" in before_direction and "increase" in after_direction)
+        before_direction != after_direction
+        and (
+            ("increase" in before_direction and "decrease" in after_direction)
+            or ("decrease" in before_direction and "increase" in after_direction)
+        )
     ):
         add_finding(
             findings,
