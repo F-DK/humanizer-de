@@ -218,8 +218,20 @@ def overlaps_mention(start: int, end: int, ranges: tuple[tuple[int, int], ...]) 
     return position >= 0 and ranges[position][1] > start
 
 
+@functools.lru_cache(maxsize=8)
+def foreign_voice_ranges(text: str) -> tuple[tuple[int, int], ...]:
+    """Erwähnungen plus Blockquotes: alles, was nicht der Autorenstimme zählt.
+
+    Wie in `excluded_spans` gelten Blockquotes als Fremdrede, damit ein Zitat
+    keinen Marker-Cluster der Autorenstimme erzeugt.
+    """
+    return tuple(
+        text_scope.merge_ranges([*mention_ranges(text), *text_scope.blockquote_ranges(text)])
+    )
+
+
 def marker_spans(text: str, marker: str) -> list[tuple[int, int]]:
-    ranges = mention_ranges(text)
+    ranges = foreign_voice_ranges(text)
     override = MARKER_PATTERNS.get(marker)
     if override is not None:
         matches = override.finditer(text)

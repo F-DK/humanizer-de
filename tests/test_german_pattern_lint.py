@@ -41,6 +41,10 @@ class GermanPatternLintTests(unittest.TestCase):
         text = "Der Text beleuchtet das vielschichtige Zusammenspiel in einer dynamischen Landschaft."
         self.assertIn("ai_marker_cluster", kinds(german_pattern_lint.lint(text)))
 
+    def test_ai_marker_cluster_ignores_blockquote(self):
+        text = "> Der Text beleuchtet das vielschichtige Zusammenspiel in einer dynamischen Landschaft.\n"
+        self.assertNotIn("ai_marker_cluster", kinds(german_pattern_lint.lint(text)))
+
     def test_single_marker_is_not_cluster(self):
         text = "Die robuste Statistik nutzt ein dynamisches Routing."
         self.assertNotIn("ai_marker_cluster", kinds(german_pattern_lint.lint(text)))
@@ -76,9 +80,17 @@ class GermanPatternLintTests(unittest.TestCase):
         text = "Die Plattform fungiert als Werkzeug und verfügt über mehrere Module."
         self.assertIn("copula_avoidance_cluster", kinds(german_pattern_lint.lint(text)))
 
+    def test_copula_avoidance_cluster_ignores_blockquote(self):
+        text = "> Die Plattform fungiert als Werkzeug und verfügt über mehrere Module.\n"
+        self.assertNotIn("copula_avoidance_cluster", kinds(german_pattern_lint.lint(text)))
+
     def test_abstraction_cluster_counts_singular_aspekt_and_prozess(self):
         text = "Ein Aspekt prägt den Prozess. Ein weiterer Aspekt verändert den Prozess. Der Prozess endet."
         self.assertIn("abstraction_cluster", kinds(german_pattern_lint.lint(text)))
+
+    def test_abstraction_cluster_ignores_blockquote(self):
+        text = "> Ein Aspekt prägt den Prozess. Ein weiterer Aspekt verändert den Prozess. Der Prozess endet.\n"
+        self.assertNotIn("abstraction_cluster", kinds(german_pattern_lint.lint(text)))
 
     def test_abstraction_cluster_counts_plural_aspekte_and_prozesse(self):
         text = "Mehrere Aspekte prägen die Prozesse. Weitere Aspekte verändern diese Prozesse. Die Prozesse enden."
