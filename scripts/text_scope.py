@@ -31,7 +31,6 @@ TECHNICAL_PATTERNS = (
 
 STRUCTURAL_BLOCK_PATTERNS = (
     re.compile(r"(?m)^[ \t]*</?[A-Za-z][^>\r\n]*>[ \t]*(?:\r?\n|$)"),
-    re.compile(r"(?m)^[ \t]*<[A-Za-z][^>\r\n]*>.*</[A-Za-z][^>\r\n]*>[ \t]*(?:\r?\n|$)"),
 )
 
 

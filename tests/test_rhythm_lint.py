@@ -171,7 +171,7 @@ class RhythmLintTests(unittest.TestCase):
         self.assertEqual(report["document"]["connector_density"], 0)
         self.assertNotIn(4, pattern_ids(report))
 
-    def test_html_summary_lines_are_not_prose_blocks(self):
+    def test_html_summary_text_remains_in_prose_scope(self):
         text = (
             "<details>\n"
             "<summary><strong>Inhalt</strong></summary>\n\n"
@@ -184,7 +184,7 @@ class RhythmLintTests(unittest.TestCase):
         )
         report = rhythm_lint.analyze(text)
 
-        self.assertEqual(report["document"]["sentence_count"], 2)
+        self.assertEqual(report["document"]["sentence_count"], 4)
         self.assertEqual(report["document"]["repeated_openers"], [])
 
     def test_version_list_openers_do_not_count_as_repeated_openers(self):
