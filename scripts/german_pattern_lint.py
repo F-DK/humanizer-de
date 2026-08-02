@@ -76,6 +76,13 @@ ABSTRACTA = (
     "faktoren",
     "prozesse",
 )
+# Marker, die der Standard-Stamm nicht erreicht: Er streicht nur ein End-"en",
+# deshalb bleiben die beiden Formen auf "e" im Plural stecken. "prozess" allein
+# waere zu weit und trafe auch Prozessor und prozessual.
+MARKER_PATTERNS = {
+    "aspekte": re.compile(r"\baspekt(?:e|en|es)?\b", re.IGNORECASE),
+    "prozesse": re.compile(r"\bprozess(?:e|en|es)?\b", re.IGNORECASE),
+}
 NEGATION_PARALLELISM_RES = (
     re.compile(
         r"\b[Kk]eine?[nmrs]?\b[^,.;:!?\r\n]{1,45},\s*"
@@ -213,7 +220,10 @@ def overlaps_mention(start: int, end: int, ranges: tuple[tuple[int, int], ...]) 
 
 def marker_spans(text: str, marker: str) -> list[tuple[int, int]]:
     ranges = mention_ranges(text)
-    if " " in marker:
+    override = MARKER_PATTERNS.get(marker)
+    if override is not None:
+        matches = override.finditer(text)
+    elif " " in marker:
         matches = re.finditer(rf"\b{re.escape(marker)}\w*\b", text, re.IGNORECASE)
     else:
         stem = marker_stem(marker)
