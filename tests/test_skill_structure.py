@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_VERSION = "5.14.0"
+EXPECTED_VERSION = "5.15.0"
 EXPECTED_PATTERN_COUNT = 72
 
 
@@ -40,7 +40,14 @@ class SkillStructureTests(unittest.TestCase):
         self.assertIn("make lt FILE=<datei>", text)
 
         body = text.split("---", 2)[-1]
-        self.assertLessEqual(len(re.findall(r"\S+", body)), 2000)
+        # Grenze am 2026-08-03 von 2000 auf 2300 angehoben (Autor-Entscheid).
+        # Anlass: SKILL.md rief nur 20 der 72 Muster namentlich auf, 19 weitere
+        # waren ueber Linter erreichbar. 44 Muster hatten keinen Weg in die
+        # Arbeit -- Muster 9 (Trikolon) blieb deshalb in einem Autorentext
+        # unbemerkt. Die Pass-Annotation in patterns.md plus der Audit-Zweig
+        # kosten rund 150 Woerter und schliessen die Luecke fuer alle 72.
+        # Die Grenze bleibt bestehen: SKILL.md ist ein Router, kein Handbuch.
+        self.assertLessEqual(len(re.findall(r"\S+", body)), 2300)
 
     def test_skill_frontmatter_is_hybrid_safe(self):
         text = read_utf8(ROOT / "SKILL.md")

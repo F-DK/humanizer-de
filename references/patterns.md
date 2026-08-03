@@ -1,6 +1,6 @@
 # Humanizer-de Pattern Catalog
 
-Vollständiger Musterkatalog für Humanizer (Deutsch) v5.14.0. Nur bei konkreter Musterdiagnose, Audit oder Grenzfällen laden.
+Vollständiger Musterkatalog für Humanizer (Deutsch) v5.15.0. Nur bei konkreter Musterdiagnose, Audit oder Grenzfällen laden.
 
 ## Kurzreferenz
 
@@ -104,6 +104,7 @@ Der einzige substanzwahrende Hebel gegen niedrige Burstiness ist Muster 55 (Satz
 
 #### 1. Übermäßige Betonung von Symbolik [HIGH]
 <!-- haltbarkeit: kern -->
+<!-- pass: 2 -->
 **Problem:** Bestimmte Wendungen erzeugen symbolische, zu perfekte Bedeutungen.
 
 Häufige Indikatoren:
@@ -123,6 +124,7 @@ Häufige Indikatoren:
 
 #### 2. Werbesprache und Superlative [HIGH]
 <!-- haltbarkeit: kern -->
+<!-- pass: 2 -->
 **Problem:** Übertriebene Begeisterung, die mehr nach Marketing als nach neutraler Beschreibung klingt.
 
 Häufige Indikatoren:
@@ -145,6 +147,7 @@ Auch übersetzte Hype-Idiome aus dem englischen KI-Sprech gehören hierher: "das
 
 #### 3. Redaktionelle Kommentare und Meta-Sprache [HIGH]
 <!-- haltbarkeit: kern -->
+<!-- pass: 2 -->
 **Problem:** Der Text beschreibt sich selbst, statt direkten Inhalt zu vermitteln.
 
 Häufige Indikatoren:
@@ -164,6 +167,7 @@ Häufige Indikatoren:
 
 #### 4. Mechanische Konjunktionen [HIGH]
 <!-- haltbarkeit: kern -->
+<!-- pass: 2 -->
 **Problem:** Bestimmte Übergangswörter werden übermäßig mechanisch und klischeehaft eingesetzt.
 
 Häufige Indikatoren:
@@ -183,6 +187,7 @@ Häufige Indikatoren:
 
 #### 5. Abschnitts-Zusammenfassungen [HIGH]
 <!-- haltbarkeit: kern -->
+<!-- pass: 2 -->
 **Problem:** Jeder Absatz wird automatisch zusammengefasst, statt natürlich zu fließen.
 
 Häufige Indikatoren:
@@ -202,6 +207,7 @@ Häufige Indikatoren:
 
 #### 6. Unpassendes "Fazit" [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 3 -->
 **Problem:** Wikipedia-Artikel enden mit explizitem "Fazit", was unpassend ist.
 
 Häufige Indikatoren:
@@ -215,6 +221,7 @@ Häufige Indikatoren:
 
 #### 7. Schlussfolgerungen mit zu starker Dichotomie [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 3 -->
 **Problem:** "Trotz X... steht Y vor Z" – zu perfekt gedachte Gegensätze.
 
 Häufige Indikatoren:
@@ -238,6 +245,7 @@ Häufige Indikatoren:
 
 #### 8. Negative Parallelismen und abgehackte Verneinungen [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 3 -->
 **Problem:** "Nicht nur... sondern auch" – zu argumentativ, zu literarisch. Dazu kommen abgehackte Verneinungsfragmente am Satzende wie "kein Raten", "kein Aufwand", die als Kurzform statt als echter Satz angehängt werden.
 
 Häufige Indikatoren:
@@ -268,6 +276,7 @@ funktionsarme Pointe oder Wiederholung des Schemas behandeln.
 
 #### 9. Trikolon und schematische Aufzählungen (Regel der Drei) [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 3 -->
 **Problem:** Übermäßige Nutzung der Regel-der-Drei als rhetorisches Mittel. Zusätzlich: auffällige Rundzahlen bei Listen (5, 7 oder 10 Punkte) als schematisches Muster.
 
 Häufige Indikatoren:
@@ -286,6 +295,7 @@ Häufige Indikatoren:
 
 #### 10. Oberflächliche Analysen mit Partizip I [HIGH]
 <!-- haltbarkeit: kern -->
+<!-- pass: 2 -->
 **Problem:** Zu viele "-end" Partizipien, die Aktion beschreiben ohne echte Tiefe.
 
 Häufige Indikatoren:
@@ -307,6 +317,7 @@ Häufige Indikatoren:
 
 #### 11. Vage Autoritäten [HIGH]
 <!-- haltbarkeit: kern -->
+<!-- pass: 1 -->
 **Problem:** Unspezifische Quellen, die keinen echten Beweis liefern.
 
 Häufige Indikatoren:
@@ -331,6 +342,7 @@ Keine Quelle erfinden. Entweder: echte Quelle einfügen wenn bekannt, Zuschreibu
 
 #### 12. Falsche Erweiterung ("von... bis") [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 3 -->
 **Problem:** "Von X bis Y" figurativ verwendet, wo es nicht passt. Die "Ob du X oder Y bist"-Alternative ist dieselbe falsche Spannweite in Anrede-Form; Test: Lassen sich X und Y themenfremd austauschen, ohne dass die Satzlogik bricht?
 
 Häufige Indikatoren:
@@ -350,6 +362,7 @@ Häufige Indikatoren:
 
 #### 58. Abstrakta-Stapel und Hypernym-Präferenz [MEDIUM]
 <!-- haltbarkeit: jahrgang stand=2026-07 -->
+<!-- pass: 2 -->
 **Kategorie:** Sprache und Tonfall
 **Problem:** Das Modell wählt systematisch den Oberbegriff statt der Sache: "Maßnahmen", "Aspekte", "Lösungen", "Herausforderungen", "Faktoren", "Prozesse" – oft kombiniert mit Nominalstil ("die Umsetzung der Optimierung der Abläufe"). Der Text bleibt korrekt, sagt aber nichts Prüfbares. Das ist die behandelbare Hälfte niedriger Perplexity: Konkretisierung erhöht Informationsgehalt und Wortvarianz zugleich, ohne Fachsprache anzutasten.
 Häufige Indikatoren:
@@ -364,6 +377,7 @@ Häufige Indikatoren:
 
 #### 60. Synonym-Rotation für dieselbe Entität [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 2 -->
 **Kategorie:** Sprache und Tonfall
 **Problem:** Zwanghafte Wiederholungsvermeidung: "die Hansestadt", "die Elbmetropole", "die Stadt an der Alster" für denselben Referenten. Menschen wiederholen das Wort oder pronominalisieren; die Rotation wirkt enzyklopädisch-bemüht und macht Texte schwerer lesbar, weil der Leser Referenzen neu auflösen muss. Derselbe Mechanismus trifft nicht nur Eigennamen, sondern jeden wiederkehrenden Sachbegriff: "die Studie" → "die Untersuchung" → "die Analyse" → "die Forschungsarbeit" für dieselbe Sache, "das Verfahren" → "die Methodik" → "der Ansatz" → "das Konzept". Ursache ist die Wiederholungsvermeidung beim Decoding, kein Bedeutungsunterschied.
 Häufige Indikatoren:
@@ -378,6 +392,7 @@ Häufige Indikatoren:
 
 #### 63. Modalpartikel-Anomalie [LOW]
 <!-- haltbarkeit: jahrgang stand=2026-07 -->
+<!-- pass: 4 -->
 **Kategorie:** Sprache und Tonfall
 **Problem:** Nur im Modus Locker behandeln, in Sachlich höchstens diagnostisch. Beide Extreme sind Tells: (a) Vollständige Abwesenheit von Modalpartikeln (ja, doch, eben, halt, wohl, mal, schon, ohnehin) in einem Text, der sonst Nähe-Register fährt – LLM-Deutsch ist partikelarm, weil Partikeln keine propositionale Funktion haben. (b) Partikel-Überdosis als Über-Humanisierung (vgl. Muster 59).
 Häufige Indikatoren:
@@ -391,6 +406,7 @@ Häufige Indikatoren:
 
 #### 64. KI-Marker-Vokabular [MEDIUM]
 <!-- haltbarkeit: jahrgang stand=2026-07 -->
+<!-- pass: 2 -->
 **Kategorie:** Sprache und Tonfall
 **Problem:** Für englische Wissenschaftssprache ist die Überrepräsentation bestimmter Wörter in
 LLM-beeinflussten Texten empirisch belegt. Die folgenden deutschen Marker sind eine funktionale,
@@ -414,6 +430,7 @@ diffundieren und verlieren dadurch mit der Zeit an Trennschärfe.
 
 #### 65. Kopula-Vermeidung [MEDIUM]
 <!-- haltbarkeit: jahrgang stand=2026-07 -->
+<!-- pass: 2 -->
 **Kategorie:** Sprache und Tonfall
 **Problem:** LLMs ersetzen das schlichte "ist"/"hat" durch gespreizte Ersatzkonstruktionen: "fungiert als", "dient als", "stellt ... dar", "repräsentiert", "bildet", "erweist sich als", "präsentiert sich als", "zeichnet sich durch ... aus", "verfügt über", "bietet", "beherbergt", "wartet mit ... auf". Der Satz klingt gehobener, sagt aber exakt dasselbe. Adaptiert aus blader/humanizer Muster #8 ("Copula Avoidance"). Dieselbe Aufwertung trifft einfache Vollverben: "schrieb" → "verfasste", "starb" → "verstarb", "nutzte" → "verwendete", "machte" → "führte durch", "half" → "unterstützte". Das Verb wird gehobener, der Inhalt bleibt gleich.
 Häufige Indikatoren:
@@ -432,6 +449,7 @@ Häufige Indikatoren:
 
 #### 66. Fake-Analyse-Anhang [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 2 -->
 **Kategorie:** Sprache und Tonfall
 **Problem:** LLMs hängen an normale Informationssätze scheinanalytische Relativsätze oder Anschlusskonstruktionen, die eine Schlussfolgerung vortäuschen, aber keine neue Information liefern. Erkennbar am Löschtest: Fällt „was X unterstreicht/zeigt/verdeutlicht" weg, geht keine Information verloren – der Hauptsatz steht vollständig. Die Konstruktion ist grammatikalisch korrekt; ihr Tell ist die funktionale Leere des Anhangs.
 Häufige Indikatoren:
@@ -449,6 +467,7 @@ Häufige Indikatoren:
 
 #### 68. Komparativ-Rahmung [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 3 -->
 
 **Kategorie:** Sprache und Tonfall
 
@@ -479,6 +498,7 @@ Häufige Indikatoren:
 
 #### 13. Übermäßige Fettschrift [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 3 -->
 **Problem:** Bold wird für Emphasis statt für echte Struktur verwendet.
 
 Häufige Indikatoren:
@@ -492,6 +512,7 @@ Häufige Indikatoren:
 
 #### 14. Falsche Listen [LOW]
 <!-- haltbarkeit: kern -->
+<!-- pass: 1 -->
 **Problem:** Bullet-Punkte in nicht-Wikitext-Format in Wikipedia-Artikel.
 
 Häufige Indikatoren:
@@ -505,6 +526,7 @@ Häufige Indikatoren:
 
 #### 15. Emojis vor Überschriften [LOW]
 <!-- haltbarkeit: kern -->
+<!-- pass: 1 -->
 **Problem:** Emojis werden verwendet, um visuelle Struktur zu schaffen.
 
 Häufige Indikatoren:
@@ -518,6 +540,7 @@ Häufige Indikatoren:
 
 #### 16. Dash-Satzzeichen und Gedankenstrich-Cluster [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 4 -->
 **Problem:** Gedankenstriche und Dash-Ersatzzeichen (`–`, `—`, ` -- `, ` - `) werden von LLMs als rhetorische Kurzform übermäßig eingesetzt. Ein einzelner Gedankenstrich pro Absatz kann legitim sein; mehrere pro Absatz, gepaarte Einschübe oder ein mechanisches "nicht X – sondern Y"-Schema sind starke KI-Tells. Der Tell verschwindet nicht, wenn nur das Glyph gewechselt wird.
 
 Häufige Indikatoren:
@@ -554,6 +577,7 @@ Häufige Indikatoren:
 
 #### 69. Struktureller Register-Kollaps [MEDIUM]
 <!-- haltbarkeit: jahrgang stand=2026-07 -->
+<!-- pass: 4 -->
 
 **Kategorie:** Stil
 
@@ -583,6 +607,7 @@ Häufige Indikatoren:
 
 #### 17. Briefartiges Schreiben [HIGH]
 <!-- haltbarkeit: jahrgang stand=2026-07 -->
+<!-- pass: 1 -->
 **Problem:** Artikel sind als Briefe strukturiert, nicht als Inhalte.
 
 Häufige Indikatoren:
@@ -597,6 +622,7 @@ Häufige Indikatoren:
 
 #### 18. Kollaborative Kommunikation [HIGH]
 <!-- haltbarkeit: jahrgang stand=2026-07 -->
+<!-- pass: 1 -->
 **Problem:** Der Text spricht den Leser direkt an, statt Fakten bereitzustellen.
 
 Häufige Indikatoren:
@@ -629,6 +655,7 @@ ohne weiteren Chatbot-Vorspann kein Befund.
 
 #### 19. Hinweise auf Wissensgrenzen [HIGH]
 <!-- haltbarkeit: jahrgang stand=2026-07 -->
+<!-- pass: 1 -->
 **Problem:** Der Text offenbart seine KI-Natur durch Datums-Hinweise.
 
 Häufige Indikatoren:
@@ -643,6 +670,7 @@ Häufige Indikatoren:
 
 #### 20. Prompt-Ablehnung [HIGH]
 <!-- haltbarkeit: jahrgang stand=2026-07 -->
+<!-- pass: 1 -->
 **Problem:** Der Text lehnt Anfragen ab wie ein Chatbot.
 
 Häufige Indikatoren:
@@ -657,6 +685,7 @@ Häufige Indikatoren:
 
 #### 21. Platzhaltertext [HIGH]
 <!-- haltbarkeit: kern -->
+<!-- pass: 1 -->
 **Problem:** Template-Platzhalter wurden nicht gefüllt.
 
 Häufige Indikatoren:
@@ -672,6 +701,7 @@ Häufige Indikatoren:
 
 #### 22. Links zu Suchanfragen statt Referenzen [HIGH]
 <!-- haltbarkeit: jahrgang stand=2026-07 -->
+<!-- pass: 1 -->
 **Problem:** URLs sind Google-Suchanfragen statt echte Referenzen.
 
 Häufige Indikatoren:
@@ -687,6 +717,7 @@ Häufige Indikatoren:
 
 #### 23. Markdown statt Wikitext [MEDIUM]
 <!-- haltbarkeit: jahrgang stand=2026-07 -->
+<!-- pass: 1 -->
 **Problem:** Markdown-Syntax in Wikipedia-Artikel statt Wikitext.
 
 Häufige Indikatoren:
@@ -700,6 +731,7 @@ Häufige Indikatoren:
 
 #### 24. Fehlerhafter Wikitext und KI-Tool-/Prozessartefakte [MEDIUM]
 <!-- haltbarkeit: jahrgang stand=2026-07 -->
+<!-- pass: 1 -->
 **Problem:** Wikitext-Syntax ist ungültig oder unvollständig. Zusätzlich hinterlassen KI-Tools technische Artefakte im Text.
 
 Häufige Indikatoren:
@@ -724,6 +756,7 @@ Häufige Indikatoren:
 
 #### 25. Defekte Links [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 1 -->
 **Problem:** Zu viele rote Links oder tote Referenzen.
 
 Häufige Indikatoren:
@@ -737,6 +770,7 @@ Häufige Indikatoren:
 
 #### 26. Zitatfabrikation und unverifizierbare Referenzen [HIGH]
 <!-- haltbarkeit: jahrgang stand=2026-07 -->
+<!-- pass: 1 -->
 **Problem:** LLMs erfinden Quellen, die echt aussehen, aber nicht existieren, oder ordnen reale Quellen einer Aussage zu, die sie nicht tragen. Das reicht von ungültigen DOI-/ISBN-Angaben bis zu komplett halluzinierten Publikationen, Aktenzeichen, Gerichtsentscheidungen, URLs oder Studien. Factual Reliability ist hier wichtiger als Stil: Eine polierte Passage mit falscher Quelle ist schlechter als eine sichtbare Lücke.
 
 Häufige Indikatoren:
@@ -759,6 +793,7 @@ Häufige Indikatoren:
 
 #### 27. Inkorrekte Referenzen-Format [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 1 -->
 **Problem:** Zitierformat entspricht nicht deutschen Wikipedia-Standards.
 
 Häufige Indikatoren:
@@ -772,6 +807,7 @@ Häufige Indikatoren:
 
 #### 28. Falsche Kategorien [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 1 -->
 **Problem:** Kategorien sind nicht-existent oder nicht-deutsch.
 
 Häufige Indikatoren:
@@ -787,6 +823,7 @@ Häufige Indikatoren:
 
 #### 29. Abrupte Abbrüche [LOW]
 <!-- haltbarkeit: jahrgang stand=2026-07 -->
+<!-- pass: 1 -->
 **Problem:** Text bricht mitten im Satz ab.
 
 Häufige Indikatoren:
@@ -800,6 +837,7 @@ Häufige Indikatoren:
 
 #### 30. Wechsel im Schreibstil [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 4 -->
 **Problem:** Plötzlicher Wechsel von informell zu formell oder umgekehrt.
 
 Häufige Indikatoren:
@@ -813,6 +851,7 @@ Häufige Indikatoren:
 
 #### 31. Ausführliche Bearbeitungszusammenfassungen in Ich-Form [LOW]
 <!-- haltbarkeit: kern -->
+<!-- pass: 1 -->
 **Problem:** Edit-Summaries sind verbose und persönlich.
 
 Häufige Indikatoren:
@@ -828,6 +867,7 @@ Häufige Indikatoren:
 
 #### 32. Persuasive Autoritäts-Floskeln [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 2 -->
 
 **Wendungen, auf die Sie achten sollten:** "Die eigentliche Frage ist", "Im Kern", "In Wirklichkeit", "Was wirklich zählt", "Im Grunde genommen", "Das tiefere Problem", "Worauf es wirklich ankommt", "Der Kern der Sache", "Letztlich geht es um", "So betrachtet ...", "So gelesen ...", "Anders gerahmt ..." (Reframe-Einleitung, die gewöhnliche Fakten als Einsicht inszeniert)
 
@@ -843,6 +883,7 @@ Häufige Indikatoren:
 
 #### 33. Signposting und Ankündigungen [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 2 -->
 
 **Wendungen, auf die Sie achten sollten:** "Schauen wir uns an", "Lassen Sie uns erkunden", "Hier ist, was Sie wissen müssen", "Die Sache ist die", "Was als Nächstes passiert", "Ohne weitere Umschweife", "Jetzt werfen wir einen Blick auf", "Kommen wir zu", "Tauchen wir ein", "Warum das wichtig ist:" oder "Das große Bild:" als Fließtext-Label, "Es stellte sich heraus, dass ...", "Wie sich zeigte ..." (Enthüllungs-Pivot ohne Enthüllung)
 
@@ -858,6 +899,7 @@ Häufige Indikatoren:
 
 #### 34. Fragmentierte Überschriften [LOW]
 <!-- haltbarkeit: kern -->
+<!-- pass: 3 -->
 
 **Anzeichen:** Ein Ein-Satz- oder Ein-Fragment-Absatz direkt nach einer Überschrift, gefolgt vom eigentlichen Inhalt. Die verwaiste Zeile wiederholt typischerweise die Überschrift in anderen Worten oder macht eine generische Aussage ("Geschwindigkeit zählt.", "Sicherheit ist alles.", "Testen ist entscheidend.").
 
@@ -881,6 +923,7 @@ Häufige Indikatoren:
 
 #### 35. Rhetorische Fragen als Fake-Engagement [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 3 -->
 
 **Wendungen, auf die Sie achten sollten:** "Aber was bedeutet das für...?", "Haben Sie sich jemals gefragt, warum...?", "Doch was steckt dahinter?", "Was heißt das konkret?", "Wer profitiert davon?", "Warum ist das wichtig?"
 
@@ -896,6 +939,7 @@ Häufige Indikatoren:
 
 #### 36. Universelle Menschheitserfahrungs-Eröffnung [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 2 -->
 
 **Wendungen, auf die Sie achten sollten:** "Seit jeher", "Seit Anbeginn der Zivilisation", "Schon immer hat die Menschheit...", "Im Laufe der Geschichte", "Seit Menschengedenken", "Von Anfang an", "Schon die alten Griechen/Römer..."
 
@@ -911,6 +955,7 @@ Häufige Indikatoren:
 
 #### 37. "In der heutigen X-Welt" Framing [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 2 -->
 
 **Wendungen, auf die Sie achten sollten:** "In der heutigen digitalen Welt", "In einer zunehmend vernetzten Welt", "In Zeiten von...", "Im Zeitalter der Digitalisierung", "In der heutigen schnelllebigen Gesellschaft", "In einer Welt, in der...", "Angesichts der rasanten Entwicklung"
 
@@ -926,6 +971,7 @@ Häufige Indikatoren:
 
 #### 38. Aspirativer Unternehmensschluss [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 2 -->
 
 **Wendungen, auf die Sie achten sollten:** "bestens aufgestellt für die Zukunft", "die Möglichkeiten sind grenzenlos", "bereit für die nächste Stufe", "an der Schwelle zu einer neuen Ära", "die Weichen sind gestellt", "mit Zuversicht in die Zukunft blicken", "das Potenzial ist enorm", "auf Erfolgskurs"
 
@@ -941,6 +987,7 @@ Häufige Indikatoren:
 
 #### 52. Diff-verankertes Schreiben [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 1 -->
 
 **Kategorie:** Rhetorik und Struktur
 
@@ -968,6 +1015,7 @@ Häufige Indikatoren:
 
 #### 56. Aphorismus-Formeln [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 2 -->
 
 **Kategorie:** Rhetorik und Struktur
 
@@ -991,6 +1039,7 @@ Häufige Indikatoren:
 
 #### 61. Isometrisches Dokument [MEDIUM]
 <!-- haltbarkeit: jahrgang stand=2026-07 -->
+<!-- pass: 3 -->
 **Kategorie:** Rhetorik und Struktur
 **Problem:** Alle Absätze 3–5 Sätze, alle H2-Sektionen gleich lang, alle Listen-Items in derselben grammatischen Form und Länge, jeder Aspekt bekommt gleich viel Raum. Die Symmetrie überlebt Satz-Edits und ist deshalb ein stärkerer Tell als monotoner Satzbau. Menschliche Texte gewichten ungleich: ausführlich, wo der Autor etwas weiß; knapp, wo nicht.
 Häufige Indikatoren:
@@ -1003,6 +1052,7 @@ Häufige Indikatoren:
 
 #### 62. Markerloser Schließzwang [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 3 -->
 **Kategorie:** Rhetorik und Struktur
 **Problem:** Jeder Absatz endet mit einem bewertenden Abschlusssatz, der nichts Neues sagt ("Damit ist die Grundlage gelegt.", "Das zahlt sich langfristig aus.", "So bleibt das System zukunftsfähig.") – Muster 5 ohne dessen Markerphrasen. Die strukturelle Funktion (Absatz "zumachen") ist der Tell, nicht die Wortwahl.
 Häufige Indikatoren:
@@ -1018,6 +1068,7 @@ Häufige Indikatoren:
 
 #### 67. Ankündigungs-Spaltsatz [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 3 -->
 
 **Kategorie:** Rhetorik und Struktur
 
@@ -1047,6 +1098,7 @@ Häufige Indikatoren:
 
 #### 71. Retroaktive Scheinnuance [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 2 -->
 
 **Kategorie:** Rhetorik und Struktur
 
@@ -1078,6 +1130,7 @@ Häufige Indikatoren:
 
 #### 39. Passivkonstruktionen und subjektlose Fragmente [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 4 -->
 
 **Problem:** LLMs verstecken den Akteur durch Passiv oder lassen das Subjekt ganz weg. Fragmente wie "Keine Konfiguration nötig." oder "Wird automatisch gespeichert." verschleiern, wer handelt. Aktive Formulierungen machen den Satz klarer und direkter.
 
@@ -1102,6 +1155,7 @@ Häufige Indikatoren:
 
 #### 40. Konditional-Stapel [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 4 -->
 
 **Problem:** LLMs häufen "wenn"-Klauseln in Schlussfolgerungen, statt direkt auszusagen, was die Analyse ergeben hat. Eine einzelne Bedingung an einem echten Verzweigungspunkt ist normal; ein Cluster davon in einer Conclusion signalisiert, dass der Autor nicht hinter seiner eigenen Arbeit steht.
 
@@ -1123,6 +1177,7 @@ Häufige Indikatoren:
 
 #### 41. Fehlkalibriertes epistemisches Vertrauen [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 2 -->
 
 **Problem:** LLMs schwanken zwischen zwei Extremen: Über-Behauptung (Aussagen mit "grundlegend", "entscheidend", "zweifellos" aufladen) und Über-Absicherung (alles mit "scheint möglicherweise", "könnte eventuell" relativieren). Beide Extreme sind KI-Tells. Die Lösung ist nicht, Behauptungen durch Hedges zu ersetzen, sondern den Anspruch zu verengen.
 
@@ -1147,6 +1202,7 @@ Häufige Indikatoren:
 
 #### 53. Lückenfüllende Spekulation [HIGH]
 <!-- haltbarkeit: kern -->
+<!-- pass: 1 -->
 
 **Kategorie:** Argumentation und Evidenz
 
@@ -1180,6 +1236,7 @@ Häufige Indikatoren:
 
 #### 59. Erfundene Ich-Erfahrung und forcierte Lockerheit [HIGH]
 <!-- haltbarkeit: jahrgang stand=2026-07 -->
+<!-- pass: 1 -->
 **Kategorie:** Argumentation und Evidenz
 **Problem:** Auf "menschlich" getrimmter KI-Text simuliert Persönlichkeit: gestellte Anekdoten ("Als ich letzte Woche mit einem Kunden sprach..."), Pseudo-Nähe ("Ehrlich gesagt", "Keine Sorge", "Spoiler:"), behauptete Praxiserfahrung ohne Träger. Erfundene Erfahrung ist Fabrikation, kein Stilmittel – die Evidenz-Logik von Muster 26/53 gilt analog. Dies ist der Tell zweiter Ordnung: Er entsteht oft erst durch Humanisierungs-Versuche.
 Häufige Indikatoren:
@@ -1198,6 +1255,7 @@ Häufige Indikatoren:
 
 #### 70. Verantwortungsverschleierung durch falsche Agency [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 2 -->
 
 **Kategorie:** Argumentation und Evidenz
 
@@ -1233,6 +1291,7 @@ Fehlt der echte Akteur im Material: keinen erfinden. Dann die offene Verantwortu
 
 #### 72. Pseudo-therapeutische Validierung [HIGH]
 <!-- haltbarkeit: jahrgang stand=2026-07 -->
+<!-- pass: 2 -->
 
 **Kategorie:** Argumentation und Evidenz
 
@@ -1265,6 +1324,7 @@ Diese Muster sind in Version 3.2 neu aufgenommen und konzeptuell den bestehenden
 
 #### 42. Beleginkongruenz [HIGH]
 <!-- haltbarkeit: kern -->
+<!-- pass: 1 -->
 
 **Kategorie:** Argumentation und Evidenz
 
@@ -1295,6 +1355,7 @@ Häufige Indikatoren:
 
 #### 43. Versteckte Unicode-Zeichen [HIGH]
 <!-- haltbarkeit: jahrgang stand=2026-07 -->
+<!-- pass: 1 -->
 
 **Kategorie:** Auszeichnungstext
 
@@ -1316,6 +1377,7 @@ Häufige Indikatoren:
 
 #### 44. Standard-Kapitel ohne Substanz [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 3 -->
 
 **Kategorie:** Stil
 
@@ -1355,6 +1417,7 @@ Häufige Indikatoren:
 
 #### 45. Anglizismus-Strukturen [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 2 -->
 
 **Kategorie:** Sprache und Tonfall
 
@@ -1395,6 +1458,7 @@ Harte Indikatoren (klare Tells):
 
 #### 46. Falsche deutsche Anführungszeichen [HIGH]
 <!-- haltbarkeit: kern -->
+<!-- pass: 1 -->
 
 **Kategorie:** Typografie
 
@@ -1423,6 +1487,7 @@ Gemischte Stile zählen nur, wenn die Mischung die Asymmetrie oben enthält; blo
 
 #### 47. Englische Titel-Großschreibung [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 1 -->
 
 **Kategorie:** Typografie
 
@@ -1445,6 +1510,7 @@ Häufige Indikatoren:
 
 #### 48. Englisches Dezimalformat und Datumsformat [LOW]
 <!-- haltbarkeit: kern -->
+<!-- pass: 1 -->
 
 **Kategorie:** Typografie
 
@@ -1462,6 +1528,7 @@ Häufige Indikatoren:
 
 #### 49. Apostroph-Fehler [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 1 -->
 
 **Kategorie:** Typografie
 
@@ -1479,6 +1546,7 @@ Häufige Indikatoren:
 
 #### 50. Interpunktion bei Stichpunkt-Aufzählungen [LOW]
 <!-- haltbarkeit: kern -->
+<!-- pass: 1 -->
 
 **Kategorie:** Typografie
 
@@ -1500,6 +1568,7 @@ Deutsche Konvention:
 
 #### 51. Obsessive Parataxe [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 4 -->
 
 **Kategorie:** Stil
 
@@ -1523,6 +1592,7 @@ Häufige Indikatoren:
 
 #### 57. Markdown-Struktur-Artefakte [MEDIUM]
 <!-- haltbarkeit: jahrgang stand=2026-07 -->
+<!-- pass: 1 -->
 
 **Problem:** KI-Chatbots setzen Markdown-Strukturelemente dekorativ statt semantisch ein. Drei wiederkehrende Fälle:
 
@@ -1565,6 +1635,7 @@ Häufige Indikatoren:
 
 #### 54. Doppelpunkt-Titel-Schema [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 3 -->
 
 **Problem:** LLMs bauen Titel und Überschriften bevorzugt nach dem Schema "griffige Phrase: erklärender Nachsatz" – links ein Schlagwort oder eine Bedingung, rechts eine "Was/Warum/Wie"-Auflösung (englisch das berüchtigte "X: How Y Changes Z"). Ein einzelner solcher Titel ist unauffällig und oft legitim. Verdächtig wird die Häufung: Wenn H1, Bildunterschrift und mehrere H2 im selben Dokument demselben Doppelpunkt-Schema folgen, entsteht ein mechanischer Rhythmus, den auch statistische Detektoren als "Robotic Formality" markieren.
 
@@ -1599,6 +1670,7 @@ Den Subtitel/Nachsatz *nicht* entfernen, solange er echte, nicht-redundante Info
 
 #### 55. Gleichförmiger Satzrhythmus [MEDIUM]
 <!-- haltbarkeit: kern -->
+<!-- pass: 4 -->
 
 **Kategorie:** Stil
 

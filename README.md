@@ -937,6 +937,15 @@ GitHub Release.
 
 ## Was ist neu?
 
+- **5.15.0** - Seit dieser Version hängt der Musterkatalog an der Arbeitsanweisung. Bisher rief
+  die Anleitung 20 der 72 Muster beim Namen auf, 19 weitere waren über Prüfskripte erreichbar.
+  Der Rest hatte keinen Weg in die Prüfung: Ein Trikolon blieb in einem Autorentext unbemerkt,
+  obwohl der Katalog es seit jeher als Muster 9 führt. In jedem Musterblock steht nun, zu welchem
+  Durchgang er gehört, und jeder Durchgang arbeitet alle seine Muster ab statt nur der genannten
+  Schwerpunkte. Neu ist außerdem ein eigener Zweig für das reine Audit. Wer Befunde will und keine
+  Redaktion, bekommt den vollständigen Katalog geprüft — auch dann, wenn die Oberflächenmessung
+  zuvor Entwarnung gab, denn sie sieht Wortwahl und Satzrhythmus, nicht rhetorische Figuren.
+  Für die Anleitung steigt die Wortgrenze dafür von 2000 auf 2300.
 - **5.14.0** - Acht Robustheitsfehler behoben, die das Werkzeug an Stellen blind oder falsch
   machten, an denen niemand nachgesehen hatte. Enthielt ein unveränderter Text sowohl
   Steigerungs- als auch Sinkwörter, blockierte ihn das Evidence-Gate; jetzt blockt nur eine echte
