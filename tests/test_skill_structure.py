@@ -183,6 +183,64 @@ class SkillStructureTests(unittest.TestCase):
         self.assertIn("GitHub Release", warp_text)
         self.assertIn("Tag `vX.Y.Z`", warp_text)
 
+    def test_readme_flowchart_tracks_the_skill(self):
+        # Das Mermaid-Diagramm ist release-sync-pflichtig, wurde aber von keinem
+        # Test gehalten und driftete dreimal unbemerkt: Die E1-Markierungspflicht
+        # beim Null-Edit fehlte seit 5.13.0, der Audit-Zweig seit 5.15.0.
+        # Der Waechter prueft nur, dass jedes Konzept ueberhaupt im Diagramm
+        # vorkommt, solange SKILL.md es fuehrt -- keine Formulierung.
+        skill_text = read_utf8(ROOT / "SKILL.md")
+        readme_text = read_utf8(ROOT / "README.md")
+
+        diagram = re.search(r"```mermaid\n(.*?)```", readme_text, re.S)
+        self.assertIsNotNone(diagram, "README: Mermaid-Diagramm fehlt")
+        diagram = diagram.group(1)
+
+        # Keine Pruefung einzelner Pass-Nummern: Das Diagramm fasst "Pass 2-4"
+        # zu einem Kasten zusammen, das ist gewollte Vereinfachung.
+        if "Audit-Zweig" in skill_text:
+            # Nicht auf "Audit" pruefen: Das steckt auch in "Selbst-Audit -
+            # Pass 5", der Waechter wuerde nie anschlagen. Der Audit-Zweig ist
+            # ein eigener Weg und braucht eine eigene Verzweigung.
+            self.assertIn("Audit-Zweig", diagram,
+                          "SKILL.md kennt den Audit-Zweig, das Diagramm nicht")
+            self.assertIn("72", diagram,
+                          "Der Audit-Zweig prueft den vollen Katalog; "
+                          "das Diagramm nennt die Musterzahl nicht")
+        if "unbelegte oder erfundene Quellen werden immer markiert" in skill_text:
+            self.assertRegex(diagram, r"markier",
+                             "SKILL.md markiert unbelegte Quellen auch beim "
+                             "Null-Edit; das Diagramm zeigt es nicht")
+
+        knoten = set(re.findall(r"(\w+)\s*[\[({]", diagram))
+        kanten = []
+        for zeile in diagram.splitlines():
+            if "-->" not in zeile:
+                continue
+            links, rechts = zeile.split("-->", 1)
+            a, b = re.match(r"\s*(\w+)", links), re.match(r"\s*(\w+)", rechts)
+            if a and b:
+                kanten.append((a.group(1), b.group(1)))
+        erreichbar, offen = set(), ["T"]
+        while offen:
+            knoten_id = offen.pop()
+            if knoten_id in erreichbar:
+                continue
+            erreichbar.add(knoten_id)
+            offen += [b for a, b in kanten if a == knoten_id]
+        self.assertLessEqual(knoten, erreichbar,
+                             f"Diagramm: unerreichbare Knoten {sorted(knoten - erreichbar)}")
+
+        # Sackgassen sind der eigentliche Fehlerfall: Bis 5.15.1 endete der
+        # Null-Edit-Ast im Nichts, weil die E1-Markierungspflicht fehlte.
+        # Endpunkte sind nur die beiden Ergebnisknoten.
+        ENDPUNKTE = {"B", "O"}
+        mit_ausgang = {a for a, _ in kanten}
+        sackgassen = knoten - mit_ausgang - ENDPUNKTE
+        self.assertFalse(sackgassen,
+                         f"Diagramm: Ast endet im Nichts bei {sorted(sackgassen)} "
+                         "- jeder Weg muss zu einem Ergebnis führen")
+
     def test_precision_requirements_pin_spacy_runtime_imports(self):
         requirements = read_utf8(ROOT / "requirements-precise.txt")
 

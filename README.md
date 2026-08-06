@@ -560,8 +560,12 @@ Drei Schichten teilen sich die Arbeit:
 ```mermaid
 flowchart TD
     T([Eingabetext]) --> M["Messen – Pass 0<br/>Rhythmus, Register, Preflight"]
-    M --> C{"Echte Muster-Cluster?"}
-    C -- nein --> N([Null-Edit: Text bleibt stehen])
+    M --> Z{"Redigieren oder<br/>nur Befunde?"}
+    Z -- "nur Befunde" --> AU["Audit-Zweig<br/>alle 72 Muster prüfen"]
+    AU --> B([Befundliste, Text bleibt unberührt])
+    Z -- redigieren --> C{"Echte Muster-Cluster?"}
+    C -- nein --> N["Null-Edit: Text bleibt stehen<br/>unbelegte Quellen trotzdem markieren"]
+    N --> O
     C -- ja --> E["Fakten sichern – Pass 1<br/>Zahlen, Namen, Quellen, Zitate"]
     E --> R["Redigieren – Pass 2–4<br/>Lexik, Struktur, Rhythmus"]
     R --> A["Selbst-Audit – Pass 5<br/>Qualität und Stimme"]
