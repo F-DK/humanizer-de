@@ -937,6 +937,15 @@ GitHub Release.
 
 ## Was ist neu?
 
+- **5.15.1** - Drei Reibungspunkte aus dem ersten Gebrauchs-Audit behoben, alle an echten
+  Ausführungsspuren gemessen. Eingabedateien löst der Skill jetzt zuerst im Arbeitsverzeichnis
+  auf und fragt sonst nach — vorher suchte er im eigenen Installationsordner und systemweit,
+  woran ein kompletter Lauf scheiterte. Beim Nachschlagen in Referenzdateien fordert er
+  Zeileninhalt statt der Dateiliste an, die zuvor drei Anläufe für ein einzelnes Muster
+  kostete. Und den Katalog holt er nun gezielt über die Pass-Anker aus 5.15.0 statt die ganze
+  Datei zu lesen; der Volltext bleibt dem Audit-Zweig vorbehalten. Hintergrund der letzten
+  Änderung: Nach der Katalog-Kopplung las jeder Lauf die 14.700 Wörter dreimal, gemessen
+  45 Prozent Mehrkosten auf drei Vergleichstexten.
 - **5.15.0** - Seit dieser Version hängt der Musterkatalog an der Arbeitsanweisung. Bisher rief
   die Anleitung 20 der 72 Muster beim Namen auf, 19 weitere waren über Prüfskripte erreichbar.
   Der Rest hatte keinen Weg in die Prüfung: Ein Trikolon blieb in einem Autorentext unbemerkt,
