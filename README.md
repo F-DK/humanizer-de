@@ -941,6 +941,19 @@ GitHub Release.
 
 ## Was ist neu?
 
+- **5.16.0** - Die Quellenprüfung hängt nicht mehr am Stil-Ergebnis. Fand der Skill stilistisch
+  nichts zu tun, hörte er bisher ganz auf — auch bei den Belegen, obwohl die Null-Edit-Regel
+  dort ausdrücklich eine Ausnahme vorsah. Sie stand als Nachsatz einer Stilregel und wurde mit
+  ihr abgehakt. In vier Texten des Wirksamkeitspiloten schrieb der Skill deshalb je über hundert
+  Wörter zu Anführungszeichen und Passivsätzen, aber kein Wort zu den eingebauten Falschquellen.
+  Jetzt läuft der Belegteil unabhängig davon, ein niedriges Preflight-Risiko verkürzt ihn nicht
+  mehr, und jede Quelle wird einzeln eingestuft — auch die Zahlen, die an einer bereits
+  geprüften Institution hängen und ihre Glaubwürdigkeit allein von ihr beziehen. Dafür bekommt
+  der Output einen Pflichtblock „Belege“, der auch beim Null-Edit erscheint. Auf denselben vier
+  Texten steigt die Zahl beanstandeter Quellen von null auf drei von acht. Die Umstellung wirkt
+  bei sachfremden Autoritäten. Erfundene Aktenzeichen und erfundene Personen bleiben dagegen
+  unmarkiert, denn sie sehen im Text unauffällig aus und fallen nur auf, wenn jemand sie
+  nachschlägt.
 - **5.15.1** - Drei Reibungspunkte aus dem ersten Gebrauchs-Audit behoben, alle an echten
   Ausführungsspuren gemessen. Eingabedateien löst der Skill jetzt zuerst im Arbeitsverzeichnis
   auf und fragt sonst nach — vorher suchte er im eigenen Installationsordner und systemweit,
