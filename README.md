@@ -322,6 +322,24 @@ Der Skill analysiert Satzrhythmus, Wortwahl und Eigenheiten und berücksichtigt 
 Humanisiere diesen Text. Entferne nur sprachliche Muster, nicht die Formatierung.
 ```
 
+### Werbetexte: mehr Eingriff auf Wunsch
+
+Bei Werbe- und Landingpage-Texten hält sich der Skill zurück. Er räumt Floskeln dort seltener ab als anderswo, weil Werbesprache werben darf und seine Schutzregeln den bewusst gesetzten Dreiklang nicht von der austauschbaren Schablone unterscheiden können. Wer mehr Eingriff will, hängt den folgenden Absatz an seine Anweisung an:
+
+```text
+Für persuasive Abschnitte gilt: Branchenüblichkeit und Label-Konvention schützen
+Werbefloskeln nicht. Trenne bei jeder Werbefigur den prüfbaren Kern von der
+Schablone. Prüfbar sind Zahlen, benannte Systeme und Schnittstellen, Normen,
+Verfahren, Abläufe, Angebotsbedingungen und konkret bezeichnete Produktfunktionen
+— sie bleiben erhalten, notfalls umformuliert. Wertadjektive wie schnell, einfach
+oder sicher sind ohne benannte Funktion, Norm oder Messgröße kein prüfbarer Kern.
+Die Schablone darum herum entfernst du, wenn ihre Struktur sich auf beliebige
+andere Produkte übertragen ließe. Eine mehrgliedrige Figur bleibt jedoch stehen,
+sobald eines ihrer Glieder eine Aussage macht, die nachprüfbar falsch sein könnte.
+```
+
+Ein KI-Werbetext mit sieben eingebauten Schablonen diente als Prüfstein. Ohne den Zusatz verschwindet davon eine, mit ihm im Schnitt fünfeinhalb. Zur Gegenprobe lief derselbe Test auf einem menschlichen Werbetext aus derselben Branche, und dort blieben alle acht Substanzanker unberührt — Fachbegriffe, Zahlen und ein Dreiklang, den der Autor sichtlich mit Absicht gesetzt hat. Der Preis: Die Eingriffstiefe steigt von neun auf zwanzig Prozent. Wer viel ändert, ändert manchmal zu viel. Lies das Ergebnis gegen.
+
 ### Was du zurückbekommst
 
 Der Humanizer zeigt nicht nur den überarbeiteten Text. Ein kurzer Audit nennt den gewählten Modus,
