@@ -988,6 +988,15 @@ GitHub Release.
 
 ## Was ist neu?
 
+- **5.17.2** - `register_lint` hält jetzt, was SKILL.md verspricht. Zwei dort beschriebene
+  Ausnahmen fehlten im Code. Ein `ja` hinter dem Doppelpunkt zählte als Modalpartikel, und in
+  einem Rezept stand eben „Vegetarisch: Ja“. Dasselbe traf `mal` in `5-mal` und `schon` in
+  zeitlicher Bedeutung. Die zweite Lücke saß bei der Anapher: Das satzinitiale `Sie` sollte
+  laut Anleitung ungezählt bleiben, wenn es sich auf ein Bezugswort zurückbezieht, doch die
+  Ausnahme kippte, sobald irgendwo im Vorsatz eine Du-Form stand. In einem durchgehend duzenden
+  Text ist das der Normalfall. Gemessen an 19 verifizierten Menschentexten aus Recht, Leichter
+  Sprache, Rezepten und Behördendeutsch sinken die Warnungen von 10 auf 5 Texte. Echte
+  Registerbrüche und echte Partikelhäufungen findet der Linter weiterhin.
 - **5.17.1** - Der Hook ist jetzt opt-in. In 5.17.0 lief er ab Installation mit und schickte
   bei jeder geschriebenen Markdown- oder Textdatei Auszüge an das Modell, auch wenn niemand den
   Skill aufgerufen hatte. Das war die falsche Voreinstellung für ein Werkzeug, dessen

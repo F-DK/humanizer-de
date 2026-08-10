@@ -94,7 +94,41 @@ def word_spans(text: str, words: Iterable[str]) -> list[tuple[int, int]]:
     )
 
 
-def is_sentence_initial_sie(text: str, start: int) -> bool:
+def is_non_particle_reading(text: str, start: int, end: int, doc: object | None = None) -> bool:
+    word = text[start:end].casefold()
+    before = text[:start]
+    after = text[end:]
+
+    if word == "ja" and (
+        re.search(r":\s*$", before)
+        or (is_sentence_initial(text, start) and re.match(r"\s*(?:[,!.?]|$)", after))
+    ):
+        return True
+    if word == "mal" and re.search(r"\d[\s-]*$", before):
+        return True
+    if word == "schon" and (
+        is_sentence_initial(text, start)
+        or re.match(
+            r"\s+(?:sehr\s+)?(?:früh(?:er)?|bald|damals|heute|gestern|morgen|jetzt|seit\b|vor\b|in\s+(?:dies(?:em|er)|den\s+nächsten)\b)",
+            after,
+            re.IGNORECASE,
+        )
+    ):
+        return True
+
+    token = token_for_match(doc, start, end) if doc is not None else None
+    return token is not None and token.pos_ not in {"ADV", "PART"}
+
+
+def particle_spans(text: str, doc: object | None = None) -> list[tuple[int, int]]:
+    return [
+        (start, end)
+        for start, end in word_spans(text, MODAL_PARTICLES)
+        if not is_non_particle_reading(text, start, end, doc=doc)
+    ]
+
+
+def is_sentence_initial(text: str, start: int) -> bool:
     prefix = text[:start]
     return not prefix.strip() or re.search(r"[.!?:]\s+$", prefix) is not None
 
@@ -126,17 +160,28 @@ def contains_imperative(sent: object) -> bool:
     return any("Imp" in token.morph.get("Mood") or token.tag_ == "VVIMP" for token in sent)
 
 
+def contains_feminine_singular_nominal(sent: object) -> bool:
+    return any(
+        token.pos_ in {"NOUN", "PROPN"}
+        and has_morph(token, "Gender", "Fem")
+        and has_morph(token, "Number", "Sing")
+        for token in sent
+    )
+
+
 def previous_sentence_allows_anaphora(doc: object, token: object) -> bool:
     sent = previous_sentence(doc, token)
     if sent is None:
         return True
-    return not contains_imperative(sent) and not contains_du_form(sent.text)
+    return not contains_imperative(sent) and (
+        not contains_du_form(sent.text) or contains_feminine_singular_nominal(sent)
+    )
 
 
 def is_anaphoric_sie(match: re.Match, text: str, doc: object) -> bool:
     if match.group(0) != "Sie":
         return False
-    if not is_sentence_initial_sie(text, match.start()):
+    if not is_sentence_initial(text, match.start()):
         return False
 
     token = token_for_match(doc, match.start(), match.end())
@@ -152,7 +197,7 @@ def is_anaphoric_sie(match: re.Match, text: str, doc: object) -> bool:
 
 
 def is_informal_plural_ihr(match: re.Match, text: str, doc: object) -> bool:
-    if match.group(0) != "Ihr" or not is_sentence_initial_sie(text, match.start()):
+    if match.group(0) != "Ihr" or not is_sentence_initial(text, match.start()):
         return False
 
     token = token_for_match(doc, match.start(), match.end())
@@ -168,8 +213,13 @@ def is_informal_plural_ihr(match: re.Match, text: str, doc: object) -> bool:
     )
 
 
-def sie_formal_spans(text: str, nlp: object | None = None) -> list[tuple[int, int]]:
-    doc = nlp(text) if nlp is not None else None
+def sie_formal_spans(
+    text: str,
+    nlp: object | None = None,
+    doc: object | None = None,
+) -> list[tuple[int, int]]:
+    if doc is None:
+        doc = nlp(text) if nlp is not None else None
     spans: list[tuple[int, int]] = []
     for match in SIE_FORMS_RE.finditer(text):
         if doc is not None and (
@@ -188,12 +238,13 @@ def features(text: str, nlp: object | None = None, exclude_blockquotes: bool | N
     if exclude_blockquotes is None:
         exclude_blockquotes = nlp is not None
     clean_text = strip_protected(text, exclude_blockquotes=exclude_blockquotes)
+    doc = nlp(clean_text) if nlp is not None else None
     return {
         "du_count": count_words(clean_text, DU_FORMS),
-        "sie_formal_count": sie_formal_count(clean_text, nlp=nlp),
+        "sie_formal_count": len(sie_formal_spans(clean_text, doc=doc)),
         "wir_count": count_words(clean_text, WIR_FORMS),
         "man_count": count_words(clean_text, {"man"}),
-        "modal_particle_count": count_words(clean_text, MODAL_PARTICLES),
+        "modal_particle_count": len(particle_spans(clean_text, doc=doc)),
         "emoji_count": len(EMOJI_RE.findall(clean_text)),
         "rhetorical_questions": len(re.findall(r"\?\s*(?:$|\n|[A-ZÄÖÜ])", clean_text)),
     }
@@ -216,11 +267,12 @@ def add(
 def lint(text: str, mode: str = "sachlich", expected_address: str | None = None, precise: bool = False) -> dict:
     status, nlp = precise_context(precise)
     clean_text = strip_protected(text, exclude_blockquotes=nlp is not None)
+    doc = nlp(clean_text) if nlp is not None else None
     spans = {
         "du": word_spans(clean_text, DU_FORMS),
-        "sie": sie_formal_spans(clean_text, nlp=nlp),
+        "sie": sie_formal_spans(clean_text, doc=doc),
         "wir": word_spans(clean_text, WIR_FORMS),
-        "particles": word_spans(clean_text, MODAL_PARTICLES),
+        "particles": particle_spans(clean_text, doc=doc),
         "emoji": [match.span() for match in EMOJI_RE.finditer(clean_text)],
         "questions": [
             (match.start(), match.start() + 1)

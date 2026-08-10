@@ -92,8 +92,33 @@ class RegisterLintTests(unittest.TestCase):
         report = register_lint.lint("Das ist ja schon wichtig.", mode="sachlich")
         self.assertIn("particles_outside_locker", kinds(report))
 
+    def test_non_particle_readings_are_not_counted(self):
+        texts = (
+            "Vegetarisch: Ja",
+            "Ja. Die Prüfung ist abgeschlossen.",
+            "Die Probe wurde 5-mal geprüft, einmal morgens und dreimal abends.",
+            "Schon einfache Organismen besitzen einen solchen Abwehrmechanismus.",
+        )
+
+        for text in texts:
+            with self.subTest(text=text):
+                report = register_lint.lint(text, mode="sachlich")
+                self.assertEqual(report["features"]["modal_particle_count"], 0)
+                self.assertNotIn("particles_outside_locker", kinds(report))
+
+    def test_real_modal_particle_cluster_is_reported(self):
+        text = "Das ist ja doch schon wichtig. Man könnte das eben mal prüfen."
+        report = register_lint.lint(text, mode="sachlich")
+
+        self.assertEqual(report["features"]["modal_particle_count"], 5)
+        self.assertIn("particles_outside_locker", kinds(report))
+
     def test_locker_allows_sparse_particle(self):
-        report = register_lint.lint("Das hilft ja im Alltag.", mode="locker")
+        report = register_lint.lint(
+            "Nun ist ja ein Gesetz beschlossen worden. Das ist doch keine neue Politik.",
+            mode="locker",
+        )
+        self.assertEqual(report["features"]["modal_particle_count"], 2)
         self.assertEqual(kinds(report), set())
 
     def test_protected_code_is_not_counted_as_register(self):
@@ -125,6 +150,12 @@ class RegisterLintTests(unittest.TestCase):
 
     def test_sentence_initial_sie_stays_counted_without_precise(self):
         text = "Die Idee war neu. Sie überzeugte sofort. Und du merkst das."
+        report = register_lint.lint(text)
+
+        self.assertIn("mixed_address", kinds(report))
+
+    def test_anaphoric_sie_with_du_form_stays_counted_without_precise(self):
+        text = "Die Stilkarte gibt es auch einzeln, wenn dich die Messwerte interessieren. Sie kommt als JSON."
         report = register_lint.lint(text)
 
         self.assertIn("mixed_address", kinds(report))
@@ -171,6 +202,29 @@ class RegisterLintPreciseTests(unittest.TestCase):
         report = register_lint.lint(text, precise=True)
 
         self.assertNotIn("mixed_address", kinds(report))
+
+    def test_precise_ignores_anaphoric_sie_despite_du_form_in_previous_sentence(self):
+        texts = (
+            "Die Stilkarte gibt es auch einzeln, wenn die Messwerte interessieren. Sie kommt als JSON.",
+            "Die Stilkarte gibt es auch einzeln, wenn dich die Messwerte interessieren. Sie kommt als JSON.",
+        )
+
+        for text in texts:
+            with self.subTest(text=text):
+                self.assertNotIn("mixed_address", kinds(register_lint.lint(text, precise=True)))
+
+    def test_precise_uses_word_class_for_non_particle_readings(self):
+        text = "Es ist das zweite Mal, dass die Prüfung stattfindet, doch Schäden entstanden nicht."
+        report = register_lint.lint(text, mode="sachlich", precise=True)
+
+        self.assertEqual(report["features"]["modal_particle_count"], 0)
+        self.assertNotIn("particles_outside_locker", kinds(report))
+
+    def test_precise_keeps_real_author_voice_address_shift(self):
+        text = "Du prüfst den Text. Bitte senden Sie danach die Freigabe."
+        report = register_lint.lint(text, precise=True)
+
+        self.assertIn("mixed_address", kinds(report))
 
     def test_precise_keeps_real_sie_address(self):
         text = "Bitte prüfen Sie das. Du siehst es dann."
