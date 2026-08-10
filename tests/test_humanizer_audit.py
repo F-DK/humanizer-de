@@ -363,6 +363,31 @@ class HumanizerAuditTests(unittest.TestCase):
         self.assertEqual(driver["weight"], 2)
         self.assertIn(preflight["risk"], {"medium", "high"})
 
+    def test_ad_boilerplate_cluster_contributes_two_to_preflight(self):
+        rhythm_report = {
+            "document": {
+                "sentence_count": 8,
+                "stddev_mean_ratio": 0.6,
+                "subject_initial_ratio": 0.5,
+                "repeated_openers": [],
+                "connector_density_by_paragraph": [0],
+                "sentence_length_buckets": {
+                    "ratios": {"short_lt_12": 0.15, "long_gt_28": 0.1}
+                },
+                "paragraph_sentence_counts_uniform": False,
+            }
+        }
+        before = humanizer_audit.preflight_assessment(rhythm_report, [], [], "sachlich")
+        after = humanizer_audit.preflight_assessment(
+            rhythm_report,
+            [{"kind": "ad_boilerplate_cluster", "evidence": {"ad_section": ["Kundenstimmen"]}}],
+            [],
+            "sachlich",
+        )
+
+        self.assertEqual(after["score"], before["score"] + 2)
+        self.assertIn(after["risk"], {"medium", "high"})
+
     def test_antithesis_summary_keeps_density_before_long_matches(self):
         text = (
             "Nicht abwarten, sondern machen. Der Plan ist mutig und nicht vorsichtig. "

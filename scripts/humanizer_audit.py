@@ -192,6 +192,7 @@ def preflight_assessment(
         )
 
     weighted_kinds = {
+        "ad_boilerplate_cluster": 2,
         "ai_marker_cluster": 2,
         "copula_avoidance_cluster": 1,
         "abstraction_cluster": 1,
