@@ -113,6 +113,7 @@ class AdBoilerplateHookTests(unittest.TestCase):
         self.assertLessEqual(len(context), 2000)
         self.assertRegex(context, r"… und \d+ weitere")
 
+    @unittest.skipUnless(Path("/bin/bash").exists(), "kein /bin/bash (Windows)")
     def test_wrapper_is_silent_without_python(self):
         env = os.environ.copy()
         env.update({"PATH": "", "CLAUDE_PLUGIN_ROOT": str(ROOT)})
