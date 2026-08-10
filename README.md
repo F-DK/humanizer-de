@@ -670,7 +670,7 @@ davon wird zusammen mit dem Skill installiert oder automatisch aktiviert.
 
 ## 72 Muster in 10 Kategorien
 
-Der Skill arbeitet mit einem Katalog aus **72 KI-Schreibmustern** in 10 Kategorien, priorisiert nach Schweregrad (HIGH / MEDIUM / LOW). Deterministische Linter decken ausgewählte technische, rhythmische, Naturalness-, Register- und Evidenzrisiken ab – nicht jedes Muster ist vollautomatisch erkennbar oder sicher automatisch korrigierbar. Linter-gestützt sind derzeit rund 15 Muster (4, 8, 13, 39, 43, 46, 54, 55, 58, 61, 63–65 sowie ein advisory Kandidatenhinweis für 72; Muster 39: Erkennung im Präzisionspfad mit spaCy, kein Gate-Anschluss) plus Register-, Rhythmus- und Evidenz-Checks; die übrigen Muster prüft das Modell anhand des Katalogs. Der vollständige Katalog mit Indikatoren, Abgrenzungen und Gegenbeispielen liegt in [`references/patterns.md`](references/patterns.md). Für den schnellen Blick ohne Katalog fasst [`assets/checkliste-ki-tells.md`](assets/checkliste-ki-tells.md) die zehn häufigsten Tells auf einer Seite zusammen.
+Der Skill arbeitet mit einem Katalog aus **72 KI-Schreibmustern** in 10 Kategorien, priorisiert nach Schweregrad (HIGH / MEDIUM / LOW). Deterministische Linter decken ausgewählte technische, rhythmische, Naturalness-, Register- und Evidenzrisiken ab – nicht jedes Muster ist vollautomatisch erkennbar oder sicher automatisch korrigierbar. Linter-gestützt sind derzeit rund 17 Muster (2, 4, 8, 13, 39, 43, 44, 46, 54, 55, 58, 61, 63–65 sowie ein advisory Kandidatenhinweis für 72; Muster 2 und 44: Teilaspekte, Muster 39: Erkennung im Präzisionspfad mit spaCy, kein Gate-Anschluss) plus Register-, Rhythmus- und Evidenz-Checks; die übrigen Muster prüft das Modell anhand des Katalogs. Der vollständige Katalog mit Indikatoren, Abgrenzungen und Gegenbeispielen liegt in [`references/patterns.md`](references/patterns.md). Für den schnellen Blick ohne Katalog fasst [`assets/checkliste-ki-tells.md`](assets/checkliste-ki-tells.md) die zehn häufigsten Tells auf einer Seite zusammen.
 
 <details>
 <summary><strong>Sprache und Tonfall (19 Muster)</strong></summary>
@@ -959,6 +959,24 @@ GitHub Release.
 
 ## Was ist neu?
 
+- **5.17.0** - Werbeschablonen erkennt der Skill jetzt deterministisch. Zunächst standen
+  Wortlisten zur Debatte. In der Messung vom August fielen sie durch: 19 von 27 geratenen
+  Kandidaten hatten in echter KI-Werbung null Belege. Deshalb prüft der neue Detektor
+  `ad_boilerplate_cluster` Figuren statt Vokabeln, und er meldet erst dann etwas, wenn
+  Sozialbeweis, Standard-Werbeabschnitte oder gestapelte Handlungsaufforderungen zusammen
+  auftreten. Der Befund wiegt im Preflight doppelt, denn `preflight: low` diente bei
+  Werbetexten bisher als Entlastung, obwohl die Schablonen offen im Text standen. Bei t3
+  entfernt der alte Stand 0 von 7 Werbeschablonen, der neue 6 von 7. Alle 13 Faktenanker
+  bleiben erhalten. Nach jedem
+  Schreibvorgang speist ein neuer Hook dieselben Fundstellen in den Modellkontext — ohne ein
+  Wort Budget in `SKILL.md`. Das Muster dafür stammt von Anthropic. Das offizielle Plugin
+  `security-guidance` aus dem `claude-plugins-official`-Marketplace prüft bei `PostToolUse`
+  mit Matcher auf die Schreibwerkzeuge und reicht seine Befunde über
+  `hookSpecificOutput.additionalContext` weiter. Bei Text im Prompt greift der Hook nicht.
+  Dort wirkt allein die Preflight-Kopplung. Dabei bleibt die Musterzahl bei 72; Muster 2
+  und 44 sind nun teilweise linter-gestützt, Muster 9 bleibt bewusst judgment-only. Auf den
+  sechs KI-Werbetexten des Basisraten-Korpus feuert er dagegen nicht, weil dort
+  Slogan-Trikolen werben und dafür aus Fehlalarmgründen kein Linter existiert.
 - **5.16.0** - Die Quellenprüfung hängt nicht mehr am Stil-Ergebnis. Fand der Skill stilistisch
   nichts zu tun, hörte er bisher ganz auf — auch bei den Belegen, obwohl die Null-Edit-Regel
   dort ausdrücklich eine Ausnahme vorsah. Sie stand als Nachsatz einer Stilregel und wurde mit

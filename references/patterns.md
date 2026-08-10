@@ -1,6 +1,6 @@
 # Humanizer-de Pattern Catalog
 
-Vollständiger Musterkatalog für Humanizer (Deutsch) v5.16.0. Nur bei konkreter Musterdiagnose, Audit oder Grenzfällen laden.
+Vollständiger Musterkatalog für Humanizer (Deutsch) v5.17.0. Nur bei konkreter Musterdiagnose, Audit oder Grenzfällen laden.
 
 ## Kurzreferenz
 
@@ -126,6 +126,8 @@ Häufige Indikatoren:
 <!-- haltbarkeit: kern -->
 <!-- pass: 2 -->
 **Problem:** Übertriebene Begeisterung, die mehr nach Marketing als nach neutraler Beschreibung klingt.
+
+**Deterministischer Teilaspekt:** `german_pattern_lint.py` meldet Figuren-Cluster aus Sozialbeweis, Standard-Werbeabschnitt und Handlungsaufforderungen als `ad_boilerplate_cluster`. Einzelne Werbevokabeln und Trikola bleiben judgment-only.
 
 Häufige Indikatoren:
 - "reiches kulturelles Erbe"
@@ -1382,6 +1384,8 @@ Häufige Indikatoren:
 **Kategorie:** Stil
 
 **Problem:** Das Problem ist **nicht** die Überschrift an sich, sondern der generische, unbelegte Fülltext darunter. Überschriften wie „Bedeutung" oder „Relevanz" können in enzyklopädischen Texten legitim sein, wenn der Abschnitt konkrete Belege enthält. Tell ist die Kombination aus Standard-Überschrift + substanzloser Allgemeinplätze.
+
+**Deterministischer Teilaspekt:** `ad_boilerplate_cluster` erfasst Standard-Überschriften aus Werbetexten nur im Figuren-Cluster. Andere Standard-Kapitel und die Substanzbewertung bleiben judgment-only.
 
 **Abgrenzung:**
 - Muster 5 (Zusammenfassungen): Sprachmarker „zusammenfassend" im Fließtext
