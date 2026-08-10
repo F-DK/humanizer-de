@@ -56,6 +56,51 @@ AI_MARKERS = (
     "digitale landschaft",
     "zusammenspiel",
 )
+AD_QUANTITY_PATTERN = (
+    r"(?:(?i:über|ueber|mehr\s+als)\s+)?\d+(?:[.\u00a0 ]\d{3})*"
+    r"(?![ \t]*(?:(?i:prozent)\b|%))"
+)
+AD_AUDIENCE_PATTERN = (
+    r"(?:ihnen|uns|(?:(?:den|der)\s+)?"
+    rf"(?:{AD_QUANTITY_PATTERN}\s+)?"
+    r"(?:kunden|kundinnen|kundschaft|nutzer(?:n|innen)?|nutzerschaft|"
+    r"betriebe(?:n)?|unternehmen|familien|mitglieder(?:n)?|community|"
+    r"anwender(?:n|innen)?))"
+)
+AD_SOCIAL_PROOF_RES = (
+    re.compile(
+        rf"\b{AD_QUANTITY_PATTERN}\s+[A-ZÄÖÜ][^\W\d_]*"
+        r"(?:[ \t]+[^\W\d_]+){0,4}[ \t]+"
+        r"(?:(?i:können|koennen)\s+nicht\s+(?i:irren)"
+        r"|(?i:vertrauen)(?:\s+(?i:bereits))?)\b"
+    ),
+    re.compile(rf"\b{AD_QUANTITY_PATTERN}\s+(?i:zufriedene\s+kunden)\b"),
+    re.compile(
+        rf"\b(?:schließen|schliessen)\s+sie\s+sich\s+{AD_AUDIENCE_PATTERN}\s+an\b",
+        re.IGNORECASE,
+    ),
+)
+AD_SECTION_RE = re.compile(
+    r"(?:das\s+sagen\s+unsere\s+kunden"
+    r"|was\s+unsere\s+kunden\s+sagen"
+    r"|kundenstimmen"
+    r"|stimmen\s+unserer\s+kunden"
+    r"|das\s+sagen\s+kunden\s+(?:über|ueber)\s+uns"
+    r"|(?:überzeugen|ueberzeugen)\s+sie\s+sich\s+selbst"
+    r"|warum\s+.+?\s+die\s+richtige\s+wahl(?:\s+(?:für|fuer)\s+.+?)?\s+ist"
+    r"|ihre\s+vorteile\s+auf\s+einen\s+blick)",
+    re.IGNORECASE,
+)
+MARKDOWN_HEADING_RE = re.compile(
+    r"^[ \t]{0,3}#{1,6}[ \t]+(?P<title>.*?)(?:[ \t]+#+)?[ \t]*$"
+)
+AD_CTA_RES = (
+    re.compile(r"\bregistrieren\s+sie\s+sich\s+(?:noch\s+heute|jetzt)\b", re.IGNORECASE),
+    re.compile(r"\bjetzt\s+(?:kostenlos\s+)?testen\b", re.IGNORECASE),
+    re.compile(r"\bstarten\s+sie\s+(?:jetzt|heute)\b", re.IGNORECASE),
+    re.compile(r"\bsichern\s+sie\s+sich\b", re.IGNORECASE),
+    re.compile(r"\btesten\s+sie\b[^.!?\r\n]{1,80}?\bkostenlos\b", re.IGNORECASE),
+)
 COPULA_AVOIDANCE = (
     "fungiert als",
     "dient als",
@@ -262,6 +307,53 @@ def collect_marker_hits(text: str, markers: tuple[str, ...]) -> tuple[dict[str, 
     return hits, spans
 
 
+def authored_pattern_spans(
+    text: str,
+    patterns: tuple[re.Pattern, ...],
+    excluded_spans: tuple[tuple[int, int], ...],
+) -> list[tuple[int, int]]:
+    return text_scope.merge_ranges(
+        [
+            match.span()
+            for pattern in patterns
+            for match in pattern.finditer(text)
+            if not overlaps_mention(match.start(), match.end(), excluded_spans)
+        ]
+    )
+
+
+def ad_section_spans(
+    text: str,
+    excluded_spans: tuple[tuple[int, int], ...],
+) -> list[tuple[int, int]]:
+    lines: list[tuple[int, str]] = []
+    offset = 0
+    for raw_line in text.splitlines(keepends=True):
+        lines.append((offset, raw_line.rstrip("\r\n")))
+        offset += len(raw_line)
+
+    spans: list[tuple[int, int]] = []
+    for index, (start, line) in enumerate(lines):
+        stripped = line.strip()
+        heading = MARKDOWN_HEADING_RE.fullmatch(line)
+        if heading:
+            title = heading.group("title").strip()
+        elif (
+            len(stripped) <= 120
+            and (index == 0 or not lines[index - 1][1].strip())
+            and (index == len(lines) - 1 or not lines[index + 1][1].strip())
+        ):
+            title = stripped
+        else:
+            continue
+        if not AD_SECTION_RE.fullmatch(title):
+            continue
+        span = (start + len(line) - len(line.lstrip()), start + len(line.rstrip()))
+        if not overlaps_mention(*span, excluded_spans):
+            spans.append(span)
+    return spans
+
+
 def stellt_dar_dependency_spans(text: str, nlp: object) -> list[tuple[int, int]]:
     doc = nlp(text)
     spans: list[tuple[int, int]] = []
@@ -300,6 +392,32 @@ def lint(text: str, mode: str = "sachlich", precise: bool = False) -> dict:
                 "severity": "warning",
                 "evidence": ai_hits,
                 "spans": text_scope.serialize_spans(ai_spans),
+            }
+        )
+
+    foreign_spans = foreign_voice_ranges(clean_text)
+    ad_spans = {
+        "social_proof": authored_pattern_spans(clean_text, AD_SOCIAL_PROOF_RES, foreign_spans),
+        "ad_section": ad_section_spans(clean_text, foreign_spans),
+        "cta_stack": authored_pattern_spans(clean_text, AD_CTA_RES, foreign_spans),
+    }
+    ad_spans = {name: spans for name, spans in ad_spans.items() if spans}
+    anchor_classes = ad_spans.keys() & {"social_proof", "ad_section"}
+    if anchor_classes and (
+        len(ad_spans) >= 2 or any(len(ad_spans[name]) >= 2 for name in anchor_classes)
+    ):
+        findings.append(
+            {
+                "pattern": 2,
+                "kind": "ad_boilerplate_cluster",
+                "severity": "warning",
+                "evidence": {
+                    name: [text[start:end].strip() for start, end in spans]
+                    for name, spans in ad_spans.items()
+                },
+                "spans": text_scope.serialize_spans(
+                    [span for spans in ad_spans.values() for span in spans]
+                ),
             }
         )
 

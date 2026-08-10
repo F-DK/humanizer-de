@@ -76,6 +76,149 @@ class GermanPatternLintTests(unittest.TestCase):
         )
         self.assertIn("ai_marker_cluster", kinds(german_pattern_lint.lint(text)))
 
+    def test_ad_boilerplate_social_proof_variants(self):
+        variants = (
+            "Über 3.400 Handwerksbetriebe in Deutschland vertrauen bereits.",
+            "3.400 Handwerksbetriebe können nicht irren.",
+            "Schließen Sie sich ihnen an.",
+            "Mehr als 3.400 zufriedene Kunden.",
+        )
+        for variant in variants:
+            with self.subTest(variant=variant):
+                text = f"{variant} Registrieren Sie sich jetzt."
+                finding = next(
+                    item
+                    for item in german_pattern_lint.lint(text)["findings"]
+                    if item["kind"] == "ad_boilerplate_cluster"
+                )
+                self.assertIn(variant.rstrip("."), finding["evidence"]["social_proof"])
+
+    def test_ad_boilerplate_section_variants(self):
+        variants = (
+            "Das sagen unsere Kunden",
+            "Was unsere Kunden sagen",
+            "Kundenstimmen",
+            "Stimmen unserer Kunden",
+            "Das sagen Kunden über uns",
+            "Überzeugen Sie sich selbst",
+            "Warum RechnungsHeld die richtige Wahl für Ihren Betrieb ist",
+            "Ihre Vorteile auf einen Blick",
+        )
+        for variant in variants:
+            with self.subTest(variant=variant):
+                text = f"# {variant}\n## Ihre Vorteile auf einen Blick\n"
+                self.assertIn("ad_boilerplate_cluster", kinds(german_pattern_lint.lint(text)))
+
+    def test_ad_boilerplate_cta_variants(self):
+        variants = (
+            "Registrieren Sie sich noch heute",
+            "Registrieren Sie sich jetzt",
+            "Jetzt testen",
+            "Jetzt kostenlos testen",
+            "Starten Sie jetzt",
+            "Starten Sie heute",
+            "Sichern Sie sich Ihren Zugang",
+            "Testen Sie RechnungsHeld 30 Tage kostenlos",
+        )
+        for variant in variants:
+            with self.subTest(variant=variant):
+                text = f"3.400 zufriedene Kunden. {variant}."
+                finding = next(
+                    item
+                    for item in german_pattern_lint.lint(text)["findings"]
+                    if item["kind"] == "ad_boilerplate_cluster"
+                )
+                self.assertTrue(
+                    any(variant.startswith(match) for match in finding["evidence"]["cta_stack"])
+                )
+
+    def test_ad_boilerplate_single_class_once_is_not_cluster(self):
+        text = (
+            "Einleitung.\n"
+            "Das sagen unsere Kunden\n"
+            "Der Bericht folgt.\n"
+            "Registrieren Sie sich jetzt."
+        )
+        self.assertNotIn("ad_boilerplate_cluster", kinds(german_pattern_lint.lint(text)))
+
+    def test_ad_boilerplate_ignores_factual_text(self):
+        text = (
+            "Im Jahr 2024 wurden 3.400 Kunden befragt. "
+            "Der Bericht dokumentiert Methode, Stichprobe und Ergebnisse."
+        )
+        self.assertNotIn("ad_boilerplate_cluster", kinds(german_pattern_lint.lint(text)))
+
+    def test_ad_boilerplate_ignores_survey_percentages(self):
+        text = (
+            "Laut der Studie vertrauen der Regierung nur wenige.\n"
+            "12 Prozent der Befragten vertrauen den Parteien.\n"
+            "38 Prozent der Befragten vertrauen den Gerichten.\n"
+            "Die Erhebung lief von Januar bis Maerz 2021."
+        )
+        self.assertNotIn("ad_boilerplate_cluster", kinds(german_pattern_lint.lint(text)))
+
+    def test_ad_boilerplate_ignores_legal_join_commands(self):
+        text = (
+            "Betroffene koennen sich dem Verfahren anschliessen.\n"
+            "Schliessen Sie sich dem Musterverfahren an, wenn Sie einen Bescheid erhalten haben.\n"
+            "Schliessen Sie sich der Sammelklage an. Die Frist endet am 30. Juni."
+        )
+        self.assertNotIn("ad_boilerplate_cluster", kinds(german_pattern_lint.lint(text)))
+
+    def test_ad_boilerplate_ignores_technical_documentation_ctas(self):
+        text = (
+            "Das Paket benoetigt Python 3.11. Jetzt testen: pip install beispiel.\n"
+            "Starten Sie jetzt den Entwicklungsserver. Die Konfiguration liegt in config.toml."
+        )
+        self.assertNotIn("ad_boilerplate_cluster", kinds(german_pattern_lint.lint(text)))
+
+    def test_ad_boilerplate_requires_anchor_class(self):
+        self.assertIn(
+            "ad_boilerplate_cluster",
+            kinds(german_pattern_lint.lint("3.400 zufriedene Kunden. Jetzt testen.")),
+        )
+        self.assertNotIn(
+            "ad_boilerplate_cluster",
+            kinds(german_pattern_lint.lint("Jetzt testen. Starten Sie jetzt.")),
+        )
+
+    def test_ad_boilerplate_finds_standalone_title_line(self):
+        text = (
+            "Einleitung.\n\n"
+            "Das sagen Kunden über uns\n\n"
+            "3.400 zufriedene Kunden."
+        )
+        report = german_pattern_lint.lint(text)
+        finding = next(
+            item for item in report["findings"] if item["kind"] == "ad_boilerplate_cluster"
+        )
+
+        self.assertEqual(finding["severity"], "warning")
+        self.assertIn("Das sagen Kunden über uns", finding["evidence"]["ad_section"])
+        self.assertEqual(
+            {text[span["start"]:span["end"]] for span in finding["spans"]},
+            {
+                "Das sagen Kunden über uns",
+                "3.400 zufriedene Kunden",
+            },
+        )
+
+    def test_ad_boilerplate_ignores_foreign_prose(self):
+        text = (
+            "---\n"
+            "social: 3.400 zufriedene Kunden\n"
+            "cta: Registrieren Sie sich jetzt\n"
+            "---\n"
+            "Im Entwurf stehen „3.400 zufriedene Kunden“ und "
+            "„Schließen Sie sich ihnen an“.\n"
+            "> Registrieren Sie sich jetzt.\n"
+            "> Sichern Sie sich Ihren Zugang.\n"
+            "```text\n"
+            "Registrieren Sie sich jetzt. Sichern Sie sich Ihren Zugang.\n"
+            "```\n"
+        )
+        self.assertNotIn("ad_boilerplate_cluster", kinds(german_pattern_lint.lint(text)))
+
     def test_copula_avoidance_cluster(self):
         text = "Die Plattform fungiert als Werkzeug und verfügt über mehrere Module."
         self.assertIn("copula_avoidance_cluster", kinds(german_pattern_lint.lint(text)))
