@@ -558,6 +558,7 @@ vertreten. Außerhalb dieser Genres sind Befunde entsprechend vorsichtiger zu le
 |---|---|
 | Nur die lokalen Prüfskripte | Nein – sie laufen lokal und offline |
 | Skill in Claude Code oder Codex | Der Text geht an das jeweilige Modell; es gelten dessen Datenschutzregeln und der eigene Vertrag |
+| Hook aktiv, seit 5.17.0 | Bei jeder geschriebenen Text- oder Markdown-Datei gehen Auszüge an das Modell, auch ohne Skill-Aufruf; `HUMANIZER_AD_HOOK=off` schaltet ihn ab |
 
 Lokale Dateien werden nur geschrieben, wenn du eine Dateiänderung ausdrücklich verlangst oder
 selbst speicherst. Stilprofil und Feedback-Ledger unter `.humanizer/` speichern Regeln und
@@ -596,6 +597,22 @@ Die Leitidee ist proportional: so viel wie nötig, so wenig wie möglich. Regeln
 nicht. Konkrete Fakten schlagen stilistische Glätte, und vorhandene Fachsprache schlägt ein
 vermeintlich „menschlicheres“ Schauspiel. Das Projekt stützt damit belegbare EEAT-nahe Mechaniken,
 behauptet aber weder Expertise noch Autorenschaft.
+
+### Der Hook: eine vierte Schicht außerhalb des Skills
+
+Seit 5.17.0 läuft eine vierte Schicht mit, und zwar außerhalb des Skills. Ein Hook prüft jede
+Markdown- und Textdatei, sobald du sie schreiben lässt. Findet der Werbeschablonen-Detektor dort
+ein Cluster, meldet er die Fundstellen an das Modell. Das passiert auch dann, wenn du den Skill
+gar nicht aufgerufen hast, und es ist der Grund, warum der Hook existiert: Er greift genau dann,
+wenn niemand ihn angefordert hat.
+
+Abschalten kannst du ihn mit der Umgebungsvariablen `HUMANIZER_AD_HOOK=off`. Er schreibt nichts,
+verändert keine Datei und beendet sich bei jedem Fehler still. Geprüft werden nur `.md`,
+`.markdown` und `.txt`, und nur ab 80 Wörtern.
+
+Eine Sache solltest du dabei wissen. Die gemeldeten Fundstellen enthalten wörtliche Auszüge aus
+deinem Text, und die gehen an das Modell. Ohne Hook passiert das nur, wenn du den Skill selbst
+aufrufst. Wer das nicht will, schaltet ihn ab.
 
 ---
 
@@ -959,24 +976,25 @@ GitHub Release.
 
 ## Was ist neu?
 
-- **5.17.0** - Werbeschablonen erkennt der Skill jetzt deterministisch. Zunächst standen
-  Wortlisten zur Debatte. In der Messung vom August fielen sie durch: 19 von 27 geratenen
-  Kandidaten hatten in echter KI-Werbung null Belege. Deshalb prüft der neue Detektor
-  `ad_boilerplate_cluster` Figuren statt Vokabeln, und er meldet erst dann etwas, wenn
-  Sozialbeweis, Standard-Werbeabschnitte oder gestapelte Handlungsaufforderungen zusammen
-  auftreten. Der Befund wiegt im Preflight doppelt, denn `preflight: low` diente bei
-  Werbetexten bisher als Entlastung, obwohl die Schablonen offen im Text standen. Bei t3
-  entfernt der alte Stand 0 von 7 Werbeschablonen, der neue 6 von 7. Alle 13 Faktenanker
-  bleiben erhalten. Nach jedem
-  Schreibvorgang speist ein neuer Hook dieselben Fundstellen in den Modellkontext — ohne ein
-  Wort Budget in `SKILL.md`. Das Muster dafür stammt von Anthropic. Das offizielle Plugin
-  `security-guidance` aus dem `claude-plugins-official`-Marketplace prüft bei `PostToolUse`
-  mit Matcher auf die Schreibwerkzeuge und reicht seine Befunde über
-  `hookSpecificOutput.additionalContext` weiter. Bei Text im Prompt greift der Hook nicht.
-  Dort wirkt allein die Preflight-Kopplung. Dabei bleibt die Musterzahl bei 72; Muster 2
-  und 44 sind nun teilweise linter-gestützt, Muster 9 bleibt bewusst judgment-only. Auf den
-  sechs KI-Werbetexten des Basisraten-Korpus feuert er dagegen nicht, weil dort
-  Slogan-Trikolen werben und dafür aus Fehlalarmgründen kein Linter existiert.
+- **5.17.0** - Werbeschablonen erkennt der Skill jetzt deterministisch. Der neue Detektor
+  `ad_boilerplate_cluster` sucht Figuren statt Vokabeln: Sozialbeweis wie „über 3.400 Betriebe
+  vertrauen bereits“, Standard-Werbeabschnitte wie „Das sagen unsere Kunden“, gestapelte
+  Handlungsaufforderungen. Einzeln zählt nichts davon. Erst im Verbund meldet er etwas.
+  Wortlisten waren der erste Versuch, und sie fielen im August durch: 19 von 27 geratenen
+  Kandidaten kamen in echter KI-Werbung gar nicht vor. Im Sammelcheck wiegt der Befund doppelt,
+  denn bisher meldete der bei Werbetexten `preflight: low` — und das Modell nahm die Entwarnung
+  als Freibrief, obwohl die Schablonen offen im Text standen. Am Testtext t3 entfernt der alte
+  Stand 0 von 7 Schablonen, der neue 6 von 7, bei unveränderten 13 Zahlen, Normen und Namen.
+  Dazu kommt ein Hook. Nach jedem Schreibvorgang meldet er dieselben Fundstellen an das Modell,
+  ohne Platz in `SKILL.md` zu kosten. Das Muster stammt von Anthropic: Deren offizielles Plugin
+  `security-guidance` aus dem `claude-plugins-official`-Marketplace prüft bei `PostToolUse` mit
+  Matcher auf die Schreibwerkzeuge und reicht Befunde über
+  `hookSpecificOutput.additionalContext` weiter. Bei Text, der direkt im Prompt steht, greift
+  er nicht. Die Musterzahl bleibt bei 72; Muster 2 und 44 sind jetzt teilweise linter-gestützt,
+  Muster 9 bleibt Urteilssache. Auf frisch erzeugter KI-Werbung feuert der Detektor allerdings
+  nicht. In sechs Testläufen entstanden sechs verschiedene Überschriften für dieselbe
+  Kundenstimmen-Sektion, und davon kennt er genau eine. Er erkennt also Formulierungen und
+  keine Bauformen. Das begrenzt ihn auf Texte, die t3 ähneln.
 - **5.16.0** - Die Quellenprüfung hängt nicht mehr am Stil-Ergebnis. Fand der Skill stilistisch
   nichts zu tun, hörte er bisher ganz auf — auch bei den Belegen, obwohl die Null-Edit-Regel
   dort ausdrücklich eine Ausnahme vorsah. Sie stand als Nachsatz einer Stilregel und wurde mit
