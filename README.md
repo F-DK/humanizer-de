@@ -571,7 +571,7 @@ vertreten. Außerhalb dieser Genres sind Befunde entsprechend vorsichtiger zu le
 |---|---|
 | Nur die lokalen Prüfskripte | Nein – sie laufen lokal und offline |
 | Skill in Claude Code oder Codex | Der Text geht an das jeweilige Modell; es gelten dessen Datenschutzregeln und der eigene Vertrag |
-| Hook aktiv, seit 5.17.0 | Bei jeder geschriebenen Text- oder Markdown-Datei gehen Auszüge an das Modell, auch ohne Skill-Aufruf; `HUMANIZER_AD_HOOK=off` schaltet ihn ab |
+| Hook, nur mit `HUMANIZER_AD_HOOK=on` | Dann gehen Auszüge aus jeder geschriebenen Text- oder Markdown-Datei an das Modell, auch ohne Skill-Aufruf. Ohne die Variable bleibt der Hook aus |
 
 Lokale Dateien werden nur geschrieben, wenn du eine Dateiänderung ausdrücklich verlangst oder
 selbst speicherst. Stilprofil und Feedback-Ledger unter `.humanizer/` speichern Regeln und
@@ -613,19 +613,18 @@ behauptet aber weder Expertise noch Autorenschaft.
 
 ### Der Hook: eine vierte Schicht außerhalb des Skills
 
-Seit 5.17.0 läuft eine vierte Schicht mit, und zwar außerhalb des Skills. Ein Hook prüft jede
-Markdown- und Textdatei, sobald du sie schreiben lässt. Findet der Werbeschablonen-Detektor dort
-ein Cluster, meldet er die Fundstellen an das Modell. Das passiert auch dann, wenn du den Skill
-gar nicht aufgerufen hast, und es ist der Grund, warum der Hook existiert: Er greift genau dann,
-wenn niemand ihn angefordert hat.
+Seit 5.17.0 gibt es eine vierte Schicht, die außerhalb des Skills läuft. Sie ist ausgeschaltet,
+bis du sie einschaltest.
 
-Abschalten kannst du ihn mit der Umgebungsvariablen `HUMANIZER_AD_HOOK=off`. Er schreibt nichts,
-verändert keine Datei und beendet sich bei jedem Fehler still. Geprüft werden nur `.md`,
-`.markdown` und `.txt`, und nur ab 80 Wörtern.
+Aktiv geprüft wird erst mit `HUMANIZER_AD_HOOK=on`. Dann sieht ein Hook jede Markdown- und
+Textdatei an, sobald das Modell sie schreibt, und meldet gefundene Werbeschablonen zurück. Das
+greift auch in Durchgängen, in denen niemand den Skill aufgerufen hat — dafür ist es gedacht.
+Ist er an, schreibt er trotzdem nichts, verändert keine Datei und beendet sich bei jedem Fehler
+still. Angesehen werden nur `.md`, `.markdown` und `.txt`, und nur ab 80 Wörtern.
 
-Eine Sache solltest du dabei wissen. Die gemeldeten Fundstellen enthalten wörtliche Auszüge aus
-deinem Text, und die gehen an das Modell. Ohne Hook passiert das nur, wenn du den Skill selbst
-aufrufst. Wer das nicht will, schaltet ihn ab.
+Warum er nicht von allein läuft: Die Rückmeldung enthält wörtliche Auszüge aus deinem Text, und
+die gehen an das Modell. Ohne Hook passiert das nur, wenn du den Skill selbst aufrufst. Diese
+Entscheidung soll bei dir liegen.
 
 ---
 
@@ -989,6 +988,12 @@ GitHub Release.
 
 ## Was ist neu?
 
+- **5.17.1** - Der Hook ist jetzt opt-in. In 5.17.0 lief er ab Installation mit und schickte
+  bei jeder geschriebenen Markdown- oder Textdatei Auszüge an das Modell, auch wenn niemand den
+  Skill aufgerufen hatte. Das war die falsche Voreinstellung für ein Werkzeug, dessen
+  Doctor-Check eigens meldet, dass keine Nutzertexte gelesen wurden. Ohne
+  `HUMANIZER_AD_HOOK=on` bleibt er still. Alles andere gilt als aus: ein leerer Wert, `off`,
+  `0`, `false` oder irgendetwas Unerwartetes. Wer ihn will, schaltet ihn bewusst ein.
 - **5.17.0** - Werbeschablonen erkennt der Skill jetzt deterministisch. Der neue Detektor
   `ad_boilerplate_cluster` sucht Figuren statt Vokabeln: Sozialbeweis wie „über 3.400 Betriebe
   vertrauen bereits“, Standard-Werbeabschnitte wie „Das sagen unsere Kunden“, gestapelte

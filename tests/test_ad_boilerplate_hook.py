@@ -25,6 +25,8 @@ class AdBoilerplateHookTests(unittest.TestCase):
     def run_hook(self, payload, *, env=None):
         process_env = os.environ.copy()
         process_env["CLAUDE_PLUGIN_ROOT"] = str(ROOT)
+        # Der Hook ist opt-in; die Wirkungstests schalten ihn ausdrücklich ein.
+        process_env["HUMANIZER_AD_HOOK"] = "on"
         if env:
             process_env.update(env)
         stdin = payload if isinstance(payload, str) else json.dumps(payload)
@@ -94,13 +96,33 @@ class AdBoilerplateHookTests(unittest.TestCase):
     def test_broken_json_is_silent_and_fail_open(self):
         self.assert_silent(self.run_hook("{kaputt"))
 
-    def test_environment_switch_disables_hook(self):
+    def test_hook_is_off_without_opt_in(self):
         self.assert_silent(
             self.run_hook(
                 self.payload("Write", content=AD_TEXT),
-                env={"HUMANIZER_AD_HOOK": "off"},
+                env={"HUMANIZER_AD_HOOK": ""},
             )
         )
+
+    def test_unrelated_value_does_not_enable_hook(self):
+        for value in ("off", "0", "false", "vielleicht"):
+            with self.subTest(value=value):
+                self.assert_silent(
+                    self.run_hook(
+                        self.payload("Write", content=AD_TEXT),
+                        env={"HUMANIZER_AD_HOOK": value},
+                    )
+                )
+
+    def test_opt_in_values_enable_hook(self):
+        for value in ("on", "1", "true", "yes", "ja", "ON", "True"):
+            with self.subTest(value=value):
+                proc = self.run_hook(
+                    self.payload("Write", content=AD_TEXT),
+                    env={"HUMANIZER_AD_HOOK": value},
+                )
+                self.assertEqual(proc.returncode, 0, proc.stderr)
+                self.assertIn("hookSpecificOutput", proc.stdout)
 
     def test_context_is_capped_and_reports_omitted_findings(self):
         headings = "\n".join(
@@ -112,6 +134,33 @@ class AdBoilerplateHookTests(unittest.TestCase):
         context = json.loads(proc.stdout)["hookSpecificOutput"]["additionalContext"]
         self.assertLessEqual(len(context), 2000)
         self.assertRegex(context, r"… und \d+ weitere")
+
+    @unittest.skipUnless(Path("/bin/bash").exists(), "kein /bin/bash (Windows)")
+    def test_wrapper_and_handler_agree_on_the_switch(self):
+        """Wrapper und Handler duerfen denselben Wert nicht verschieden lesen."""
+        payload = json.dumps(self.payload("Write", content=AD_TEXT))
+        for value in ("on", "ON", "oN", " on ", "true", "tRue", "yes", "YeS", "1", "ja",
+                      "", "off", "0", "false", "vielleicht"):
+            with self.subTest(value=value):
+                env = os.environ.copy()
+                env["CLAUDE_PLUGIN_ROOT"] = str(ROOT)
+                env["HUMANIZER_AD_HOOK"] = value
+                shell = subprocess.run(["/bin/bash", str(WRAPPER)], input=payload, cwd=ROOT,
+                                       env=env, capture_output=True, text=True)
+                py = subprocess.run([sys.executable, str(HANDLER)], input=payload, cwd=ROOT,
+                                    env=env, capture_output=True, text=True)
+                self.assertEqual(bool(shell.stdout), bool(py.stdout),
+                                 f"Wrapper und Handler uneinig bei {value!r}")
+
+    @unittest.skipUnless(Path("/bin/bash").exists(), "kein /bin/bash (Windows)")
+    def test_wrapper_is_silent_without_opt_in(self):
+        env = os.environ.copy()
+        env["CLAUDE_PLUGIN_ROOT"] = str(ROOT)
+        env.pop("HUMANIZER_AD_HOOK", None)
+        proc = subprocess.run(["/bin/bash", str(WRAPPER)],
+                              input=json.dumps(self.payload("Write", content=AD_TEXT)),
+                              cwd=ROOT, env=env, capture_output=True, text=True)
+        self.assert_silent(proc)
 
     @unittest.skipUnless(Path("/bin/bash").exists(), "kein /bin/bash (Windows)")
     def test_wrapper_is_silent_without_python(self):

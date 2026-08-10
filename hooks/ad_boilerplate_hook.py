@@ -12,6 +12,7 @@ from pathlib import Path
 
 
 PROVENANCE_TAG = "[humanizer-de: Werbeschablonen-Check]"
+ENABLED_VALUES = {"on", "1", "true", "yes", "ja"}
 MAX_CONTEXT_CHARS = 2000
 MIN_WORDS = 80
 TIMEOUT_SECONDS = 1
@@ -131,7 +132,8 @@ def hook_output() -> dict | None:
 
 
 def main() -> None:
-    if os.environ.get("HUMANIZER_AD_HOOK", "").strip().lower() == "off":
+    # Opt-in: ohne ausdrückliche Zustimmung liest der Hook keinen Nutzertext.
+    if os.environ.get("HUMANIZER_AD_HOOK", "").strip().lower() not in ENABLED_VALUES:
         return
     armed = hasattr(signal, "SIGALRM") and hasattr(signal, "setitimer")
     previous_handler = None
