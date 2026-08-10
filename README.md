@@ -526,6 +526,19 @@ Im JSON tragen adressierbare Befunde ein optionales Feld
 bezogen auf den unveränderten Originaltext; `offset_unit` nennt diese Konvention
 explizit. Dokumentweite Rhythmusmetriken erhalten bewusst keine erfundene Einzelposition.
 
+Die Stilkarte gibt es auch einzeln, wenn dich nur die Messwerte interessieren und nicht der
+ganze Bericht:
+
+```bash
+python3 scripts/style_profile.py --file entwurf.md --target sachlich
+```
+
+Das Ergebnis kommt als JSON und deutet nichts, sondern zählt: Satzlängen und ihre Streuung,
+Nominalstil-Anteil, Type-Token-Ratio, Modalpartikeln. Mit `--target` kommt ein Delta zum
+Korridor des gewählten Modus dazu, ohne `--target` bleiben es die Rohzahlen. Ein eigenes
+Profil unter `.humanizer/profile.json` überschreibt die Korridore, und `--no-profile`
+ignoriert es.
+
 ---
 
 <a id="wann-hilfreich--und-wann-nicht"></a>
