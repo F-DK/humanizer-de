@@ -571,7 +571,6 @@ vertreten. Außerhalb dieser Genres sind Befunde entsprechend vorsichtiger zu le
 |---|---|
 | Nur die lokalen Prüfskripte | Nein – sie laufen lokal und offline |
 | Skill in Claude Code oder Codex | Der Text geht an das jeweilige Modell; es gelten dessen Datenschutzregeln und der eigene Vertrag |
-| Hook, nur mit `HUMANIZER_AD_HOOK=on` | Dann gehen Auszüge aus jeder geschriebenen Text- oder Markdown-Datei an das Modell, auch ohne Skill-Aufruf. Ohne die Variable bleibt der Hook aus |
 
 Lokale Dateien werden nur geschrieben, wenn du eine Dateiänderung ausdrücklich verlangst oder
 selbst speicherst. Stilprofil und Feedback-Ledger unter `.humanizer/` speichern Regeln und
@@ -610,23 +609,6 @@ Die Leitidee ist proportional: so viel wie nötig, so wenig wie möglich. Regeln
 nicht. Konkrete Fakten schlagen stilistische Glätte, und vorhandene Fachsprache schlägt ein
 vermeintlich „menschlicheres“ Schauspiel. Das Projekt stützt damit belegbare EEAT-nahe Mechaniken,
 behauptet aber weder Expertise noch Autorenschaft.
-
-### Der Hook: eine vierte Schicht außerhalb des Skills
-
-Seit 5.17.0 gibt es eine vierte Schicht, die außerhalb des Skills läuft. Sie ist ausgeschaltet,
-bis du sie einschaltest.
-
-Aktiv geprüft wird erst mit `HUMANIZER_AD_HOOK=on`. Dann sieht ein Hook jede Markdown- und
-Textdatei an, sobald das Modell sie schreibt, und meldet gefundene Werbeschablonen zurück. Das
-greift auch in Durchgängen, in denen niemand den Skill aufgerufen hat — dafür ist es gedacht.
-Ist er an, schreibt er trotzdem nichts, verändert keine Datei und beendet sich bei jedem Fehler
-still. Angesehen werden nur `.md`, `.markdown` und `.txt`, und nur ab 80 Wörtern.
-
-Warum er nicht von allein läuft: Die Rückmeldung enthält wörtliche Auszüge aus deinem Text, und
-die gehen an das Modell. Ohne Hook passiert das nur, wenn du den Skill selbst aufrufst. Diese
-Entscheidung soll bei dir liegen.
-
----
 
 ## Optionale Werkzeuge
 
@@ -988,6 +970,15 @@ GitHub Release.
 
 ## Was ist neu?
 
+- **5.17.3** - Der Werbeschablonen-Hook ist wieder draußen. Er kam mit 5.17.0 und sollte
+  Fundstellen nach jedem Schreibvorgang an das Modell melden, ohne Platz in `SKILL.md` zu
+  kosten. In zwölf Vergleichsläufen mit und ohne Hook stand es null zu null. Kaputt war er
+  nicht, die Zustellung ist nachgewiesen. Dabei bekam er nie etwas zu melden, weil der Detektor
+  auf frisch erzeugter Werbung schweigt und weil bei Text im Prompt gar keine Datei geschrieben
+  wird. Seinen eigentlichen Zweck erfüllt ohnehin die Preflight-Kopplung: ein Kanal neben
+  Prompt und Anleitung, gemessen wirksam, eine Zeile Code. Der Detektor und diese Kopplung
+  bleiben unverändert. Damit fallen 356 Zeilen weg, dazu 14 Tests und eine Datenschutzzeile,
+  die eine wirkungslose Funktion erklären musste.
 - **5.17.2** - `register_lint` hält jetzt, was SKILL.md verspricht. Zwei dort beschriebene
   Ausnahmen fehlten im Code. Ein `ja` hinter dem Doppelpunkt zählte als Modalpartikel, und in
   einem Rezept stand eben „Vegetarisch: Ja“. Dasselbe traf `mal` in `5-mal` und `schon` in
