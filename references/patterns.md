@@ -1,6 +1,6 @@
 # Humanizer-de Pattern Catalog
 
-Vollständiger Musterkatalog für Humanizer (Deutsch) v5.17.3. Nur bei konkreter Musterdiagnose, Audit oder Grenzfällen laden.
+Vollständiger Musterkatalog für Humanizer (Deutsch) v5.18.0. Nur bei konkreter Musterdiagnose, Audit oder Grenzfällen laden.
 
 ## Kurzreferenz
 

@@ -151,7 +151,8 @@ ANTITHESIS_OPERAND_PATTERN = rf"(?:{FACTUAL_CONTRAST_VALUE_PATTERN}|[0-9A-Za-zÄ
 ANTITHESIS_RES = (
     re.compile(
         r"\bnicht\b(?!\s+(?:nur|allein|bloß|bloss|ausschließlich|ausschliesslich)\b)"
-        r"(?P<left>[^,.;:!?\r\n]{1,80}),\s*"
+        r"(?P<left>[^,.;:!?\r\n]{1,80})"
+        r"(?:,\s*|[^\S\r\n]+(?:--?|[–—])[^\S\r\n]+)"
         r"sondern\b(?!\s+auch\b)(?P<right>[^,.;:!?\r\n]{1,80})",
         re.IGNORECASE,
     ),
@@ -169,6 +170,13 @@ FACTUAL_CONTRAST_VALUE_RE = re.compile(
 ANTITHESIS_CLUSTER_MIN_COUNT = 4
 ANTITHESIS_CLUSTER_MIN_PER_1000_WORDS = 3.0
 WORD_RE = re.compile(r"[^\W_]+(?:[-'][^\W_]+)?")
+DASH_PUNCTUATION_RE = re.compile(r"[–—]|(?<=[^\S\r\n])--?(?=[^\S\r\n])")
+DASH_NUMBER_RANGE_RE = re.compile(r"\d[^\S\r\n]*(?:[–—]|--?)[^\S\r\n]*\d")
+DASH_PARAGRAPH_RE = re.compile(r"(?m)(?:^[^\r\n]*\S[^\r\n]*(?:\r?\n|$))+")
+DASH_CLUSTER_MIN_COUNT = 5
+DASH_CLUSTER_MIN_PER_1000_WORDS = 15.0
+DASH_DISTRIBUTED_MIN_COUNT = 3
+DASH_DISTRIBUTED_MIN_PARAGRAPHS = 4
 BOLD_SPAN_RE = re.compile(r"\*\*[^*\r\n]+?\*\*")
 BOLD_OVERDOSE_THRESHOLD = 5
 STELLT_DAR_RE = re.compile(
@@ -453,13 +461,16 @@ def lint(text: str, mode: str = "sachlich", precise: bool = False) -> dict:
 
     colon_headings: list[str] = []
     colon_heading_spans: list[tuple[int, int]] = []
+    markdown_heading_spans: list[tuple[int, int]] = []
     offset = 0
     for raw_line in clean_text.splitlines(keepends=True):
         line = raw_line.splitlines()[0]
+        start = offset + len(line) - len(line.lstrip())
+        end = offset + len(line.rstrip())
+        if MARKDOWN_HEADING_RE.fullmatch(line):
+            markdown_heading_spans.append((start, end))
         if re.match(r"^\s{0,3}#{1,3}\s+.+:.+", line):
             colon_headings.append(line.strip())
-            start = offset + len(line) - len(line.lstrip())
-            end = offset + len(line.rstrip())
             colon_heading_spans.append((start, end))
         offset += len(raw_line)
     if len(colon_headings) >= 2:
@@ -549,6 +560,59 @@ def lint(text: str, mode: str = "sachlich", precise: bool = False) -> dict:
                 "spans": text_scope.serialize_spans(
                     [(start, end) for start, end, _ in antithesis_matches]
                 ),
+            }
+        )
+
+    numeric_range_spans = tuple(match.span() for match in DASH_NUMBER_RANGE_RE.finditer(clean_text))
+    contrast_spans = tuple(
+        text_scope.merge_ranges(
+            [(start, end) for start, end, _ in (*negation_matches, *antithesis_candidates)]
+        )
+    )
+    dash_spans = [
+        match.span()
+        for match in DASH_PUNCTUATION_RE.finditer(clean_text)
+        if not any(
+            overlaps_mention(match.start(), match.end(), ranges)
+            for ranges in (
+                foreign_spans,
+                tuple(markdown_heading_spans),
+                numeric_range_spans,
+                contrast_spans,
+            )
+        )
+    ]
+    dash_clusters: list[tuple[list[tuple[int, int]], float]] = []
+    distributed_dash_paragraphs: list[tuple[list[tuple[int, int]], float]] = []
+    for paragraph in DASH_PARAGRAPH_RE.finditer(clean_text):
+        spans = [span for span in dash_spans if paragraph.start() <= span[0] < paragraph.end()]
+        if len(spans) < DASH_DISTRIBUTED_MIN_COUNT:
+            continue
+        paragraph_word_count = len(WORD_RE.findall(paragraph.group()))
+        density = len(spans) * 1000 / paragraph_word_count if paragraph_word_count else 0.0
+        distributed_dash_paragraphs.append((spans, density))
+        if len(spans) >= DASH_CLUSTER_MIN_COUNT and density >= DASH_CLUSTER_MIN_PER_1000_WORDS:
+            dash_clusters.append((spans, density))
+    triggered_dash_paragraphs = (
+        distributed_dash_paragraphs
+        if len(distributed_dash_paragraphs) >= DASH_DISTRIBUTED_MIN_PARAGRAPHS
+        else dash_clusters
+    )
+    if triggered_dash_paragraphs:
+        clustered_spans = [span for spans, _ in triggered_dash_paragraphs for span in spans]
+        findings.append(
+            {
+                "pattern": 16,
+                "kind": "dash_cluster",
+                "severity": "warning",
+                "evidence": {
+                    "count": len(clustered_spans),
+                    "max_per_1000_words": round(
+                        max(density for _, density in triggered_dash_paragraphs), 2
+                    ),
+                    "matches": [text[start:end] for start, end in clustered_spans],
+                },
+                "spans": text_scope.serialize_spans(clustered_spans),
             }
         )
 

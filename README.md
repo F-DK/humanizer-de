@@ -681,7 +681,7 @@ davon wird zusammen mit dem Skill installiert oder automatisch aktiviert.
 
 ## 72 Muster in 10 Kategorien
 
-Der Skill arbeitet mit einem Katalog aus **72 KI-Schreibmustern** in 10 Kategorien, priorisiert nach Schweregrad (HIGH / MEDIUM / LOW). Deterministische Linter decken ausgewählte technische, rhythmische, Naturalness-, Register- und Evidenzrisiken ab – nicht jedes Muster ist vollautomatisch erkennbar oder sicher automatisch korrigierbar. Linter-gestützt sind derzeit rund 17 Muster (2, 4, 8, 13, 39, 43, 44, 46, 54, 55, 58, 61, 63–65 sowie ein advisory Kandidatenhinweis für 72; Muster 2 und 44: Teilaspekte, Muster 39: Erkennung im Präzisionspfad mit spaCy, kein Gate-Anschluss) plus Register-, Rhythmus- und Evidenz-Checks; die übrigen Muster prüft das Modell anhand des Katalogs. Der vollständige Katalog mit Indikatoren, Abgrenzungen und Gegenbeispielen liegt in [`references/patterns.md`](references/patterns.md). Für den schnellen Blick ohne Katalog fasst [`assets/checkliste-ki-tells.md`](assets/checkliste-ki-tells.md) die zehn häufigsten Tells auf einer Seite zusammen.
+Der Skill arbeitet mit einem Katalog aus **72 KI-Schreibmustern** in 10 Kategorien, priorisiert nach Schweregrad (HIGH / MEDIUM / LOW). Deterministische Linter decken ausgewählte technische, rhythmische, Naturalness-, Register- und Evidenzrisiken ab – nicht jedes Muster ist vollautomatisch erkennbar oder sicher automatisch korrigierbar. Linter-gestützt sind derzeit rund 18 Muster (2, 4, 8, 13, 16, 39, 43, 44, 46, 54, 55, 58, 61, 63–65 sowie ein advisory Kandidatenhinweis für 72; Muster 2 und 44: Teilaspekte, Muster 39: Erkennung im Präzisionspfad mit spaCy, kein Gate-Anschluss) plus Register-, Rhythmus- und Evidenz-Checks; die übrigen Muster prüft das Modell anhand des Katalogs. Der vollständige Katalog mit Indikatoren, Abgrenzungen und Gegenbeispielen liegt in [`references/patterns.md`](references/patterns.md). Für den schnellen Blick ohne Katalog fasst [`assets/checkliste-ki-tells.md`](assets/checkliste-ki-tells.md) die zehn häufigsten Tells auf einer Seite zusammen.
 
 <details>
 <summary><strong>Sprache und Tonfall (19 Muster)</strong></summary>
@@ -970,6 +970,17 @@ GitHub Release.
 
 ## Was ist neu?
 
+- **5.18.0** - Gehäufte Gedankenstriche (Muster 16) prüft der Skill jetzt deterministisch.
+  Bisher war das Urteilssache. Der neue Detektor `dash_cluster` erkennt zwei Formen: viele
+  Striche gedrängt in einem Absatz, und wenige Striche über viele Absätze verstreut, wobei
+  gerade die zweite Form die häufigere KI-Gewohnheit ist und bisher übersehen wurde. An 39
+  verifizierten Menschentexten sind beide Tore geeicht, ohne einen einzigen Fehlalarm.
+  Literatur, Recht und Plenarreden setzen Gedankenstriche schließlich reichlich und völlig
+  legitim. Unangetastet bleiben einzelne Striche, Bindestriche in Wörtern, Zahlenbereiche und
+  das Schema „nicht X, sondern Y“, das zu Muster 8 gehört. Anlass war eine eigene Messung. Im
+  Schnitt setzt Claude 1,56 Gedankenstriche gegen 0,56 bei GPT, fast dreimal so viele, und
+  damit ruht das Muster erstmals auf deutschen Daten statt auf einer aus dem Englischen
+  entliehenen Vorlage. GPT verrät sich woanders: an gleichförmigeren Satzlängen.
 - **5.17.3** - Der Werbeschablonen-Hook ist wieder draußen. Er kam mit 5.17.0 und sollte
   Fundstellen nach jedem Schreibvorgang an das Modell melden, ohne Platz in `SKILL.md` zu
   kosten. In zwölf Vergleichsläufen mit und ohne Hook stand es null zu null. Kaputt war er

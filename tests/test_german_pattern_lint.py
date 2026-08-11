@@ -505,6 +505,82 @@ class GermanPatternLintTests(unittest.TestCase):
                 with self.subTest(adverb=adverb, form=form):
                     self.assertNotIn("negation_antithesis_cluster", kinds(german_pattern_lint.lint(text)))
 
+    def test_dash_cluster_for_all_sentence_punctuation_variants(self):
+        clauses = (
+            "Die Oberfläche wirkt klar{dash}jedes Element sitzt an seinem Platz.",
+            "Der Ablauf bleibt einfach{dash}niemand muss lange suchen.",
+            "Die Hilfe erscheint sofort{dash}genau dann, wenn sie gebraucht wird.",
+            "Das Ergebnis überzeugt{dash}ohne unnötige Reibung.",
+            "So wird jeder Schritt leichter{dash}von Anfang bis Ende.",
+        )
+        for dash in (" — ", " – ", " -- ", " - "):
+            with self.subTest(dash=dash):
+                text = " ".join(clause.format(dash=dash) for clause in clauses)
+                finding = next(
+                    item
+                    for item in german_pattern_lint.lint(text)["findings"]
+                    if item["kind"] == "dash_cluster"
+                )
+
+                self.assertEqual(finding["pattern"], 16)
+                self.assertEqual(finding["severity"], "warning")
+                self.assertEqual(finding["evidence"]["count"], 5)
+                self.assertEqual(
+                    [text[span["start"]:span["end"]] for span in finding["spans"]],
+                    finding["evidence"]["matches"],
+                )
+
+    def test_dash_cluster_for_dashes_distributed_across_paragraphs(self):
+        paragraph = "Der Plan — gut durchdacht — steht. Die Umsetzung — sofort — beginnt."
+        text = "\n\n".join([paragraph] * 6)
+
+        findings = [
+            item
+            for item in german_pattern_lint.lint(text)["findings"]
+            if item["kind"] == "dash_cluster"
+        ]
+
+        self.assertEqual(len(findings), 1)
+        self.assertEqual(findings[0]["evidence"]["count"], 24)
+        self.assertEqual(
+            [text[span["start"]:span["end"]] for span in findings[0]["spans"]],
+            ["—"] * 24,
+        )
+
+    def test_dash_cluster_ignores_headings_word_hyphens_and_number_ranges(self):
+        text = (
+            "# Eins – Überblick\n## Zwei — Details\n### Drei - Praxis\n"
+            "KI-Tell, 2D-Spiegelung und E-Mail. "
+            "Die Zeiträume 2019–2021, S. 12–15, 10–20 % und 10 – 20 bleiben Bereiche."
+        )
+        self.assertNotIn("dash_cluster", kinds(german_pattern_lint.lint(text)))
+
+    def test_dash_cluster_ignores_foreign_prose(self):
+        text = (
+            "Im Entwurf steht: „Klar — direkt — einfach — sicher — überzeugend.“\n"
+            "> Klar — direkt — einfach — sicher — überzeugend.\n"
+            "`Klar — direkt — einfach — sicher — überzeugend.`\n"
+            "*Klar — direkt — einfach — sicher — überzeugend.*"
+        )
+        self.assertNotIn("dash_cluster", kinds(german_pattern_lint.lint(text)))
+
+    def test_dash_cluster_requires_count_and_paragraph_density(self):
+        paired_insertions = (
+            "Dass es offenbar keinem – nicht einmal den Designern – aufzufallen scheint. "
+            "Gesucht wird ein Objekt – zum Beispiel von einem Foto – zum Spiegeln."
+        )
+        low_density = "Wort " * 400 + "A — B. C — D. E — F. G — H. I — J."
+        for text in (paired_insertions, low_density):
+            with self.subTest(text=text[-80:]):
+                self.assertNotIn("dash_cluster", kinds(german_pattern_lint.lint(text)))
+
+    def test_dash_cluster_does_not_duplicate_m8_dash_antithesis(self):
+        text = "Nicht reden – sondern handeln. " * 5
+        report = german_pattern_lint.lint(text)
+
+        self.assertIn("negation_antithesis_cluster", kinds(report))
+        self.assertNotIn("dash_cluster", kinds(report))
+
     def test_mention_detectors_ignore_blockquotes(self):
         text = (
             "> Kein Server, keine Datenbank.\n"

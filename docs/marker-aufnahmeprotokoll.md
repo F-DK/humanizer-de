@@ -94,6 +94,72 @@ im Marktplatz-Eintrag.
 9. **Version und Begründung:** 2026-07-31, Version 5.11.0. Ein echter Fachbeitrag
    enthielt sieben Vorkommen, vier davon im Schlussabschnitt; der bisherige Linter erfasste
    ausschließlich direkt benachbarte Verneinungsanaphern.
+   Präzisierung vom 2026-08-11: Der erste Regex akzeptiert neben dem Komma auch die
+   katalogisierten Dash-Trenner. Die Schwellen bleiben unverändert. Damit kann Muster 16
+   überlappende „nicht X – sondern Y“-Spans zuverlässig Muster 8 überlassen.
+
+## Aufgenommen: M16-Gedankenstrich-Cluster
+
+1. **Muster-ID, Name, Zweck:** Muster 16, `dash_cluster`. Der Befund macht gehäufte
+   Gedankenstriche und Dash-Ersatzzeichen als Satzzeichen deterministisch erreichbar, ohne
+   einzelne Gedankenstriche oder legitime Trenner zu melden.
+2. **Texttypen, Modi, ausgeschlossene Spans:** Aktiv in Locker, Sachlich und Formal. Code,
+   URLs, Frontmatter und technische Markdown-/HTML-Spans werden längentreu maskiert.
+   `foreign_voice_ranges` plus `overlaps_mention` schließen Zitate, Blockquotes und
+   Hervorhebungen aus. Markdown-Überschriften zählen nie. Wort-Bindestriche und
+   Zahlenbereiche bleiben ebenfalls ausgeschlossen.
+3. **Erkennungslogik:** `–` und `—` sowie horizontal umgebene ` -- ` und ` - ` sind
+   Kandidaten. `\d[^\S\r\n]*(?:[–—]|--?)[^\S\r\n]*\d` schützt auch Bereiche mit
+   Leerraum. Treffer, die mit vorhandenen `NEGATION_PARALLELISM_RES`- oder
+   `ANTITHESIS_RES`-Spans überlappen, bleiben Muster 8 vorbehalten. Gewertet wird je
+   Absatz; Evidenz und Spans verweisen auf den Originaltext.
+4. **Schwelle, zwei Tore:** Ein Finding entsteht bei Konzentration ODER Verteilung.
+   *Konzentration:* fünf Kandidaten in einem Absatz und mindestens 15,0 Treffer pro 1.000
+   Absatzwörter. Drei reichten nicht: Der saubere Spiegelungs-Text hat nach allen
+   Ausschlüssen vier Kandidaten aus zwei legitimen Einschüben. Unter den 39 geprüften
+   Menschentexten erreicht nur die lange Plenarrede mindestens fünf Kandidaten in einem
+   Absatz; ihre Dichte liegt bei 11,03. Der Positivfall liegt bei 5 und 116,28.
+   *Verteilung:* mindestens vier Absätze mit je mindestens drei Kandidaten. Dieses Tor fängt
+   den häufigeren KI-Fall — gepaarte Em-Dashes über viele Absätze verstreut, je Absatz
+   wenige. Drei qualifizierende Absätze reichen nicht: Der Nietzsche-Text erreicht genau
+   drei (je drei ` - `), das lange Urteil zwei. Vier hält die 39 Menschentexte geschlossen
+   stumm und lässt den verteilten Testfall mit sechs Absätzen feuern.
+5. **Fixtures:**
+
+   | Typ | Textfamilie | Erwartung |
+   |---|---|---|
+   | Positiv | fünf gehäufte Spaced-Em-Dashes | `dash_cluster` |
+   | Positiv | fünf gehäufte Halbgeviertstriche | `dash_cluster` |
+   | Positiv | fünf gehäufte ` -- ` oder ` - ` | `dash_cluster` |
+   | Negativ | Überschriften, `KI-Tell`, `2D-Spiegelung`, `E-Mail` | kein Befund |
+   | Negativ | `2019–2021`, `S. 12–15`, `10–20 %`, `10 – 20` | kein Befund |
+   | Negativ | Zitat, Blockquote, Inline-Code und Hervorhebung | kein Befund |
+   | Grenzfall | zwei legitime gepaarte Einschübe, vier Kandidaten | kein Befund |
+   | Grenzfall | fünf Kandidaten unter 15,0 pro 1.000 Absatzwörter | kein Befund |
+   | Grenzfall | fünf „nicht X – sondern Y“-Antithesen | nur Muster 8 |
+
+6. **Fehlalarmfamilien:** Literarische und historische Prosa, Plenarreden, Rechtstexte,
+   Definitionslisten und legitime Einschübe nutzen Gedankenstriche ebenfalls häufig. Das
+   Doppeltor lässt die gemessenen Fälle stumm; ungewöhnlich dichte menschliche Prosa bleibt
+   ein manueller Prüffall. Erwartet wird eine niedrige, nicht aus Autorschaft abgeleitete
+   Fehlalarmrate.
+7. **Severity, Meldung, Aktion:** `warning`; Evidenz enthält Zahl, maximale Absatzdichte,
+   Glyphen und Originalspans. Erlaubt ist die manuelle Satzbauprüfung, niemals ein
+   automatischer Glyph-Tausch oder Auto-Rewrite.
+8. **Autorschaft:** Der Befund beschreibt nur ein Interpunktionscluster. Er erlaubt keine
+   Aussage darüber, ob ein Mensch oder ein Sprachmodell den Text verfasst hat.
+9. **Empirische Grundlage, an eigenen deutschen Daten:** Muster 16 wurde zuerst aus
+   Fremdquellen übernommen (englische `exmergo`-Messung, Gibbs-Artikel „P16
+   Claude-spezifisch"). Am 2026-08-11 erstmals an eigenen deutschen Ausgangstexten gemessen:
+   Claude setzt im Schnitt **1,56 Gedankenstriche**, GPT **0,56** — fast dreimal so viele.
+   Das ist der Beleg, dass der Detektor ein reales deutsches Signal fasst, kein aus dem
+   Englischen entliehenes. Bemerkenswert die Gegenrichtung: GPT verrät sich stattdessen an
+   geringerer Satzlängen-Streuung (Muster 55). Die beiden Modelle haben verschiedene
+   Fingerabdrücke — Rohdaten in `research/base-rates/NEXT.md`.
+10. **Version und Begründung:** 2026-08-11, aufgenommen mit 5.18.0. Neues Erkennungsverhalten,
+    wo Muster 16 zuvor judgment-only war — Minor-Bump, Präzedenz v5.8.0 (Muster 8/13).
+    Aufnahme nach byte-identischer FP-Baseline und einer Nullmessung über 20 Basisraten- plus
+    19 Registertexte.
 
 ## Präzisiert: `mixed_address` bei Inline-Zitaten
 
