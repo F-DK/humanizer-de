@@ -98,6 +98,67 @@ im Marktplatz-Eintrag.
    katalogisierten Dash-Trenner. Die Schwellen bleiben unverändert. Damit kann Muster 16
    überlappende „nicht X – sondern Y“-Spans zuverlässig Muster 8 überlassen.
 
+## Erweitert: M43 um Tags-Block und Variation Selectors
+
+1. **Muster-ID, Name, Zweck:** Muster 43, `hidden_unicode`. Die bestehende Zeichenliste
+   deckte sechs Klassen ab und ließ die beiden Trägerklassen aus, mit denen sich heute
+   beliebiger Text unsichtbar einbetten lässt. Gemessen am 2026-08-14: Von acht geprüften
+   Klassen rutschten sieben durch, gefunden wurde nur das bereits abgedeckte U+200B.
+2. **Texttypen, Modi, ausgeschlossene Spans:** Aktiv in allen Texttypen und Modi. Versteckte
+   Zeichen gelten wie bisher auch in Code und URLs als unsicher, deshalb greift hier
+   ausdrücklich **kein** Scope-Ausschluss.
+3. **Erkennungslogik:** Drei neue Bereiche in `HIDDEN_RANGES` — U+E0000–U+E007F (Tags-Block),
+   U+FE00–U+FE0F (Variation Selectors) und U+E0100–U+E01EF (Supplement). Zwei
+   Ausnahmefunktionen: `is_emoji_variation_selector` lässt U+FE0E/U+FE0F stehen, wenn davor
+   ein Emoji-Codepoint oder eine Keycap-Basis (`0-9`, `#`, `*`) steht.
+   `is_flag_tag_member` lässt Tag-Zeichen stehen, wenn sie in einer zusammenhängenden Kette
+   liegen, die unmittelbar auf U+1F3F4 folgt, mit U+E007F endet **und** genau `gbeng`,
+   `gbsct` oder `gbwls` buchstabiert. Die geschlossene Liste ist Absicht: Der Codex-Review
+   vor dem Commit fand, dass die reine Strukturprüfung umgehbar ist — `🏴` plus beliebige
+   Tag-Zeichen plus `U+E007F` schmuggelt sonst jeden Text an der Ausnahme vorbei. Der Fall
+   steht als Fixture in der Suite.
+4. **Schwelle:** Einzelfund. Ein einziges verstecktes Zeichen ist ein Befund; eine Dichte
+   ergibt hier keinen Sinn, weil eine Nutzlast aus einem Zeichen bestehen kann.
+5. **Fixtures** (in `tests/test_unicode_lint.py`):
+
+   | Typ | Textfamilie | Erwartung |
+   |---|---|---|
+   | Positiv | Tag-Zeichen als ASCII-Nutzlast zwischen Wörtern | ein Befund je Zeichen, `fix` entfernt sie |
+   | Positiv | U+E0001 Language Tag | Befund |
+   | Positiv | U+FE00, U+FE0E, U+FE0F, U+E0100, U+E01EF nach einem Buchstaben | Befund |
+   | Negativ | Subdivision-Flaggen gbsct, gbwls, gbeng | kein Befund, `fix` lässt sie unverändert |
+   | Negativ | Emoji mit U+FE0F und Keycap-Ziffer | kein Befund |
+   | Negativ | Emoji-ZWJ-Sequenzen (bestehender Test) | kein Befund |
+   | Positiv | U+1F3F4 plus Tag-Kette plus U+E007F mit fremder Nutzlast (`secret`, `123`, `!`) | Befund — Tarnung, keine Flagge |
+   | Grenzfall | dieselben Tag-Zeichen ohne vorangehendes U+1F3F4 | Befund — Nutzlast, keine Flagge |
+   | Grenzfall | U+1F3F4 plus Tag-Kette ohne abschließendes U+E007F | Befund, Basis-Emoji bleibt stehen |
+   | Grenzfall | U+FE0F als erstes Zeichen des Textes | Befund, kein Absturz beim Blick nach links |
+
+6. **Fehlalarmfamilien:** Variation Selectors kennzeichnen zwei legitime Dinge, die dieser
+   Linter trotzdem meldet. Erstens Schriftvarianten von CJK-Ideographen (`一` plus U+E0100).
+   Zweitens die standardisierten Mathematik-Varianten aus `StandardizedVariants.txt`, etwa
+   `∪` plus U+FE00 für die Serifenform. Beides ist in deutscher Gebrauchsprosa praktisch
+   ausgeschlossen, und `--fix` lässt das Basiszeichen unversehrt — aus `∪` wird `∪`, nicht
+   nichts. Wer mathematischen oder CJK-Satz bearbeitet, prüft den Befund von Hand. Bewusst so
+   entschieden, gefunden im Codex-Review.
+   Der Emoji-Carve-out folgt der Basiszeichen-Liste von `is_emoji_codepoint` und erbt deren
+   Grenzen. Gemessene Baseline: 55 Dateien aus `tests/fp_corpus`, `tests/corpus`,
+   `tests/scenarios`, den 20 echten Menschentexten und allen ausgelieferten Dokumenten —
+   **null neue Treffer**, der einzige Fund ist das absichtliche U+200B in
+   `tests/corpus/case_01_input.md`.
+7. **Severity, Meldung, Aktion:** unverändert `hidden_unicode` mit der bestehenden Meldung;
+   `--fix` entfernt ersatzlos. Kein Auto-Rewrite.
+8. **Keine Autorschaft:** Aus einem Fund folgt keine Herkunftsaussage. Die real ausgerollten
+   Text-Wasserzeichen arbeiten statistisch über die Token-Auswahl und sind über Zeichen
+   weder nachweisbar noch entfernbar. Der Befund begründet Textreinigung, sonst nichts.
+9. **Version und Begründung:** 2026-08-14, aufgenommen mit 5.19.0. Neues
+   Erkennungsverhalten, deshalb Minor statt Patch.
+
+**Bewusst nicht aufgenommen**, weil in mehrsprachigem oder fachlichem Text legitim:
+U+200E/U+200F (Bidi-Marken), U+061C, U+180E, die Hangul-Füllzeichen U+115F/U+1160/U+3164 und
+U+2800 (Braille-Blank). Sie rutschen weiterhin durch; das ist eine offene Entscheidung, kein
+Versehen.
+
 ## Aufgenommen: M16-Gedankenstrich-Cluster
 
 1. **Muster-ID, Name, Zweck:** Muster 16, `dash_cluster`. Der Befund macht gehäufte

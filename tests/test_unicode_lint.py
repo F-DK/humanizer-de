@@ -59,6 +59,74 @@ class UnicodeLintTests(unittest.TestCase):
         self.assertTrue(any(item["kind"] == "hidden_unicode" for item in unicode_lint.lint(text)))
         self.assertEqual(unicode_lint.fix(text), "AlphaBeta")
 
+    def test_tag_block_payload_is_reported_and_removed(self):
+        # U+E0020-U+E007F mirror printable ASCII and carry invisible payloads.
+        payload = "".join(chr(0xE0000 + ord(char)) for char in "hi")
+        text = f"Alpha{payload}Beta"
+
+        findings = unicode_lint.lint(text)
+        self.assertEqual(len([item for item in findings if item["kind"] == "hidden_unicode"]), 2)
+        self.assertEqual(unicode_lint.fix(text), "AlphaBeta")
+
+    def test_language_tag_is_reported(self):
+        text = f"Alpha{chr(0xE0001)}Beta"
+
+        self.assertTrue(any(item["kind"] == "hidden_unicode" for item in unicode_lint.lint(text)))
+        self.assertEqual(unicode_lint.fix(text), "AlphaBeta")
+
+    def test_variation_selectors_outside_emoji_are_reported(self):
+        for code in (0xFE00, 0xFE0E, 0xFE0F, 0xE0100, 0xE01EF):
+            with self.subTest(codepoint=code):
+                text = f"Alpha{chr(code)}Beta"
+                self.assertTrue(
+                    any(item["kind"] == "hidden_unicode" for item in unicode_lint.lint(text))
+                )
+                self.assertEqual(unicode_lint.fix(text), "AlphaBeta")
+
+    def test_subdivision_flag_tag_sequence_is_preserved(self):
+        # Scotland, Wales and England are spelled with tag characters.
+        for subdivision in ("gbsct", "gbwls", "gbeng"):
+            text = "\U0001f3f4" + "".join(chr(0xE0000 + ord(char)) for char in subdivision) + "\U000e007f"
+            with self.subTest(subdivision=subdivision):
+                self.assertEqual(unicode_lint.lint(text), [])
+                self.assertEqual(unicode_lint.fix(text), text)
+
+    def test_emoji_variation_selector_is_preserved(self):
+        for text in ("Ein Herz ❤️ hier.", "Taste 1️⃣ hier.", "Haken ✔︎ hier."):
+            with self.subTest(text=text):
+                self.assertEqual(unicode_lint.lint(text), [])
+                self.assertEqual(unicode_lint.fix(text), text)
+
+    def test_payload_disguised_as_flag_sequence_is_reported(self):
+        # Well-formed flag structure, but the payload is not a real subdivision:
+        # without the closed list this smuggles arbitrary text past the carve-out.
+        for payload in ("secret", "123", "!"):
+            text = "\U0001f3f4" + "".join(chr(0xE0000 + ord(char)) for char in payload) + "\U000e007f"
+            with self.subTest(payload=payload):
+                self.assertTrue(
+                    any(item["kind"] == "hidden_unicode" for item in unicode_lint.lint(text))
+                )
+                self.assertEqual(unicode_lint.fix(text), "\U0001f3f4")
+
+    def test_tag_sequence_without_flag_base_is_reported(self):
+        # Same characters, no flag base: this is payload, not an emoji.
+        text = "Alpha" + "".join(chr(0xE0000 + ord(char)) for char in "gb") + chr(0xE007F) + "Beta"
+
+        self.assertTrue(any(item["kind"] == "hidden_unicode" for item in unicode_lint.lint(text)))
+        self.assertEqual(unicode_lint.fix(text), "AlphaBeta")
+
+    def test_tag_sequence_without_cancel_is_reported(self):
+        text = "\U0001f3f4" + "".join(chr(0xE0000 + ord(char)) for char in "gbsct")
+
+        self.assertTrue(any(item["kind"] == "hidden_unicode" for item in unicode_lint.lint(text)))
+        self.assertEqual(unicode_lint.fix(text), "\U0001f3f4")
+
+    def test_variation_selector_at_text_start_is_reported(self):
+        text = "️Alpha"
+
+        self.assertTrue(any(item["kind"] == "hidden_unicode" for item in unicode_lint.lint(text)))
+        self.assertEqual(unicode_lint.fix(text), "Alpha")
+
     def test_non_breaking_space_is_not_flagged(self):
         text = f"5{chr(0x00A0)}km"
         self.assertEqual(unicode_lint.lint(text), [])

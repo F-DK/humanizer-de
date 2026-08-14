@@ -1,6 +1,6 @@
 # Humanizer-de Pattern Catalog
 
-Vollständiger Musterkatalog für Humanizer (Deutsch) v5.18.1. Nur bei konkreter Musterdiagnose, Audit oder Grenzfällen laden.
+Vollständiger Musterkatalog für Humanizer (Deutsch) v5.19.0. Nur bei konkreter Musterdiagnose, Audit oder Grenzfällen laden.
 
 ## Kurzreferenz
 
@@ -1375,10 +1375,16 @@ Häufige Indikatoren:
 - Byte Order Mark (U+FEFF) mitten im Text
 - Soft-Hyphen (U+00AD) an ungewöhnlichen Stellen
 - Bidi-Steuerzeichen: U+202A-U+202E (Left/Right-to-Left Embedding/Override/Pop), U+2066-U+2069 (Isolates)
+- Tags-Block (U+E0000-U+E007F): U+E0020-U+E007E spiegeln die druckbaren ASCII-Zeichen und tragen damit vollständig unsichtbaren Text im Absatz; dazu U+E0001 (Language Tag) und U+E007F (Cancel Tag). Bekannt als „ASCII smuggling", genutzt für versteckte Nutzlast und Prompt-Injection
+- Variation Selectors außerhalb von Emoji: U+FE00-U+FE0F und U+E0100-U+E01EF (Supplement); zweite Trägerklasse für unsichtbare Daten
 
 **Warum LLMs das tun:** Modelle produzieren gelegentlich Tokens mit unsichtbaren Sonderzeichen. Copy-Paste aus KI-Oberflächen schleppt zusätzliche Formatierungsartefakte mit. Bidi-Controls können auch gezielt zur Verschleierung von Prompt-Inhalten genutzt werden.
 
-**Lösung:** Regex-Scan auf `[\u200B-\u200D\u2060-\u2064\uFEFF\u00AD\u202A-\u202E\u2066-\u2069]` und ersatzlos entfernen. U+2061-U+2064 (Invisible Mathematical Operators: Function Application, Invisible Times, Invisible Separator, Invisible Plus) werden von einigen KI-Tools als unsichtbare Wasserzeichen eingesetzt. Nicht verwechseln mit legitimen Unicode-Gebrauchsfällen: U+00A0 (geschütztes Leerzeichen) in stehenden Wendungen wie „5 km" oder „§ 12" ist korrekt und gehört nicht in dieses Muster.
+**Lösung:** Regex-Scan auf `[\u200B-\u200D\u2060-\u2064\uFEFF\u00AD\u202A-\u202E\u2066-\u2069\uFE00-\uFE0F]` plus `[\U000E0000-\U000E007F\U000E0100-\U000E01EF]` und ersatzlos entfernen; `scripts/unicode_lint.py --fix` erledigt das samt der Ausnahmen unten. Zu U+2061-U+2064 kursiert die Angabe, einzelne KI-Werkzeuge setzten sie als Wasserzeichen ein – dafür fehlt ein Beleg. Entfernt werden sie, weil sie in deutscher Prosa keine Funktion haben, nicht wegen einer Herkunftsaussage.
+
+**Ausnahmen, die stehen bleiben müssen:** U+00A0 (geschütztes Leerzeichen) in stehenden Wendungen wie „5 km“ oder „§ 12“. U+FE0E/U+FE0F direkt hinter einem Emoji-Basiszeichen oder einer Keycap-Ziffer. Tag-Zeichen innerhalb einer Flaggen-Sequenz, die mit U+1F3F4 beginnt und mit U+E007F endet – so werden die Flaggen von Schottland, Wales und England geschrieben. U+200D zwischen zwei Emoji (Familien- und Berufs-Sequenzen).
+
+**Kein Herkunftsnachweis:** Die real ausgerollten Text-Wasserzeichen (etwa SynthID-Text) arbeiten statistisch über die Token-Auswahl, nicht über Sonderzeichen; kein Zeichenfilter findet oder entfernt sie. Dieses Muster ist Textreinigung – aus einem Fund folgt keine Autorschaft.
 
 #### 44. Standard-Kapitel ohne Substanz [MEDIUM]
 <!-- haltbarkeit: kern -->

@@ -25,8 +25,21 @@ HIDDEN_RANGES = (
     (0x2060, 0x2064),
     (0x202A, 0x202E),
     (0x2066, 0x2069),
+    # Tags block: carries a full invisible ASCII payload; legitimate only inside
+    # subdivision flag emoji, which is_flag_tag_member() exempts.
+    (0xE0000, 0xE007F),
+    # Variation selectors; emoji and keycap use is exempted below.
+    (0xFE00, 0xFE0F),
+    (0xE0100, 0xE01EF),
 )
 HIDDEN_SINGLE = {0x00AD, 0xFEFF}
+
+VARIATION_SELECTORS = {"\ufe0e", "\ufe0f"}
+KEYCAP_BASES = set("0123456789#*")
+FLAG_TAG_BASE = "\U0001f3f4"
+FLAG_TAG_CANCEL = "\U000e007f"
+# Closed list on purpose: any other tag sequence is payload disguised as a flag.
+FLAG_TAG_SUBDIVISIONS = frozenset({"gbeng", "gbsct", "gbwls"})
 
 OPEN_DE = "\u201e"
 CLOSE_DE = "\u201c"
@@ -69,8 +82,49 @@ def is_emoji_zwj(text: str, index: int) -> bool:
     return left >= 0 and right < len(text) and is_emoji_codepoint(text[left]) and is_emoji_codepoint(text[right])
 
 
+def is_emoji_variation_selector(text: str, index: int) -> bool:
+    """U+FE0E/U+FE0F are legitimate right after an emoji base or a keycap digit."""
+    if text[index] not in VARIATION_SELECTORS:
+        return False
+    if index == 0:
+        return False
+    base = text[index - 1]
+    return is_emoji_codepoint(base) or base in KEYCAP_BASES
+
+
+def is_flag_tag_member(text: str, index: int) -> bool:
+    """Tag characters are legitimate inside subdivision flags (U+1F3F4 … U+E007F).
+
+    Without this carve-out the Scottish, Welsh and English flag emoji would count as
+    hidden payload and --fix would silently destroy them.
+    """
+    if not 0xE0020 <= ord(text[index]) <= 0xE007F:
+        return False
+
+    left = index - 1
+    while left >= 0 and 0xE0020 <= ord(text[left]) <= 0xE007E:
+        left -= 1
+    if left < 0 or text[left] != FLAG_TAG_BASE:
+        return False
+
+    right = index
+    while right < len(text) and 0xE0020 <= ord(text[right]) <= 0xE007E:
+        right += 1
+    if right >= len(text) or text[right] != FLAG_TAG_CANCEL:
+        return False
+
+    payload = "".join(chr(ord(char) - 0xE0000) for char in text[left + 1 : right])
+    return payload in FLAG_TAG_SUBDIVISIONS
+
+
 def is_hidden_at(text: str, index: int) -> bool:
-    return is_hidden_char(text[index]) and not is_emoji_zwj(text, index)
+    if not is_hidden_char(text[index]):
+        return False
+    if is_emoji_zwj(text, index):
+        return False
+    if is_emoji_variation_selector(text, index):
+        return False
+    return not is_flag_tag_member(text, index)
 
 
 def codepoint(char: str) -> str:

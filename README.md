@@ -971,6 +971,17 @@ GitHub Release.
 
 ## Was ist neu?
 
+- **5.19.0** - Unsichtbare Zeichen findet Muster 43 jetzt auch dort, wo sie am gefährlichsten
+  sind. Neu geprüft werden der Unicode-Tags-Block und die Variation Selectors. Im Tags-Block
+  spiegeln die Zeichen U+E0020 bis U+E007E die druckbaren ASCII-Zeichen, weshalb sich damit
+  ein vollständiger Text unsichtbar in einen Absatz einbetten lässt. Von acht getesteten
+  Klassen versteckter Zeichen rutschten vorher sieben durch. Zwei Ausnahmen bleiben, sonst
+  zerstört die Bereinigung echte Inhalte. Hinter einem Emoji oder einer Keycap-Ziffer darf ein
+  Variation Selector stehen, und die Flaggen von Schottland, Wales und England bestehen selbst
+  aus Tag-Zeichen. Bei der Ausnahme für Flaggen zählt nicht die Form, sondern die feste Liste
+  der drei Kürzel. Sonst ließe sich beliebiger Text als Pseudo-Flagge tarnen. Über 55 Dateien
+  aus Testkorpora, Menschentexten und ausgelieferter Dokumentation entstand kein einziger
+  neuer Treffer.
 - **5.18.1** - Muster 8 nennt jetzt eine weitere Figur: „X hat kein Y-Problem, X hat ein
   Z-Problem“. Statt die Diagnose zu belegen, ersetzt die Umdeutung sie. Geändert hat sich nur
   Dokumentation, keine Erkennungslogik und keine Schwelle.
