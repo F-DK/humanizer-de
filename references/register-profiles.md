@@ -6,7 +6,7 @@ Pass 0 erzeugt eine kleine Stilkarte. Sie ist kein Schreibauftrag, sondern ein S
 
 | Feld | Beispiele | Zweck |
 |---|---|---|
-| `mode` | locker, sachlich, formal | Aggressivität der Eingriffe |
+| `mode` | locker, sachlich, formal | Aggressivität der Eingriffe. `kontrolliert` ist kein `mode`-Wert, sondern ein Zusatzflag zu `mode` — siehe unten |
 | `deictic_center` | ich, wir, man, neutral, institutionell | Sprecherposition stabil halten; keine neue Ich-/Wir-Perspektive erfinden |
 | `address` | du, Sie, wir, man, neutral | Anrede stabil halten |
 | `distance` | nah, neutral, institutionell | Keine falsche Nähe einbauen |
@@ -31,10 +31,15 @@ Im Formal-Modus wird keine Stimme eingebracht. Passiv, Nominalstil und gleichmä
 
 Locker bedeutet nicht erfunden persönlich. Stimme darf nur aus Schreibprobe, Nutzerangabe oder vorhandenem Textmaterial kommen. Modalpartikeln sind erlaubt, aber nur sparsam und nicht mechanisch.
 
+## Kontrolliert
+
+Zusatzflag zu Sachlich oder Formal, nur auf ausdrücklichen Wunsch aktiv, kein eigener `mode`-Wert. Schränkt Terminologie, Anforderungsmodalverben und Satzkomplexität ein; Details, Aktivierung und Muster 73/74: [references/kontrolliert.md](kontrolliert.md).
+
 ## Maschinenlesbare Zielkorridore
 
 `references/style-targets.json` hält pro Modus (`locker`, `sachlich`, `formal`) messbare
-Sollkorridore für die Metriken aus `scripts/style_profile.py`. Schema pro Profil:
+Sollkorridore für die Metriken aus `scripts/style_profile.py`. Kontrolliert hat keinen eigenen
+Korridor in dieser Datei; seine Vorgaben sind judgment-only über Muster 73/74. Schema pro Profil:
 `{"<metric>": {"min": x}}`, `{"max": x}` oder beides; Grenzen sind inklusiv. Die Werte sind
 konservativ aus den kalibrierten Schwellen in `scripts/rhythm_lint.py` und
 `scripts/register_lint.py` abgeleitet — unbelegte Korridore fehlen bewusst.
@@ -52,3 +57,4 @@ Iterative Revision darf das Profil nicht in generisches, glattes Standarddeutsch
 - Eine einzelne Schreibprobe zeigt ein situatives Register, nicht die ganze Stimme. Fehlende Registeranteile weder verneinen noch erfinden; aus fehlender Ich-Form folgt etwa kein generelles Ich-Verbot. Mehrere Proben helfen, Konstanten und Bandbreite zu trennen.
 - Formal-Modus schlägt Schreibprobe, Rhythmus und Naturalness.
 - Wenn ein weiterer Pass nur Stimme verstärken würde, stoppt QGIR.
+- Aktives Kontrolliert-Flag schlägt Pass 4 (Rhythmus/Burstiness): siehe [references/kontrolliert.md](kontrolliert.md).

@@ -4,7 +4,7 @@ description: 'Edit-Pass für bestehenden deutschen Text: Register/Rhythmus messe
 allowed-tools: [Read, Write, Edit, Grep, Glob, Bash]
 metadata:
   display_name: Humanizer (Deutsch)
-  version: 5.19.0
+  version: 5.20.0
   author: Martin Moeller
   maintainer_website: https://martin-moeller.biz
   based_on: 'Deutsche Wikipedia: Anzeichen für KI-generierte Inhalte, Erkennung KI-Einsatz, Schnelltest KI'
@@ -28,7 +28,7 @@ QGIR (Quality-Guided Iterative Revision) nur nutzen, wenn nach einem lokalen Min
 
 ## Modus
 
-Bestimme zuerst den Modus. Wenn unklar, nimm **Sachlich** an und sage das.
+Bestimme zuerst den Modus und ob Kontrollierte Sprache zusätzlich verlangt ist ([references/kontrolliert.md](references/kontrolliert.md)). Wenn Modus unklar, nimm **Sachlich** an und sage das.
 
 | Modus | Einsatz | Stimme |
 |---|---|---|
@@ -167,6 +167,7 @@ Wenn der Nutzer eine Datei übergibt und Änderungen verlangt, editiere die Date
 - Faktenanker, Claim-Delta oder Quellenprüfung: [references/evidence-ledger.md](references/evidence-ledger.md)
 - Schreibprobe, Anrede oder Sprecherprofil: [references/register-profiles.md](references/register-profiles.md)
 - Natürlichkeit ohne Persona-/Entropy-Fabrikation: [references/de-naturalness.md](references/de-naturalness.md)
+- Kontrollierte Sprache (Kontrolliertes Deutsch) nur auf Wunsch: [references/kontrolliert.md](references/kontrolliert.md)
 - Kompakter Sammelcheck: `scripts/humanizer_audit.py`
 - Unicode-/Quote-Linter: `scripts/unicode_lint.py`
 - Rhythmus-/Burstiness-Messung: `scripts/rhythm_lint.py` (`--include-paragraphs` für volle Absatzdaten)

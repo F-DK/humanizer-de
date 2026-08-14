@@ -5,8 +5,8 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_VERSION = "5.19.0"
-EXPECTED_PATTERN_COUNT = 72
+EXPECTED_VERSION = "5.20.0"
+EXPECTED_PATTERN_COUNT = 74
 
 
 def read_utf8(path: Path) -> str:
@@ -204,7 +204,7 @@ class SkillStructureTests(unittest.TestCase):
             # ein eigener Weg und braucht eine eigene Verzweigung.
             self.assertIn("Audit-Zweig", diagram,
                           "SKILL.md kennt den Audit-Zweig, das Diagramm nicht")
-            self.assertIn("72", diagram,
+            self.assertIn(str(EXPECTED_PATTERN_COUNT), diagram,
                           "Der Audit-Zweig prueft den vollen Katalog; "
                           "das Diagramm nennt die Musterzahl nicht")
         if "unbelegte oder erfundene Quellen werden immer markiert" in skill_text:

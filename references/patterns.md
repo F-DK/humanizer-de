@@ -1,6 +1,6 @@
 # Humanizer-de Pattern Catalog
 
-Vollständiger Musterkatalog für Humanizer (Deutsch) v5.19.0. Nur bei konkreter Musterdiagnose, Audit oder Grenzfällen laden.
+Vollständiger Musterkatalog für Humanizer (Deutsch) v5.20.0. Nur bei konkreter Musterdiagnose, Audit oder Grenzfällen laden.
 
 ## Kurzreferenz
 
@@ -78,6 +78,8 @@ Vollständiger Musterkatalog für Humanizer (Deutsch) v5.19.0. Nur bei konkreter
 | 70 | Verantwortungsverschleierung durch falsche Agency | MEDIUM | "Die Strategie entschied", "Die Kennzahl erzwang": abstraktes Subjekt übernimmt zurechenbare Handlung |
 | 71 | Retroaktive Scheinnuance | MEDIUM | "Genauer gesagt ...", "Fairerweise ...": angekündigte Präzisierung wiederholt die Aussage nur weicher |
 | 72 | Pseudo-therapeutische Validierung | HIGH | "Du bist nicht zu sensibel", "Deine Gefühle sind valide": unbelegte Diagnose über den Adressaten |
+| 73 | Uneinheitliche Anforderungsmodalität | MEDIUM | *muss/sollte/kann/darf nicht* uneinheitlich für dieselbe Anforderungsart verwendet — nur im Kontrolliert-Modus |
+| 74 | Satzverschachtelung über Kontrolliert-Vorgabe | MEDIUM | mehr als eine Nebensatzebene, mehrere Gedanken pro Satz — nur im Kontrolliert-Modus |
 
 ## Statistische Detektoren (GPTZero u. a.)
 
@@ -98,7 +100,7 @@ Die menschenlesbaren Labels dieser Tools ("Robotic Formality", "Mechanical Preci
 
 Der einzige substanzwahrende Hebel gegen niedrige Burstiness ist Muster 55 (Satzrhythmus spreizen). Niedrige Perplexity bei korrekter Fachsprache ist nicht "reparierbar", ohne den Text zu verschlechtern – und das ist nicht Aufgabe dieses Skills. Siehe SKILL.md-Leitplanke zu statistischen Detektoren.
 
-## Die 72 Muster
+## Die 74 Muster
 
 ### Sprache und Tonfall (19 Muster)
 
@@ -1709,3 +1711,59 @@ Den Subtitel/Nachsatz *nicht* entfernen, solange er echte, nicht-redundante Info
 
 ✓ Besser (Längen gespreizt, Anfänge variiert):
 "Viele Fachtexte sind korrekt – solange man sie ganz liest. Ein Nebensatz hier, eine Fußnote dort, und plötzlich trennt der Kontext Prävention von Therapie. Lässt man ihn weg, kippt die Aussage."
+
+### Kontrollierte Sprache (2 Muster)
+
+Nur relevant, wenn der Nutzer Kontrollierte Sprache (Kontrolliertes Deutsch, tekom/DIN 8579-1) ausdrücklich anfordert. Details und Aktivierung: [references/kontrolliert.md](kontrolliert.md).
+
+#### 73. Uneinheitliche Anforderungsmodalität [MEDIUM]
+<!-- haltbarkeit: kern -->
+<!-- pass: 2 -->
+
+**Kategorie:** Kontrollierte Sprache
+
+**Problem:** Dieselbe Anforderungsart wird im Dokument mit wechselnden Modalverben ausgedrückt — mal *muss*, mal *soll*, mal *ist zu* für dieselbe Pflichtstufe. Kontrollierte Sprache verlangt eine feste Zuordnung: *muss* für Pflicht, *sollte* für Empfehlung, *kann* für Option, *darf nicht* für Verbot. Ohne diese Festlegung ist für Übersetzung und maschinelle Auswertung nicht entscheidbar, ob eine Aussage bindend ist.
+
+Häufige Indikatoren:
+- Pflichtaussagen abwechselnd mit *muss*, *soll*, *hat zu*, *ist zu* formuliert
+- *sollte* für eine tatsächlich zwingende Anforderung verwendet
+- *kann* für eine faktische Pflicht verwendet
+
+**Warum das in KI-Text passiert:** Modelle variieren Formulierungen aus Stilgründen, ohne die requirement-engineering-Konvention zu kennen, dass Modalverben hier Bedeutungsträger sind, keine Stilvariante.
+
+**Kein Problem, wenn:** kein Kontrolliert-Flag aktiv ist — außerhalb von Kontrolliert ist Modalverb-Variation normale Stilfreiheit.
+
+**Lösung:** Anforderungsart bestimmen (Pflicht/Empfehlung/Option/Verbot), passendes Modalverb durchgängig im ganzen Dokument verwenden.
+
+**Beispiel:**
+
+❌ Schlecht: "Das Gerät muss geerdet werden. Die Abdeckung sollte danach geschlossen werden, sonst drohen Schäden."
+
+✓ Besser: "Das Gerät muss geerdet werden. Die Abdeckung muss danach geschlossen werden."
+
+#### 74. Satzverschachtelung über Kontrolliert-Vorgabe [MEDIUM]
+<!-- haltbarkeit: kern -->
+<!-- pass: 3 -->
+
+**Kategorie:** Kontrollierte Sprache
+
+**Problem:** Ein Satz trägt mehr als eine Nebensatzebene oder mehr als einen Gedanken. Kontrollierte Sprache verlangt das Gegenteil von Muster 51 (Obsessive Parataxe): dort fehlt Subordination, hier ist zu viel davon. Mehrfach verschachtelte Sätze sind für Übersetzung und schnelles Lesen fehleranfällig, weil Bezüge über mehrere Ebenen aufgelöst werden müssen.
+
+Häufige Indikatoren:
+- Zwei oder mehr Nebensätze in einem Satz
+- Ein Satz beschreibt erkennbar zwei unabhängige Sachverhalte
+- Eingeschobene Relativsätze, die den Hauptsatz unterbrechen
+
+**Abgrenzung zu Muster 51:** Muster 51 bemängelt fehlende Subordination in normaler Prosa. Muster 74 gilt nur unter aktivem Kontrolliert-Flag und bemängelt das Gegenteil. Beide gleichzeitig anzuwenden ergibt keinen Sinn; im Kontrolliert-Modus sticht Muster 74.
+
+**Warum das in KI-Text passiert:** Modelle verknüpfen Sachverhalte gern über Konnektoren und Relativsätze zu einem einzigen Satz, weil das im Trainingskorpus als elaborierter Stil gilt — genau das widerspricht der Kontrolliert-Vorgabe.
+
+**Kein Problem, wenn:** kein Kontrolliert-Flag aktiv ist.
+
+**Lösung:** Satz an der Nebensatzgrenze teilen, einen Gedanken pro Satz formulieren.
+
+**Beispiel:**
+
+❌ Schlecht: "Wenn das Gerät, das zuvor kalibriert wurde, einen Fehler meldet, der länger als fünf Minuten besteht, ist der Sensor zu tauschen."
+
+✓ Besser: "Kalibrieren Sie das Gerät zuerst. Meldet es danach länger als fünf Minuten einen Fehler, tauschen Sie den Sensor."

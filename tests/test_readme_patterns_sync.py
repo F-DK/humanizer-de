@@ -4,7 +4,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_PATTERN_COUNT = 72
+EXPECTED_PATTERN_COUNT = 74
 PATTERN_HEADING_RE = re.compile(r"^#### (\d{1,2})\. (.+?) \[(HIGH|MEDIUM|LOW)\]$")
 README_ROW_RE = re.compile(r"^\| (\d+) \| (.+?) \| (HIGH|MEDIUM|LOW) \|$")
 CATEGORY_BLOCK_RE = re.compile(
@@ -15,7 +15,7 @@ CATEGORY_BLOCK_RE = re.compile(
 
 def readme_catalog_section():
     text = (ROOT / "README.md").read_text(encoding="utf-8")
-    section = text.split("## 72 Muster in 10 Kategorien", 1)[1]
+    section = text.split(f"## {EXPECTED_PATTERN_COUNT} Muster in 11 Kategorien", 1)[1]
     return re.split(r"\n## ", section, maxsplit=1)[0]
 
 

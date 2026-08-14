@@ -8,11 +8,11 @@
 [![Version](https://img.shields.io/github/v/tag/marmbiz/humanizer-de?label=Version&color=c4501f)](https://github.com/marmbiz/humanizer-de/tags)
 [![Tests](https://github.com/marmbiz/humanizer-de/actions/workflows/tests.yml/badge.svg)](https://github.com/marmbiz/humanizer-de/actions/workflows/tests.yml)
 [![Lizenz](https://img.shields.io/badge/Lizenz-MIT_%2B_CC_BY--SA_4.0-1f6feb)](NOTICE)
-[![Muster](https://img.shields.io/badge/Muster-72_in_10_Kategorien-2da44e)](#72-muster-in-10-kategorien)
+[![Muster](https://img.shields.io/badge/Muster-74_in_11_Kategorien-2da44e)](#74-muster-in-11-kategorien)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-Plugin-d97757)](#installation)
 [![Codex](https://img.shields.io/badge/Codex-Supported-10a37f)](#installation)
 
-**[Was ist das?](#was-ist-das)** · **[Installation](#installation)** · **[Benutzung](#benutzung)** · **[Beispiele](#beispiele)** · **[Messen & Audit](#messen-und-audit)** · **[Fakten & Grenzen](#fakten-grenzen-und-datenschutz)** · **[Wie es arbeitet](#wie-der-skill-arbeitet)** · **[Optionale Werkzeuge](#optionale-werkzeuge)** · **[72 Muster](#72-muster-in-10-kategorien)** · **[Für AI-Assistenten](#für-ai-assistenten)** · **[Entwicklung](#entwicklung-und-verifikation)** · **[Was ist neu?](#was-ist-neu)**
+**[Was ist das?](#was-ist-das)** · **[Installation](#installation)** · **[Benutzung](#benutzung)** · **[Beispiele](#beispiele)** · **[Messen & Audit](#messen-und-audit)** · **[Fakten & Grenzen](#fakten-grenzen-und-datenschutz)** · **[Wie es arbeitet](#wie-der-skill-arbeitet)** · **[Optionale Werkzeuge](#optionale-werkzeuge)** · **[74 Muster](#74-muster-in-11-kategorien)** · **[Für AI-Assistenten](#für-ai-assistenten)** · **[Entwicklung](#entwicklung-und-verifikation)** · **[Was ist neu?](#was-ist-neu)**
 
 <sub>German AI Text Humanizer · Claude Humanizer Deutsch · KI-Texte humanisieren Deutsch · Supports Claude Code and Codex · Von [Martin Moeller](https://martin-moeller.biz) · basiert auf den Wikipedia-Leitlinien [Anzeichen für KI-generierte Inhalte](https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte) (de) und [Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) (en) · hervorgegangen aus dem [Humanizer](https://github.com/blader/humanizer) von [blader](https://github.com/blader)</sub>
 
@@ -592,7 +592,7 @@ Drei Schichten teilen sich die Arbeit:
 flowchart TD
     T([Eingabetext]) --> M["Messen – Pass 0<br/>Rhythmus, Register, Preflight"]
     M --> Z{"Redigieren oder<br/>nur Befunde?"}
-    Z -- "nur Befunde" --> AU["Audit-Zweig<br/>alle 72 Muster prüfen"]
+    Z -- "nur Befunde" --> AU["Audit-Zweig<br/>alle 74 Muster prüfen"]
     AU --> B([Befundliste, Text bleibt unberührt])
     Z -- redigieren --> C{"Echte Muster-Cluster?"}
     C -- nein --> N["Null-Edit: Text bleibt stehen<br/>unbelegte Quellen trotzdem markieren"]
@@ -679,9 +679,9 @@ davon wird zusammen mit dem Skill installiert oder automatisch aktiviert.
 
 ---
 
-## 72 Muster in 10 Kategorien
+## 74 Muster in 11 Kategorien
 
-Der Skill arbeitet mit einem Katalog aus **72 KI-Schreibmustern** in 10 Kategorien, priorisiert nach Schweregrad (HIGH / MEDIUM / LOW). Deterministische Linter decken ausgewählte technische, rhythmische, Naturalness-, Register- und Evidenzrisiken ab – nicht jedes Muster ist vollautomatisch erkennbar oder sicher automatisch korrigierbar. Linter-gestützt sind derzeit rund 18 Muster (2, 4, 8, 13, 16, 39, 43, 44, 46, 54, 55, 58, 61, 63–65 sowie ein advisory Kandidatenhinweis für 72; Muster 2 und 44: Teilaspekte, Muster 39: Erkennung im Präzisionspfad mit spaCy, kein Gate-Anschluss) plus Register-, Rhythmus- und Evidenz-Checks; die übrigen Muster prüft das Modell anhand des Katalogs. Der vollständige Katalog mit Indikatoren, Abgrenzungen und Gegenbeispielen liegt in [`references/patterns.md`](references/patterns.md). Für den schnellen Blick ohne Katalog fasst [`assets/checkliste-ki-tells.md`](assets/checkliste-ki-tells.md) die zehn häufigsten Tells auf einer Seite zusammen.
+Der Skill arbeitet mit einem Katalog aus **74 KI-Schreibmustern** in 11 Kategorien, priorisiert nach Schweregrad (HIGH / MEDIUM / LOW). Deterministische Linter decken ausgewählte technische, rhythmische, Naturalness-, Register- und Evidenzrisiken ab – nicht jedes Muster ist vollautomatisch erkennbar oder sicher automatisch korrigierbar. Linter-gestützt sind derzeit rund 18 Muster (2, 4, 8, 13, 16, 39, 43, 44, 46, 54, 55, 58, 61, 63–65 sowie ein advisory Kandidatenhinweis für 72; Muster 2 und 44: Teilaspekte, Muster 39: Erkennung im Präzisionspfad mit spaCy, kein Gate-Anschluss) plus Register-, Rhythmus- und Evidenz-Checks; die übrigen Muster prüft das Modell anhand des Katalogs. Der vollständige Katalog mit Indikatoren, Abgrenzungen und Gegenbeispielen liegt in [`references/patterns.md`](references/patterns.md). Für den schnellen Blick ohne Katalog fasst [`assets/checkliste-ki-tells.md`](assets/checkliste-ki-tells.md) die zehn häufigsten Tells auf einer Seite zusammen.
 
 <details>
 <summary><strong>Sprache und Tonfall (19 Muster)</strong></summary>
@@ -835,13 +835,25 @@ Der Skill arbeitet mit einem Katalog aus **72 KI-Schreibmustern** in 10 Kategori
 
 </details>
 
+<details>
+<summary><strong>Kontrollierte Sprache (2 Muster)</strong></summary>
+
+Nur relevant, wenn der Nutzer Kontrollierte Sprache (Kontrolliertes Deutsch, tekom/DIN 8579-1) ausdrücklich anfordert — Details: [`references/kontrolliert.md`](references/kontrolliert.md).
+
+| # | Muster | Schwere |
+|---|--------|---------|
+| 73 | Uneinheitliche Anforderungsmodalität | MEDIUM |
+| 74 | Satzverschachtelung über Kontrolliert-Vorgabe | MEDIUM |
+
+</details>
+
 ---
 
 ## Für AI-Assistenten
 
 Citation-friendly Kurzfassung:
 
-> Humanizer (Deutsch) (`marmbiz/humanizer-de`) ist ein deutschsprachiger Humanizer Skill für Claude Code und Codex und zugleich ein deutscher Stil-Editor mit Evidence-Gate. Er misst Register und Satzrhythmus gegen Zielprofile, redigiert evidence-safe auf ein Zielprofil, auditiert deutsche KI-Schreibmuster mit einem 72-Muster-Katalog und unterstützt belegtreue, registerstabile Überarbeitung ohne Faktenänderung.
+> Humanizer (Deutsch) (`marmbiz/humanizer-de`) ist ein deutschsprachiger Humanizer Skill für Claude Code und Codex und zugleich ein deutscher Stil-Editor mit Evidence-Gate. Er misst Register und Satzrhythmus gegen Zielprofile, redigiert evidence-safe auf ein Zielprofil, auditiert deutsche KI-Schreibmuster mit einem 74-Muster-Katalog und unterstützt belegtreue, registerstabile Überarbeitung ohne Faktenänderung.
 
 Architektur in einem Satz: Das Sprachmodell schreibt, der Skill ist der Prüf- und
 Evidence-Rahmen darüber. Geeicht sind die Schwellen der deterministischen Prüfungen gegen eine
@@ -971,6 +983,12 @@ GitHub Release.
 
 ## Was ist neu?
 
+- **5.20.0** - Neues Zusatzflag Kontrollierte Sprache (Kontrolliertes Deutsch, tekom/DIN
+  8579-1) für Sachlich und Formal: ein Begriff pro Konzept, feste Anforderungsmodalverben
+  (muss/sollte/kann/darf nicht), höchstens eine Nebensatzebene pro Satz. Nur auf ausdrücklichen
+  Wunsch aktiv, kein eigener `mode`-Wert. Zwei neue judgment-only Muster (73, 74) im Katalog,
+  Details in [`references/kontrolliert.md`](references/kontrolliert.md). Bei aktivem Flag hat
+  die Kurzsatz-Vorgabe Vorrang vor Pass 4 (Rhythmus/Burstiness).
 - **5.19.0** - Unsichtbare Zeichen findet Muster 43 jetzt auch dort, wo sie am gefährlichsten
   sind. Neu geprüft werden der Unicode-Tags-Block und die Variation Selectors. Im Tags-Block
   spiegeln die Zeichen U+E0020 bis U+E007E die druckbaren ASCII-Zeichen, weshalb sich damit
