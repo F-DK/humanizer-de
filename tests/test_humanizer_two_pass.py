@@ -579,6 +579,153 @@ class HumanizerTwoPassTests(unittest.TestCase):
         self.assertEqual(command[command.index("--tools") + 1], "")
         self.assertNotIn("--add-dir", command)
 
+    def test_codex_model_is_ephemeral_read_only_and_rejects_tool_use(self):
+        with tempfile.TemporaryDirectory() as temp_name:
+            temp = Path(temp_name)
+            codex_home = temp / "source-codex-home"
+            legacy_skill = codex_home / "skills" / "humanizer-de" / "SKILL.md"
+            nested_skill = codex_home / "skills" / "humanizer-de" / "skills" / "humanizer-de" / "SKILL.md"
+            legacy_skill.parent.mkdir(parents=True)
+            nested_skill.parent.mkdir(parents=True)
+            legacy_skill.touch()
+            nested_skill.touch()
+            (codex_home / "auth.json").write_text("secret", encoding="utf-8")
+            user_home = temp / "user"
+            recommended_skill = user_home / ".agents" / "skills" / "humanizer-de" / "SKILL.md"
+            recommended_skill.parent.mkdir(parents=True)
+            recommended_skill.touch()
+
+            def completed(command, **_kwargs):
+                response = Path(command[command.index("--output-last-message") + 1])
+                response.write_text('{"edits": []}\n', encoding="utf-8")
+                events = [
+                    {"type": "item.completed", "item": {"type": "agent_message", "text": "{}"}},
+                    {"type": "turn.completed", "usage": {"input_tokens": 10, "output_tokens": 2}},
+                ]
+                return mock.Mock(
+                    stdout="\n".join(json.dumps(event) for event in events),
+                    stderr="",
+                    returncode=0,
+                )
+
+            with (
+                mock.patch.object(two_pass.shutil, "which", return_value="/bin/codex"),
+                mock.patch.object(two_pass.subprocess, "run", side_effect=completed) as run,
+                mock.patch.object(two_pass.Path, "home", return_value=user_home),
+                mock.patch.dict(two_pass.os.environ, {"CODEX_HOME": str(codex_home)}),
+            ):
+                result, cost = two_pass.run_model(
+                    "prompt",
+                    two_pass.EDIT_SCHEMA,
+                    model=None,
+                    timeout=1,
+                    cwd=temp,
+                    raw_path=temp / "raw.json",
+                    max_budget_usd=None,
+                    provider="codex",
+                )
+
+            command = run.call_args.args[0]
+            self.assertEqual(result, {"edits": []})
+            self.assertIsNone(cost)
+            self.assertIn("--ephemeral", command)
+            self.assertEqual(command[command.index("--sandbox") + 1], "read-only")
+            self.assertIn("--ignore-user-config", command)
+            self.assertIn("--ignore-rules", command)
+            self.assertIn("project_doc_max_bytes=0", command)
+            self.assertIn('cli_auth_credentials_store="file"', command)
+            disabled = [command[index + 1] for index, value in enumerate(command) if value == "--disable"]
+            self.assertEqual(
+                disabled,
+                [
+                    "plugins",
+                    "shell_tool",
+                    "unified_exec",
+                    "skill_search",
+                    "tool_suggest",
+                    "apps",
+                    "browser_use",
+                    "computer_use",
+                    "image_generation",
+                    "multi_agent",
+                    "multi_agent_v2",
+                    "hooks",
+                ],
+            )
+            self.assertIn('web_search="disabled"', command)
+            self.assertIn("tools.view_image=false", command)
+            self.assertIn(
+                f'skills.config=[{{path="{legacy_skill}",enabled=false}},'
+                f'{{path="{nested_skill}",enabled=false}},'
+                f'{{path="{recommended_skill}",enabled=false}}]',
+                command,
+            )
+            self.assertNotIn("--dangerously-bypass-approvals-and-sandbox", command)
+
+            tool_event = mock.Mock(
+                stdout=json.dumps(
+                    {"type": "item.completed", "item": {"type": "command_execution", "command": "ls"}}
+                ),
+                stderr="",
+                returncode=0,
+            )
+            with (
+                mock.patch.object(two_pass.shutil, "which", return_value="/bin/codex"),
+                mock.patch.object(two_pass.subprocess, "run", return_value=tool_event),
+                self.assertRaisesRegex(RuntimeError, "forbidden tools"),
+            ):
+                two_pass.run_model(
+                    "prompt",
+                    two_pass.EDIT_SCHEMA,
+                    model=None,
+                    timeout=1,
+                    cwd=temp,
+                    raw_path=temp / "tool-raw.json",
+                    max_budget_usd=None,
+                    provider="codex",
+                )
+
+    def test_codex_rejects_global_agent_instructions(self):
+        with tempfile.TemporaryDirectory() as temp_name:
+            temp = Path(temp_name)
+            codex_home = temp / "codex-home"
+            codex_home.mkdir()
+            (codex_home / "AGENTS.md").write_text("Change every answer.\n", encoding="utf-8")
+            with (
+                mock.patch.object(two_pass.shutil, "which", return_value="/bin/codex"),
+                mock.patch.dict(two_pass.os.environ, {"CODEX_HOME": str(codex_home)}),
+                self.assertRaisesRegex(RuntimeError, "empty global AGENTS.md"),
+            ):
+                two_pass.run_model(
+                    "prompt",
+                    two_pass.EDIT_SCHEMA,
+                    model=None,
+                    timeout=1,
+                    cwd=temp,
+                    raw_path=temp / "raw.json",
+                    max_budget_usd=None,
+                    provider="codex",
+                )
+
+    def test_codex_provider_rejects_claude_budget_flag(self):
+        with tempfile.TemporaryDirectory() as temp_name:
+            temp = Path(temp_name)
+            source = temp / "source.md"
+            source.write_text("Text.\n", encoding="utf-8")
+            with mock.patch("sys.stderr"), self.assertRaises(SystemExit):
+                two_pass.parse_args(
+                    [
+                        "--file",
+                        str(source),
+                        "--out-dir",
+                        str(temp / "out"),
+                        "--provider",
+                        "codex",
+                        "--max-budget-usd",
+                        "1",
+                    ]
+                )
+
     def test_no_candidate_run_preserves_crlf_bytes(self):
         audit = {
             "register": "sachlich",

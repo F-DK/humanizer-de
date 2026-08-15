@@ -376,11 +376,28 @@ python3 scripts/humanizer_two_pass.py \
   --max-budget-usd 2
 ```
 
-Ein Modell lässt sich mit `--model` wählen. Der Rewrite-Aufruf erhält keine Werkzeuge; nur der
+Alternativ läuft derselbe Vertrag über eine angemeldete lokale Codex-CLI:
+
+```bash
+python3 scripts/humanizer_two_pass.py \
+  --file entwurf.md \
+  --out-dir humanizer-lauf-codex \
+  --mode sachlich \
+  --provider codex
+```
+
+Codex verwendet dabei seinen Standardanbieter; lokale `config.toml`-Anpassungen werden für den
+isolierten Lauf nicht geladen. Eine nicht leere globale `$CODEX_HOME/AGENTS.md` oder
+`AGENTS.override.md` führt zum Abbruch, damit keine persönlichen Anweisungen Audit oder Rewrite
+verändern.
+
+Ein Modell lässt sich mit `--model` wählen. `--max-budget-usd` ist Claude vorbehalten; Codex
+protokolliert seinen Tokenverbrauch stattdessen in den JSONL-Ereignissen der Call-Artefakte.
+Der Rewrite-Aufruf erhält keine Schreibrechte; nur der
 Host kann bestätigte Spannen anwenden. Nur ein angenommenes Ergebnis erscheint als `result.md`.
 Abgelehnte Vorschläge heißen `rejected.md`, und `report.json` nennt Schutzverletzungen oder Blocker.
 Audit, Ledger, Modellantworten und Hashes bleiben zur Nachprüfung im Zielverzeichnis.
-Der Text wird an den für Claude Code konfigurierten Modellanbieter übertragen. Die Quellenprüfung bleibt eine
+Der Text wird an den jeweiligen Modellanbieter übertragen. Die Quellenprüfung bleibt eine
 unvollständige Nebenprüfung; die harten Gates schützen erkennbare Anker, ersetzen aber keine
 fachliche Endabnahme.
 
@@ -997,6 +1014,13 @@ GitHub Release.
 
 ## Was ist neu?
 
+- **5.21.0** - Der getrennte Two-Pass-Runner unterstützt neben Claude jetzt auch Codex. Codex
+  läuft in zwei ephemeren, read-only Prozessen mit strukturierten Ausgaben; Benutzerkonfiguration
+  und Exec-Regeln sowie globale oder projektbezogene `AGENTS.md`-Anweisungen werden nicht geladen,
+  lokale Skills, Plugin-, App-, Shell- und Werkzeug-Suchfunktionen sind abgeschaltet. Meldet der
+  Ereignisstrom trotzdem einen Werkzeugaufruf, verwirft der Host den Lauf. Das Claude-spezifische
+  USD-Budget wird bei Codex nicht vorgetäuscht: dort bleiben die Tokenzahlen in den
+  Call-Artefakten nachvollziehbar.
 - **5.20.0** - Audit und Rewrite können erstmals in zwei wirklich getrennten Modellaufrufen
   laufen. Der optionale lokale Runner friert Kandidaten, Fakten, Zitate, Fachbegriffe und
   Persona-Anker nach dem ersten Aufruf ein. Ein frischer, werkzeugloser Rewrite darf danach

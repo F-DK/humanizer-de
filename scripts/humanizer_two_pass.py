@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 import math
+import os
 import re
 import shutil
 import subprocess
@@ -479,10 +480,135 @@ def run_model(
     cwd: Path,
     raw_path: Path,
     max_budget_usd: float | None,
+    provider: str = "claude",
 ) -> tuple[dict[str, Any], float | None]:
-    binary = shutil.which("claude")
+    binary = shutil.which(provider)
     if not binary:
-        raise RuntimeError("claude CLI not found")
+        raise RuntimeError(f"{provider} CLI not found")
+
+    if provider == "codex":
+        if max_budget_usd is not None:
+            raise RuntimeError("--max-budget-usd is only available with --provider claude")
+        schema_path = cwd / "output-schema.json"
+        response_path = cwd / "response.json"
+        codex_home = Path(os.environ.get("CODEX_HOME", Path.home() / ".codex"))
+        if any(
+            path.is_file() and path.read_text(encoding="utf-8").strip()
+            for path in (codex_home / "AGENTS.override.md", codex_home / "AGENTS.md")
+        ):
+            raise RuntimeError("Codex two-pass requires an empty global AGENTS.md")
+        credential_store = "file" if (codex_home / "auth.json").is_file() else "auto"
+        write_json(schema_path, schema)
+        command = [
+            binary,
+            "exec",
+            "--ephemeral",
+            "--ignore-user-config",
+            "--ignore-rules",
+            "--disable",
+            "plugins",
+            "--disable",
+            "shell_tool",
+            "--disable",
+            "unified_exec",
+            "--disable",
+            "skill_search",
+            "--disable",
+            "tool_suggest",
+            "--disable",
+            "apps",
+            "--disable",
+            "browser_use",
+            "--disable",
+            "computer_use",
+            "--disable",
+            "image_generation",
+            "--disable",
+            "multi_agent",
+            "--disable",
+            "multi_agent_v2",
+            "--disable",
+            "hooks",
+            "--sandbox",
+            "read-only",
+            "--skip-git-repo-check",
+            "--json",
+            "--output-schema",
+            str(schema_path),
+            "--output-last-message",
+            str(response_path),
+            "-c",
+            "project_doc_max_bytes=0",
+            "-c",
+            f'cli_auth_credentials_store="{credential_store}"',
+            "-c",
+            'web_search="disabled"',
+            "-c",
+            "tools.view_image=false",
+        ]
+        skill_roots = (
+            codex_home / "skills",
+            Path.home() / ".agents" / "skills",
+            Path("/etc/codex/skills"),
+        )
+        skill_dirs = [
+            child
+            for root in skill_roots
+            if root.is_dir()
+            for child in root.iterdir()
+            if child.is_dir()
+        ]
+        candidates = [
+            skill
+            for directory in skill_dirs
+            for skill in (
+                directory / "SKILL.md",
+                *directory.glob("*/SKILL.md"),
+                *directory.glob("skills/*/SKILL.md"),
+            )
+        ]
+        disabled_skills = sorted({skill for skill in candidates if skill.is_file()})
+        if disabled_skills:
+            entries = ",".join(
+                f"{{path={json.dumps(str(skill), ensure_ascii=False)},enabled=false}}"
+                for skill in disabled_skills
+            )
+            command.extend(["-c", f"skills.config=[{entries}]"])
+        if model:
+            command.extend(["--model", model])
+        command.append("-")
+        completed = subprocess.run(
+            command,
+            input=prompt,
+            cwd=cwd,
+            text=True,
+            encoding="utf-8",
+            capture_output=True,
+            timeout=timeout,
+        )
+        try:
+            events = [json.loads(line) for line in completed.stdout.splitlines() if line.strip()]
+        except json.JSONDecodeError as error:
+            raise RuntimeError(f"codex returned invalid JSONL: {completed.stderr.strip() or error}") from error
+        write_json(raw_path, {"events": events})
+        if completed.returncode or any(event.get("type") in {"turn.failed", "error"} for event in events):
+            raise RuntimeError(f"codex failed: {completed.stderr.strip() or 'turn failed'}")
+        tool_items = {
+            item.get("type")
+            for event in events
+            if event.get("type", "").startswith("item.")
+            and isinstance((item := event.get("item")), dict)
+            and item.get("type") not in {"agent_message", "reasoning"}
+        }
+        if tool_items:
+            raise RuntimeError(f"codex used forbidden tools: {', '.join(sorted(tool_items))}")
+        try:
+            structured = json.loads(response_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError) as error:
+            raise RuntimeError(f"codex response is not valid JSON: {error}") from error
+        if not isinstance(structured, dict):
+            raise RuntimeError("codex response has no structured output")
+        return structured, None
 
     command = [
         binary,
@@ -583,6 +709,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--file", type=Path, required=True)
     parser.add_argument("--out-dir", type=Path, required=True)
     parser.add_argument("--mode", choices=("locker", "sachlich", "formal"), default="sachlich")
+    parser.add_argument("--provider", choices=("claude", "codex"), default="claude")
     parser.add_argument("--model")
     parser.add_argument("--timeout", type=int, default=1200)
     parser.add_argument("--max-budget-usd", type=float)
@@ -600,6 +727,8 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     if args.max_budget_usd is not None:
         if not math.isfinite(args.max_budget_usd) or args.max_budget_usd <= 0:
             parser.error("--max-budget-usd must be positive")
+        if args.provider != "claude":
+            parser.error("--max-budget-usd is only available with --provider claude")
     return args
 
 
@@ -650,6 +779,7 @@ def main(argv: list[str] | None = None) -> int:
                 cwd=audit_temp,
                 raw_path=args.out_dir / "audit-call.json",
                 max_budget_usd=args.max_budget_usd,
+                provider=args.provider,
             )
             write_json(args.out_dir / "audit-ledger.json", audit)
             ledger = confirm_ledger(original, audit)
@@ -674,6 +804,7 @@ def main(argv: list[str] | None = None) -> int:
                     cwd=rewrite_temp,
                     raw_path=args.out_dir / "rewrite-call.json",
                     max_budget_usd=remaining_budget,
+                    provider=args.provider,
                 )
             else:
                 rewrite_text = None
@@ -693,7 +824,7 @@ def main(argv: list[str] | None = None) -> int:
 
         report = {
             "accepted": accepted,
-            "provider": "claude",
+            "provider": args.provider,
             "model": args.model,
             "mode": args.mode,
             "source_sha256": hashlib.sha256(original.encode()).hexdigest(),
