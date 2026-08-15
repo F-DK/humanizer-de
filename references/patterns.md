@@ -721,7 +721,7 @@ Häufige Indikatoren:
 ### Auszeichnungstext (6 Muster)
 
 #### 23. Markdown statt Wikitext [MEDIUM]
-<!-- haltbarkeit: jahrgang stand=2026-07 -->
+<!-- haltbarkeit: jahrgang stand=2026-08 -->
 <!-- pass: 1 -->
 **Problem:** Markdown-Syntax in Wikipedia-Artikel statt Wikitext.
 
@@ -729,13 +729,15 @@ Häufige Indikatoren:
 - `*fett*` oder `**fett**` statt `'''fett'''`
 - `# Überschrift` statt `== Überschrift ==`
 - `[Link](url)` statt `[Link url]`
+- Code-Fences aus drei Backticks statt Wikitext-Codeformatierung
+- Markdown-Trennlinien `---`, `***` oder `___` im Wikitext-Kontext
 
 **Warum LLMs das tun:** Trainiert auf Markdown-Quellen.
 
 **Lösung:** Konvertieren zu Wikitext.
 
 #### 24. Fehlerhafter Wikitext und KI-Tool-/Prozessartefakte [MEDIUM]
-<!-- haltbarkeit: jahrgang stand=2026-07 -->
+<!-- haltbarkeit: jahrgang stand=2026-08 -->
 <!-- pass: 1 -->
 **Problem:** Wikitext-Syntax ist ungültig oder unvollständig. Zusätzlich hinterlassen KI-Tools technische Artefakte im Text.
 
@@ -743,8 +745,8 @@ Häufige Indikatoren:
 - "gehe zu [[Suche Nr. 42]]"
 - Unvollständige Template-Tags
 - `{{cite book|author=` ohne Schließ-`}}`
-- **ChatGPT:** `oaicite:0`-/`oaicite:ref`-Tags, `contentReference[oaicite:0]`-Spans, `oai_citation`, `turn0search0`/`citeturn0search0` (von Private-Use-Area-Unicode umschlossen; Varianten: `citeturn0news0`, `citeturn1file0`, `iturn0image0`), `+1`-Suffixe an Quellennamen (`Wikipedia+1`, `ISO+3`), JSON-Anhang `({"attribution":{"attributableIndex":"X-Y"}})`
-- **Gemini:** `[cite: 1]` bzw. `[cite: 3, 12, 13]`, `[span_1][start_span]`/`[span_1][end_span]`
+- **ChatGPT:** `oaicite:0`-/`oaicite:ref`-Tags, `contentReference[oaicite:0]`-Spans, `oai_cite`/`oai_citation`, `turn0search0`/`turn0image0`/`citeturn0search0` (von Private-Use-Area-Unicode umschlossen; Varianten: `citeturn0news0`, `citeturn1file0`, `iturn0image0`), `+1`-Suffixe an Quellennamen (`Wikipedia+1`, `ISO+3`), JSON-Anhang `({"attribution":{"attributableIndex":"X-Y"}})`
+- **Gemini:** `[cite: 1]` bzw. `[cite: 3, 12, 13]`, `[span_1][start_span]`/`[span_1][end_span]` sowie `(start_span)`/`(end_span)`
 - **Grok:** `grok_card`-Spans (`<grok-card data-id=...>`), `grok_render_citation_card_json`, `<grok:render ...>` mit `<argument name="citation_id">`
 - **DeepSeek:** Linsenklammern mit Dagger, z. B. `【85†L261-269】`
 - **Weitere anbieterneutral behandelte Chat-/Share-Exportreste:** `[citation:1]`-Ketten, ein publizierter Block `> **Thinking**`, `[^1^]`, `_[unsupported block: think]_`, `_[unsupported block: search]_`, numerische `[[1]]`-Ketten außerhalb echten Wiki-/Notiz-Kontexts sowie unverarbeitete Reasoning-Tags wie `<think>...</think>`
@@ -774,7 +776,7 @@ Häufige Indikatoren:
 **Lösung:** Mit den verfügbaren Mitteln prüfen (Syntax, Plausibilität, interne Konsistenz, offensichtliche Tippfehler im übergebenen Kontext). Bei nachweisbarem Defekt: korrigieren oder entfernen. Externe Online-Verifikation eines Links liegt außerhalb des Skill-Umfangs – in diesem Fall mit [LINK NICHT VERIFIZIERT] markieren statt blind zu entfernen.
 
 #### 26. Zitatfabrikation und unverifizierbare Referenzen [HIGH]
-<!-- haltbarkeit: jahrgang stand=2026-07 -->
+<!-- haltbarkeit: jahrgang stand=2026-08 -->
 <!-- pass: 1 -->
 **Problem:** LLMs erfinden Quellen, die echt aussehen, aber nicht existieren, oder ordnen reale Quellen einer Aussage zu, die sie nicht tragen. Das reicht von ungültigen DOI-/ISBN-Angaben bis zu komplett halluzinierten Publikationen, Aktenzeichen, Gerichtsentscheidungen, URLs oder Studien. Factual Reliability ist hier wichtiger als Stil: Eine polierte Passage mit falscher Quelle ist schlechter als eine sichtbare Lücke.
 
@@ -785,7 +787,8 @@ Häufige Indikatoren:
 - Autoren existieren, aber die genannte Publikation nicht
 - Reale Quelle existiert, enthält aber die behauptete Zahl, Aussage oder das Zitat nicht
 - Plausibles Aktenzeichen, Urteil, Gesetz, Studie oder Interview ohne auffindbaren Träger im übergebenen Material
-- Defekte externe Links mit `utm_source=`-Parametern – besonders verdächtig: `utm_source=chatgpt.com` (auch verkürzt `utm_source=chatgpt` oder `utm_source=openai`), `utm_source=claude.ai`, `utm_source=gemini.google.com`, `utm_source=perplexity.ai` (direkter KI-Fingerabdruck; Gemini und Claude setzen UTM-Tags seltener als ChatGPT)
+- Defekte externe Links mit `utm_source=`-Parametern – besonders verdächtig: `utm_source=chatgpt.com` (auch verkürzt `utm_source=chatgpt` oder `utm_source=openai`), `utm_source=claude.ai`, `utm_source=gemini.google.com`, `utm_source=perplexity.ai`, `utm_source=copilot.com` (direkter KI-Fingerabdruck; Gemini und Claude setzen UTM-Tags seltener als ChatGPT)
+- Links auf KI-Chat- oder Suchoberflächen als angebliche Referenz, etwa ChatGPT, DeepSeek, Copilot, Gemini, Groq oder Grok; die bloße Erwähnung oder Dokumentation eines solchen Dienstes ist kein Befund
 - Unbenutzte benannte Referenzen (`<ref name="..."/>` ohne zugehörige Definition)
 
 **Warum LLMs das tun:** Kann keine echten Quellen recherchieren und erzeugt plausibel aussehende Referenzen aus dem Training.
@@ -1604,19 +1607,19 @@ Häufige Indikatoren:
 ✓ Besser: "Das Team analysierte die Daten und kam zu einem eindeutigen Ergebnis: Die Conversion stieg um 25 Prozent, obwohl das Projekt im Budget blieb."
 
 #### 57. Markdown-Struktur-Artefakte [MEDIUM]
-<!-- haltbarkeit: jahrgang stand=2026-07 -->
+<!-- haltbarkeit: jahrgang stand=2026-08 -->
 <!-- pass: 1 -->
 
-**Problem:** KI-Chatbots setzen Markdown-Strukturelemente dekorativ statt semantisch ein. Drei wiederkehrende Fälle:
+**Problem:** KI-Chatbots setzen Markdown-Strukturelemente dekorativ statt semantisch ein. Vier wiederkehrende Fälle:
 
 - **Fall A – Tabelle, wo Prosa hingehört:** Eine Tabelle mit nur einer Datenzeile, eine Spalte, die einen Wert wiederholt, oder "Aspekt/Beschreibung"-Paare, die in Wahrheit ein Satz sind.
 - **Fall B – Übersprungene Überschriften-Ebenen:** Eine H2 folgt direkt eine H4 (`##` dann `####`). Die Überschriftengröße wird als optisches Gewicht missbraucht, nicht als Hierarchie. Überschriften sollten eine Ebene nach der anderen absteigen.
-- **Fall C – Thematische Trennlinie vor Überschrift:** Eine dekorative horizontale Linie (`---`) steht direkt über einer Überschrift. Die Überschrift beginnt bereits einen neuen Abschnitt; die Linie ist redundantes Rauschen.
+- **Fall C – Thematische Trennlinie vor Überschrift:** Eine dekorative horizontale Linie (`---`, `***` oder `___`) steht direkt über einer Überschrift. Die Überschrift beginnt bereits einen neuen Abschnitt; die Linie ist redundantes Rauschen.
 - **Fall D – Inline-Header-Listen:** Listenpunkte, die sich mit einem gefetteten kategorischen Mini-Titel plus Doppelpunkt häufen: `- **Aspekt:** Beschreibung`, `- **Vorteil:** …`, `- **Herausforderung:** …`. Tell ist die Häufung generischer Etiketten, wo die Aufzählung in Wahrheit Fließtext ist; nach Copy-Paste teils ohne Zeilenumbruch aneinandergereiht.
 
 **Warum LLMs das tun:** Modelle optimieren auf optisch "aufgeräumte" Ausgaben und greifen zu Tabellen, Größensprüngen und Trennlinien als visuellen Markern, ohne die zugrunde liegende Dokumentstruktur zu prüfen.
 
-**Kein Problem, wenn:** Eine Tabelle echte mehrdimensionale Daten zeigt; eine `---`-Linie bewusst als Szenen- oder Themenwechsel *zwischen* gleichrangigen Abschnitten steht (nicht direkt vor einer Überschrift); ein CMS, Theme oder Markdown-Template die Struktur erzeugt. Konsistente, korrekte Formatierung allein ist kein KI-Tell. Eine Definitions- oder Merkmalsliste, deren Fett-Lead-in ein echtes Stichwort ist und deren Text eigenständige Substanz trägt (Glossar, Parameter-, Feature-Liste – auch dieser Katalog nutzt das Format legitim), ist kein Tell; Fall D greift erst, wenn sich generische Etiketten häufen und der „Titel" die Beschreibung nur wiederholt.
+**Kein Problem, wenn:** Eine Tabelle echte mehrdimensionale Daten zeigt; eine horizontale Linie (`---`, `***` oder `___`) bewusst als Szenen- oder Themenwechsel *zwischen* gleichrangigen Abschnitten steht (nicht direkt vor einer Überschrift); ein CMS, Theme oder Markdown-Template die Struktur erzeugt. Konsistente, korrekte Formatierung allein ist kein KI-Tell. Eine Definitions- oder Merkmalsliste, deren Fett-Lead-in ein echtes Stichwort ist und deren Text eigenständige Substanz trägt (Glossar, Parameter-, Feature-Liste – auch dieser Katalog nutzt das Format legitim), ist kein Tell; Fall D greift erst, wenn sich generische Etiketten häufen und der „Titel" die Beschreibung nur wiederholt.
 
 **Abgrenzung:** Muster 16 = Dash-Satzzeichen und Gedankenstrich-Cluster im Fließtext, nicht die horizontale Linie `---`. Muster 13 = übermäßige Fettschrift, Muster 14 = falsche Listenzeichen. Muster 23 = Markdown statt Wikitext (Syntax-Wahl im Wiki-Kontext). Muster 57 = dekorativer Struktur-Missbrauch in Markdown selbst.
 

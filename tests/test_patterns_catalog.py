@@ -189,6 +189,10 @@ class PatternCatalogTests(unittest.TestCase):
         section = extract_pattern_section(24)
 
         for artifact in (
+            "oai_cite",
+            "turn0image0",
+            "(start_span)",
+            "(end_span)",
             "<grok:render ...>",
             "【85†L261-269】",
             "[citation:1]",
@@ -203,9 +207,24 @@ class PatternCatalogTests(unittest.TestCase):
         section = extract_pattern_section(26)
 
         self.assertIn("Factual Reliability", section)
+        self.assertIn("utm_source=copilot.com", section)
+        self.assertIn("KI-Chat- oder Suchoberflächen als angebliche Referenz", section)
+        self.assertIn("bloße Erwähnung oder Dokumentation", section)
         self.assertIn("Jede konkrete Referenz zuerst als ungeprüft behandeln", section)
         self.assertIn("[QUELLE NICHT VERIFIZIERT]", section)
         self.assertIn("Nie eine Ersatzquelle erfinden", section)
+
+    def test_markdown_patterns_cover_filter_variants_with_context_boundaries(self):
+        pattern_23 = extract_pattern_section(23)
+        pattern_57 = extract_pattern_section(57)
+
+        self.assertIn("Code-Fences aus drei Backticks", pattern_23)
+        for separator in ("`---`", "`***`", "`___`"):
+            self.assertIn(separator, pattern_23)
+            self.assertIn(separator, pattern_57)
+        self.assertIn("im Wikitext-Kontext", pattern_23)
+        self.assertIn("zwischen", pattern_57)
+        self.assertIn("nicht direkt vor einer Überschrift", pattern_57)
 
     def test_pattern_46_examples_use_real_codepoints(self):
         section = extract_pattern_section(46)
