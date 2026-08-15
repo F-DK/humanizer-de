@@ -416,6 +416,24 @@ class GermanPatternLintTests(unittest.TestCase):
         )
         self.assertNotIn("negation_antithesis_cluster", kinds(german_pattern_lint.lint(text)))
 
+    def test_negation_antithesis_density_ignores_foreign_voice_words(self):
+        authored = (
+            "Nicht abwarten, sondern machen. Nicht erklären, sondern liefern. "
+            "Nicht verwalten, sondern gestalten. Laut und nicht leise lautet die Devise."
+        )
+        baseline = next(
+            item
+            for item in german_pattern_lint.lint(authored)["findings"]
+            if item["kind"] == "negation_antithesis_cluster"
+        )
+        with_quote = authored + "\n\n> " + "Fremdwort " * 1400
+        finding = next(
+            item
+            for item in german_pattern_lint.lint(with_quote)["findings"]
+            if item["kind"] == "negation_antithesis_cluster"
+        )
+        self.assertEqual(finding["evidence"], baseline["evidence"])
+
     def test_negation_antithesis_cluster_ignores_use_mentions(self):
         text = (
             "Im Leitfaden stehen „nicht abwarten, sondern machen“ und "
@@ -602,6 +620,10 @@ class GermanPatternLintTests(unittest.TestCase):
     def test_bold_overdose(self):
         text = "**Alpha:** eins. **Beta:** zwei. **Gamma:** drei. **Delta:** vier. **Epsilon:** fünf."
         self.assertIn("bold_overdose", kinds(german_pattern_lint.lint(text)))
+
+    def test_bold_overdose_ignores_blockquote_voice(self):
+        text = "\n".join(f"> **{word}**" for word in ("Alpha", "Beta", "Gamma", "Delta", "Epsilon"))
+        self.assertNotIn("bold_overdose", kinds(german_pattern_lint.lint(text)))
 
     def test_bold_overdose_counts_six_long_spans(self):
         text = "\n".join(f"**{letter * 81}**" for letter in "abcdef")

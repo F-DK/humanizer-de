@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import argparse
 from difflib import SequenceMatcher
-import importlib.util
 import json
 import re
 import sys
@@ -21,26 +20,10 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 from cli_output import print_json
-
-EVIDENCE_SCRIPT = ROOT / "scripts" / "evidence_lint.py"
-spec = importlib.util.spec_from_file_location("evidence_lint", EVIDENCE_SCRIPT)
-evidence_lint = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(evidence_lint)
-
-REGISTER_SCRIPT = ROOT / "scripts" / "register_lint.py"
-register_spec = importlib.util.spec_from_file_location("register_lint", REGISTER_SCRIPT)
-register_lint = importlib.util.module_from_spec(register_spec)
-register_spec.loader.exec_module(register_lint)
-
-RHYTHM_SCRIPT = ROOT / "scripts" / "rhythm_lint.py"
-rhythm_spec = importlib.util.spec_from_file_location("rhythm_lint", RHYTHM_SCRIPT)
-rhythm_lint = importlib.util.module_from_spec(rhythm_spec)
-rhythm_spec.loader.exec_module(rhythm_lint)
-
-STYLE_PROFILE_SCRIPT = ROOT / "scripts" / "style_profile.py"
-style_profile_spec = importlib.util.spec_from_file_location("style_profile", STYLE_PROFILE_SCRIPT)
-style_profile = importlib.util.module_from_spec(style_profile_spec)
-style_profile_spec.loader.exec_module(style_profile)
+import evidence_lint
+import register_lint
+import rhythm_lint
+import style_profile
 
 REQUIRED_KEYS = {"id", "mode", "input", "expected_behavior", "quality_risks", "output_contract", "sample_outputs"}
 PRELUDE_RE = re.compile(r"less machine\.\s*more voice\.", re.IGNORECASE)

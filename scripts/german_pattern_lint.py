@@ -541,7 +541,11 @@ def lint(text: str, mode: str = "sachlich", precise: bool = False) -> dict:
         if start >= covered_until:
             antithesis_matches.append(candidate)
             covered_until = max(covered_until, end)
-    word_count = len(WORD_RE.findall(clean_text))
+    word_count = sum(
+        1
+        for match in WORD_RE.finditer(clean_text)
+        if not overlaps_mention(match.start(), match.end(), foreign_spans)
+    )
     antithesis_density = len(antithesis_matches) * 1000 / word_count if word_count else 0.0
     if (
         len(antithesis_matches) >= ANTITHESIS_CLUSTER_MIN_COUNT
@@ -621,6 +625,7 @@ def lint(text: str, mode: str = "sachlich", precise: bool = False) -> dict:
         for match in BOLD_SPAN_RE.finditer(clean_text)
         if (match.start() == 0 or clean_text[match.start() - 1] != "*")
         and (match.end() == len(clean_text) or clean_text[match.end()] != "*")
+        and not overlaps_mention(match.start(), match.end(), foreign_spans)
     ]
     bold_span_count = len(bold_matches)
     if bold_span_count >= BOLD_OVERDOSE_THRESHOLD:

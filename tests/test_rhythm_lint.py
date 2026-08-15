@@ -136,6 +136,13 @@ class RhythmLintTests(unittest.TestCase):
         sir_hits = [s for s in report["suspicions"] if s["pattern"] == 55 and "subject-initial" in s["reason"]]
         self.assertEqual(sir_hits, [])
 
+    def test_adverbial_openers_are_not_subject_initial(self):
+        text = " ".join(
+            f"{opener} prüft das Team die Akte."
+            for opener in ("Allerdings", "Natürlich", "Vielleicht", "Häufig", "Insbesondere")
+        )
+        self.assertEqual(rhythm_lint.subject_initial_ratio(rhythm_lint.split_sentences(text)), 0.0)
+
     def test_varied_text_does_not_flag_pattern_55(self):
         text = (
             "Zunächst startet der Test. "

@@ -5,8 +5,8 @@ type: software
 authors:
   - family-names: Moeller
     given-names: Martin
-version: 5.18.0
-date-released: 2026-08-11
+version: 5.20.0
+date-released: 2026-08-15
 url: "https://github.com/marmbiz/humanizer-de"
 repository-code: "https://github.com/marmbiz/humanizer-de"
 license: MIT

@@ -358,6 +358,32 @@ statt Klarheit, Belegtreue oder Stimme zu verbessern.
 <details>
 <summary><strong>Power-User: lokaler Prüfablauf, Schnellcheck und Stilprofil</strong></summary>
 
+### Zwei getrennte Modellaufrufe
+
+Der optionale Runner trennt Audit und Rewrite auch technisch. Der erste, read-only Aufruf
+erstellt ein Ledger aus bestätigten Kandidaten und wortgleichen Schutzankern. Bleiben bestätigte
+Kandidaten übrig, liefert ein frischer zweiter Aufruf nur Ersetzungen dafür; der Host setzt sie
+deterministisch ein. Teilüberschriften, Teilsätze, verschobene Schutzanker und neue
+Evidence-Blocker werden abgelehnt.
+
+Voraussetzung ist eine angemeldete lokale `claude`-CLI. Das Zielverzeichnis muss leer sein:
+
+```bash
+python3 scripts/humanizer_two_pass.py \
+  --file entwurf.md \
+  --out-dir humanizer-lauf \
+  --mode sachlich \
+  --max-budget-usd 2
+```
+
+Ein Modell lässt sich mit `--model` wählen. Der Rewrite-Aufruf erhält keine Werkzeuge; nur der
+Host kann bestätigte Spannen anwenden. Nur ein angenommenes Ergebnis erscheint als `result.md`.
+Abgelehnte Vorschläge heißen `rejected.md`, und `report.json` nennt Schutzverletzungen oder Blocker.
+Audit, Ledger, Modellantworten und Hashes bleiben zur Nachprüfung im Zielverzeichnis.
+Der Text wird an den für Claude Code konfigurierten Modellanbieter übertragen. Die Quellenprüfung bleibt eine
+unvollständige Nebenprüfung; die harten Gates schützen erkennbare Anker, ersetzen aber keine
+fachliche Endabnahme.
+
 ### Ein Durchlauf in vier Kommandos
 
 So sieht die Arbeit konkret aus; die Ausgaben sind gekürzt. Schritt 4 läuft mit dem geklonten Repo sofort, weil er auf einer mitgelieferten Fixture arbeitet. Die Schritte 1 bis 3 brauchen eigene Dateien an der Stelle von `entwurf.md`, `vorher.md` und `nachher.md`.
@@ -430,8 +456,8 @@ def humanizer_audit(path, mode="sachlich"):
     return json.loads(report.stdout)
 ```
 
-Das deckt den Audit-Teil ab. Die Pässe des Skills – Rewrite, Claim-Lock, Selbst-Audit – laufen
-weiter im LLM-Agenten und sind bewusst nicht als API nachgebaut.
+Das deckt den deterministischen Audit-Teil ab. Ohne den optionalen Zwei-Aufruf-Runner laufen
+Rewrite, Claim-Lock und Selbst-Audit weiterhin im LLM-Agenten.
 
 ### Persönliches Stilprofil
 
@@ -971,6 +997,19 @@ GitHub Release.
 
 ## Was ist neu?
 
+- **5.20.0** - Audit und Rewrite können erstmals in zwei wirklich getrennten Modellaufrufen
+  laufen. Der optionale lokale Runner friert Kandidaten, Fakten, Zitate, Fachbegriffe und
+  Persona-Anker nach dem ersten Aufruf ein. Ein frischer, werkzeugloser Rewrite darf danach
+  nur bestätigte Spannen bearbeiten; eingesetzt werden seine Ersetzungen vom Host, nicht vom
+  Modell. Vollständige Überschriften und Sätze gehören dabei jeweils einer Änderung. Unsichere
+  Teilstrukturen, überlappende Kandidaten, verschobene Schutzanker und neue Evidence-Blocker
+  führen zum Verwerfen statt zu einem scheinbar fertigen Text. Die Quellenprüfung bleibt
+  ausdrücklich unvollständig. Der neue Ablauf schützt Stil und Substanz, macht daraus aber
+  keinen Belegprüfer. Daneben zählen Fettdruck und Antithesen in Fremdstimmen nicht mehr zur
+  Autorenprosa, fünf adverbiale Vorfelder verzerren die SIR-Messung nicht länger, und das
+  Evidence-Gate erkennt Beleg-Widerlegungs-Wechsel, ohne `%`/`Prozent` oder `€`/`Euro` als
+  Faktenänderung zu behandeln. Muster 64 trennt außerdem ein Cluster abstrakter
+  „tragen“-Metaphern von etablierten und konkreten Verwendungen des Verbs.
 - **5.19.0** - Unsichtbare Zeichen findet Muster 43 jetzt auch dort, wo sie am gefährlichsten
   sind. Neu geprüft werden der Unicode-Tags-Block und die Variation Selectors. Im Tags-Block
   spiegeln die Zeichen U+E0020 bis U+E007E die druckbaren ASCII-Zeichen, weshalb sich damit

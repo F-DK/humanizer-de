@@ -108,6 +108,18 @@ class EvidenceLintTests(unittest.TestCase):
                 self.assertIn("removed_number", found)
                 self.assertIn("added_number", found)
 
+    def test_equivalent_number_units_do_not_create_anchor_drift(self):
+        for before, after in (
+            ("Die Quote beträgt 1,5 %.", "Die Quote beträgt 1,5 Prozent."),
+            ("Der Preis beträgt 20 €.", "Der Preis beträgt 20 Euro."),
+            ("Der Preis beträgt 20 EUR/Monat.", "Der Preis beträgt 20 Euro/Monat."),
+        ):
+            with self.subTest(before=before, after=after):
+                found = kinds(evidence_lint.lint(before, after))
+                self.assertNotIn("removed_number", found)
+                self.assertNotIn("added_number", found)
+                self.assertNotIn("removed_proper_name", found)
+
     def test_number_anchor_protects_range_endpoints_and_version_components(self):
         cases = (
             ("Die Spanne reicht von 12-13 Prozent.", "Die Spanne reicht von 12-14 Prozent."),
@@ -205,9 +217,23 @@ class EvidenceLintTests(unittest.TestCase):
         after = "Die Fehlerquote stieg um 12 Prozent."
         self.assertIn("claim_direction_changed", kinds(evidence_lint.lint(before, after)))
 
+    def test_blocks_support_refutation_reversal(self):
+        for before, after in (
+            ("Die Studie belegt die These.", "Die Studie widerlegt die These."),
+            ("Die Studie widerlegt die These.", "Die Studie belegt die These."),
+            ("Die Studie belegte die These.", "Die Studie widerlegte die These."),
+        ):
+            with self.subTest(before=before, after=after):
+                self.assertIn("claim_direction_changed", kinds(evidence_lint.lint(before, after)))
+
     def test_identical_mixed_directions_do_not_block(self):
         text = "Der Umsatz ist gestiegen, die Kosten sind gesunken."
         self.assertNotIn("claim_direction_changed", kinds(evidence_lint.lint(text, text)))
+
+    def test_removing_one_of_two_direction_classes_does_not_block(self):
+        before = "Studie A belegt die These. Studie B widerlegt sie."
+        after = "Studie A belegt die These."
+        self.assertNotIn("claim_direction_changed", kinds(evidence_lint.lint(before, after)))
 
     def test_blocks_plural_preterite_direction_reversal(self):
         before = "Die Kosten stiegen."

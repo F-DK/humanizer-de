@@ -150,6 +150,14 @@ DIRECTION_MARKERS = {
         "verringert",
         "verringerte",
     },
+    "support": {
+        "belegt", "belegte", "belegten", "belegter", "belegtes", "belegtem",
+        "bestätigt", "bestaetigt", "stützt", "stuetzt",
+    },
+    "refute": {
+        "widerlegt", "widerlegte", "widerlegten", "widerlegter", "widerlegtes", "widerlegtem",
+        "entkräftet", "entkraeftet", "widerspricht",
+    },
 }
 
 # German proper names only need the Latin blocks through Latin Extended-B.
@@ -238,6 +246,12 @@ def name_key(value: str) -> str:
     return value.casefold()
 
 
+def number_key(value: str) -> str:
+    normalized = normalize(value).casefold()
+    normalized = re.sub(r"\s*(?:%|prozent)$", " %", normalized)
+    return re.sub(r"\s*(?:€|euro|eur)$", " euro", normalized)
+
+
 def token_in_named_entity(doc: object, start: int, end: int) -> bool:
     for ent in doc.ents:
         if ent.label_ in {"PER", "ORG", "LOC", "MISC"} and ent.start_char <= start and end <= ent.end_char:
@@ -263,7 +277,7 @@ def proper_name_anchors(text: str, nlp: object | None = None) -> set[str]:
         value = normalize(" ".join(tokens))
         if len(value) <= 2:
             continue
-        if value.lower() in {"prozent", "euro"}:
+        if value.lower() in {"prozent", "euro", "eur"}:
             continue
         if len(tokens) >= 2:
             names.add(value)
@@ -370,6 +384,11 @@ def add_anchor_findings(
             after_keys = {name_key(value) for value in after_anchors.get(kind, set())}
             removed = {value for value in before_anchors.get(kind, set()) if name_key(value) not in after_keys}
             added = {value for value in after_anchors.get(kind, set()) if name_key(value) not in before_keys}
+        elif kind == "number":
+            before_keys = {number_key(value) for value in before_anchors.get(kind, set())}
+            after_keys = {number_key(value) for value in after_anchors.get(kind, set())}
+            removed = {value for value in before_anchors.get(kind, set()) if number_key(value) not in after_keys}
+            added = {value for value in after_anchors.get(kind, set()) if number_key(value) not in before_keys}
         else:
             removed = before_anchors.get(kind, set()) - after_anchors.get(kind, set())
             added = after_anchors.get(kind, set()) - before_anchors.get(kind, set())
@@ -409,12 +428,11 @@ def lint(before: str, after: str, precise: bool = False) -> list[dict]:
 
     before_direction = direction_profile(before)
     after_direction = direction_profile(after)
-    if (
-        before_direction != after_direction
-        and (
-            ("increase" in before_direction and "decrease" in after_direction)
-            or ("decrease" in before_direction and "increase" in after_direction)
-        )
+    opposite_directions = (("increase", "decrease"), ("support", "refute"))
+    if any(
+        (left in before_direction and right not in before_direction and right in after_direction)
+        or (right in before_direction and left not in before_direction and left in after_direction)
+        for left, right in opposite_directions
     ):
         add_finding(
             findings,

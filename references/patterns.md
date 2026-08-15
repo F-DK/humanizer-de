@@ -1,6 +1,6 @@
 # Humanizer-de Pattern Catalog
 
-Vollständiger Musterkatalog für Humanizer (Deutsch) v5.19.0. Nur bei konkreter Musterdiagnose, Audit oder Grenzfällen laden.
+Vollständiger Musterkatalog für Humanizer (Deutsch) v5.20.0. Nur bei konkreter Musterdiagnose, Audit oder Grenzfällen laden.
 
 ## Kurzreferenz
 
@@ -430,6 +430,9 @@ diffundieren und verlieren dadurch mit der Zeit an Trennschärfe.
 **Abgrenzung:** Muster 2 = Werbesprache/Superlative ("atemberaubend"). Muster 58 = Hypernym ersetzt eine belegte Konkretion. Muster 64 = die Frequenz-Marker selbst, auch wenn der Satz informativ ist.
 **Kein Problem, wenn:** das Wort fachlich gebunden ist ("robuste Statistik", "dynamisches Routing", "Meilenstein" im Projektplan) oder einzeln steht. Erst ab 3+ Markern im selben Text als Cluster behandeln.
 **Lösung:** Durch das gewöhnliche Wort ersetzen ("beleuchten" → "untersuchen"/"beschreiben", "spannend" → streichen oder konkret begründen, "die digitale Landschaft" → das gemeinte konkrete Feld benennen).
+
+**Kontextgebundene Unterform – abstraktes „tragen“:** Das Einzelwort ist kein Marker. Ein MEDIUM-Befund liegt erst bei einem Cluster semantisch überdehnter Stützmetaphern vor, etwa „Forschung/These/Hypothese/Änderung trägt“: Richtwert drei abstrakte Verwendungen im Dokument oder zwei in engem Abstand. Konkrete und etablierte Kollokationen wie „einen Karton tragen“, „Kosten tragen“ oder „Verantwortung tragen“ bleiben geschützt. Jede problematische Stelle wird nach ihrem eigenen Sinn redigiert; eine einheitliche Ersetzung durch „funktioniert“ erzeugt nur das nächste Wiederholungsmuster.
+
 ❌ Schlecht: "Der Artikel beleuchtet das vielschichtige Zusammenspiel der Akteure in der digitalen Landschaft und zeigt spannende Entwicklungen auf."
 ✓ Besser: "Der Artikel beschreibt, wie die drei großen Anbieter aufeinander reagieren — und wo sich der Markt gerade dreht."
 
