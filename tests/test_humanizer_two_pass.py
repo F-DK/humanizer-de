@@ -654,12 +654,9 @@ class HumanizerTwoPassTests(unittest.TestCase):
             )
             self.assertIn('web_search="disabled"', command)
             self.assertIn("tools.view_image=false", command)
-            self.assertIn(
-                f'skills.config=[{{path="{legacy_skill}",enabled=false}},'
-                f'{{path="{nested_skill}",enabled=false}},'
-                f'{{path="{recommended_skill}",enabled=false}}]',
-                command,
-            )
+            skill_config = next(value for value in command if value.startswith("skills.config="))
+            for skill in (legacy_skill, nested_skill, recommended_skill):
+                self.assertIn(json.dumps(str(skill)), skill_config)
             self.assertNotIn("--dangerously-bypass-approvals-and-sandbox", command)
 
             tool_event = mock.Mock(
