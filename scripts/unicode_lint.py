@@ -274,6 +274,7 @@ def scan_quotes(text: str, in_range) -> tuple[list[dict], dict[int, str], set[st
             single_index = single_openers[-1] if single_openers else -1
             if double_index > single_index:
                 double_openers.pop()
+                replacements[index] = CLOSE_DE
                 add_finding(
                     findings,
                     46,
@@ -284,6 +285,7 @@ def scan_quotes(text: str, in_range) -> tuple[list[dict], dict[int, str], set[st
                 )
             elif single_index >= 0:
                 single_openers.pop()
+                replacements[index] = CLOSE_DE_SINGLE
                 add_finding(
                     findings,
                     46,

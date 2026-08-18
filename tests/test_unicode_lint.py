@@ -188,6 +188,20 @@ class UnicodeLintTests(unittest.TestCase):
         self.assertTrue(any(item["kind"] == "straight_quote" for item in unicode_lint.lint(text)))
         self.assertEqual(unicode_lint.fix(text), text)
 
+    def test_ascii_closing_after_german_opener_is_fixed(self):
+        text = chr(0x201E) + 'Text"'
+        self.assertTrue(any(item["kind"] == "ascii_german_closing_quote" for item in unicode_lint.lint(text)))
+        self.assertEqual(unicode_lint.fix(text), chr(0x201E) + "Text" + chr(0x201C))
+
+    def test_ascii_closing_after_single_german_opener_is_fixed(self):
+        text = chr(0x201A) + 'Text"'
+        self.assertTrue(any(item["kind"] == "ascii_single_german_closing_quote" for item in unicode_lint.lint(text)))
+        self.assertEqual(unicode_lint.fix(text), chr(0x201A) + "Text" + chr(0x2018))
+
+    def test_ascii_pair_after_closed_german_pair_stays_untouched(self):
+        text = chr(0x201E) + "Zitat" + chr(0x201C) + ' und "Code-Wert" daneben'
+        self.assertEqual(unicode_lint.fix(text), text)
+
     def test_inline_code_is_protected_from_quote_findings(self):
         text = '`"code"`'
         self.assertEqual(unicode_lint.lint(text), [])
