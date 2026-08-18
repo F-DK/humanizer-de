@@ -563,6 +563,7 @@ Häufige Indikatoren:
 - Doppelstriche als Ersatz: "Die Änderungen -- laut Kritikern überfällig -- treten sofort in Kraft."
 - Spaced Hyphen als Dash-Ersatz: "Danke für die Einführung - ich setze dich auf bcc."
 - Rhetorische Punchline: "Es geht nicht um Geschwindigkeit – es geht um Vertrauen."
+- Semikolon-Variante (judgment-only, gleiche Fingerabdruck-Klasse): gehäufte Hauptsatz-Verbindungen per Semikolon ("Suchanfragen waren kurz; Konversationen sind lang."). Gemessen 2026-08: naive Claude-Texte 4/10 mit mindestens einem, echte Menschen 1–2/20; ein aktueller Claude-Langtext lag bei 6,7 je 1.000 Wörter. Einzelnes Semikolon bleibt legitimes Deutsch; behandeln erst ab 2+ pro Text.
 
 **Warum LLMs das tun:** Englische Schreibweise, Marketingrhythmus und Chat-Oberflächen werden imitiert. Gepaarte Einschübe sehen eingeschoben aus, nicht geschrieben.
 
@@ -570,7 +571,7 @@ Häufige Indikatoren:
 1. **Punkt**: zwei vollständige Gedanken als zwei Sätze führen.
 2. **Komma**: kurzer Einschub oder enge Apposition.
 3. **Doppelpunkt**: Erklärung, Folge oder Liste.
-4. **Semikolon**: zwei selbstständige, locker verbundene Hauptsätze.
+4. **Semikolon**: zwei selbstständige, locker verbundene Hauptsätze. Sparsam einsetzen, höchstens einmal pro Text: Gehäufte Hauptsatz-Semikola sind selbst ein KI-Interpunktionsmuster (siehe Semikolon-Variante oben).
 5. **Klammer**: echter Nebengedanke.
 6. **Streichen oder umbauen**: wenn der Einschub nur Schlagseite oder Pointe erzeugt.
 
