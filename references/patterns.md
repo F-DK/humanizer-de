@@ -120,7 +120,7 @@ Häufige Indikatoren:
 
 ❌ Schlecht: "Die Kathedrale steht als Zeugnis für die künstlerische Brillanz des Mittelalters."
 
-✓ Besser: "Die Kathedrale zeigt die Handwerkskunst des Mittelalters – und beeindruckt noch heute."
+✓ Besser: "Die Kathedrale zeigt die Handwerkskunst des Mittelalters und beeindruckt noch heute."
 
 #### 2. Werbesprache und Superlative [HIGH]
 <!-- haltbarkeit: kern -->
@@ -207,7 +207,7 @@ Häufige Indikatoren:
 
 ❌ Schlecht: "Die Region hat drei Universitäten, ein Krankenhaus und eine Bibliothek. Insgesamt verfügt die Stadt über gute Infrastruktur."
 
-✓ Besser: "Die Region hat drei Universitäten, ein Krankenhaus und eine Bibliothek – eine gute Grundversorgung."
+✓ Besser: "Mit drei Universitäten, einem Krankenhaus und einer Bibliothek ist die Region gut versorgt."
 
 #### 6. Unpassendes "Fazit" [MEDIUM]
 <!-- haltbarkeit: kern -->
@@ -345,7 +345,7 @@ Keine Quelle erfinden. Entweder: echte Quelle einfügen wenn bekannt, Zuschreibu
 
 ❌ Schlecht: "Branchenberichte zeigen, dass der Markt wächst."
 
-✓ Besser: "Der Markt wächst (laut Wirtschaftsministerium 2024)." oder "Der Markt wächst – ein Trend, der seit 2020 beobachtet wird."
+✓ Besser: "Der Markt wächst (laut Wirtschaftsministerium 2024)." oder "Der Markt wächst seit 2020."
 
 #### 12. Falsche Erweiterung ("von... bis") [MEDIUM]
 <!-- haltbarkeit: kern -->
@@ -409,7 +409,7 @@ Häufige Indikatoren:
 **Kein Problem, wenn:** Sachlich/Formal – dort ist Partikelarmut korrekt und erwünscht.
 **Lösung:** In Locker sparsam dosieren: höchstens eine Partikel pro Absatz, nur wo sie eine tatsächliche Haltung des Texts trägt. Nie mechanisch nachrüsten.
 ❌ Schlecht (Nähe-Register, partikelfrei): "Du kennst das Problem. Die Lösung ist einfach. Du brauchst nur drei Schritte."
-✓ Besser: "Du kennst das Problem ja. Die Lösung ist simpel – drei Schritte reichen schon."
+✓ Besser: "Du kennst das Problem ja. Die Lösung ist simpel: drei Schritte reichen schon."
 
 #### 64. KI-Marker-Vokabular [MEDIUM]
 <!-- haltbarkeit: jahrgang stand=2026-07 -->
@@ -437,7 +437,7 @@ diffundieren und verlieren dadurch mit der Zeit an Trennschärfe.
 **Kontextgebundene Unterform – abstraktes „tragen“:** Das Einzelwort ist kein Marker. Ein MEDIUM-Befund liegt erst bei einem Cluster semantisch überdehnter Stützmetaphern vor, etwa „Forschung/These/Hypothese/Änderung trägt“: Richtwert drei abstrakte Verwendungen im Dokument oder zwei in engem Abstand. Konkrete und etablierte Kollokationen wie „einen Karton tragen“, „Kosten tragen“ oder „Verantwortung tragen“ bleiben geschützt. Jede problematische Stelle wird nach ihrem eigenen Sinn redigiert; eine einheitliche Ersetzung durch „funktioniert“ erzeugt nur das nächste Wiederholungsmuster.
 
 ❌ Schlecht: "Der Artikel beleuchtet das vielschichtige Zusammenspiel der Akteure in der digitalen Landschaft und zeigt spannende Entwicklungen auf."
-✓ Besser: "Der Artikel beschreibt, wie die drei großen Anbieter aufeinander reagieren — und wo sich der Markt gerade dreht."
+✓ Besser: "Der Artikel beschreibt, wie die drei großen Anbieter aufeinander reagieren und wo sich der Markt gerade dreht."
 
 #### 65. Kopula-Vermeidung [MEDIUM]
 <!-- haltbarkeit: jahrgang stand=2026-07 -->
@@ -474,7 +474,7 @@ Häufige Indikatoren:
 **Kein Problem, wenn:** Der Relativsatz echte, aus dem Hauptsatz nicht ableitbare Information hinzufügt (z. B. "Die Studie wurde dreimal wiederholt, was die Replizierbarkeit nachweist" – wenn die Dreifachwiederholung tatsächlich das erste Replizierbarkeits-Signal im Text ist).
 **Lösung:** Relativsatz streichen. Falls die Schlussfolgerung echte Information trägt: als eigenständigen Satz mit konkretem Beleg formulieren statt als Anhang.
 ❌ Schlecht: "Das Team lieferte die Migration in drei Wochen ab, was die hohe Effizienz des Vorgehens unterstreicht."
-✓ Besser: "Das Team lieferte die Migration in drei Wochen ab." (oder: "...ab – geplant waren sechs.")
+✓ Besser: "Das Team lieferte die Migration in drei Wochen ab." (oder: "...ab, geplant waren sechs.")
 
 #### 68. Komparativ-Rahmung [MEDIUM]
 <!-- haltbarkeit: kern -->
@@ -503,7 +503,7 @@ Häufige Indikatoren:
 
 ❌ Schlecht: "Es geht weniger um das Werkzeug als vielmehr um die Haltung. Der Umbau fühlt sich eher wie ein Marathon als wie ein Sprint an."
 
-✓ Besser: "Das Werkzeug ist zweitrangig; entscheidend ist, ob das Team die Berichte liest. Der Umbau dauert: Wir rechnen mit zwei Jahren."
+✓ Besser: "Das Werkzeug ist zweitrangig. Entscheidend ist, ob das Team die Berichte liest. Der Umbau dauert: Wir rechnen mit zwei Jahren."
 
 ### Stil (5 Muster)
 
@@ -965,7 +965,7 @@ Häufige Indikatoren:
 
 ❌ Schlecht: "Seit Anbeginn der Zivilisation suchen Menschen nach Wegen, effizienter zu kommunizieren. Im Zeitalter der Digitalisierung hat sich diese Suche grundlegend verändert."
 
-✓ Besser: "E-Mail hat den Geschäftsbrief abgelöst. Slack hat die E-Mail nicht abgelöst – aber den Ton verändert."
+✓ Besser: "E-Mail hat den Geschäftsbrief abgelöst. Slack hat die E-Mail nicht abgelöst, aber den Ton verändert."
 
 #### 37. "In der heutigen X-Welt" Framing [MEDIUM]
 <!-- haltbarkeit: kern -->
@@ -1138,7 +1138,7 @@ Häufige Indikatoren:
 
 ❌ Schlecht: "Der Test war erfolgreich. Genauer gesagt war er in vielerlei Hinsicht recht erfolgreich, auch wenn nicht alles perfekt lief."
 
-✓ Besser: "12 von 15 Prüffällen bestanden; drei scheiterten am Import großer CSV-Dateien."
+✓ Besser: "12 von 15 Prüffällen bestanden, drei scheiterten am Import großer CSV-Dateien."
 
 ### Argumentation und Evidenz (7 Muster)
 
@@ -1301,7 +1301,7 @@ Fehlt der echte Akteur im Material: keinen erfinden. Dann die offene Verantwortu
 
 ❌ Schlecht: "Die Strategie entschied, dass die Teams ab sofort wöchentlich ausliefern."
 
-✓ Besser: "Die Geschäftsführung legte wöchentliche Releases fest; Grundlage war die neue Plattformstrategie."
+✓ Besser: "Die Geschäftsführung legte wöchentliche Releases fest. Grundlage war die neue Plattformstrategie."
 
 #### 72. Pseudo-therapeutische Validierung [HIGH]
 <!-- haltbarkeit: jahrgang stand=2026-07 -->
