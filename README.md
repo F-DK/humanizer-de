@@ -1014,6 +1014,14 @@ GitHub Release.
 
 ## Was ist neu?
 
+- **5.21.2** - Muster 16 kennt jetzt die Semikolon-Variante: Gehäufte Hauptsatz-Verbindungen per
+  Semikolon sind ein Claude-typisches Interpunktionsmuster, und die Ersetzungshierarchie warnt vor
+  genau dieser Ausweichroute. Im Katalog sind 66 deutsche Schlusszeichen repariert, die als gerades
+  ASCII gesetzt waren. Diese Fehlerklasse behebt `unicode_lint --fix` künftig automatisch. Zehn
+  Besser-Beispiele lösten ihr Muster einheitlich per Gedankenstrich oder Semikolon und zeigen nun
+  gestreute Ersatzstrategien. Dazu drei Doku-Korrekturen: WARP.md führt Muster 51 nicht mehr als
+  linter-gestützt, die SIR-Referenzwerte tragen korrekte Etiketten, und die Modusmatrix beschreibt
+  das Linter-Verhalten je Modus.
 - **5.21.1** - Pass 4 rotiert Satzanfänge nur noch, wenn wirklich ein Rhythmus-Cluster vorliegt, und
   stoppt am menschlichen Maß von rund 0,8 subjektinitialen Sätzen, statt pauschal jedes dritte
   Vorfeld umzubauen. In gemessenen menschlichen Blog- und Sachtexten beginnen vier von fünf Sätzen
