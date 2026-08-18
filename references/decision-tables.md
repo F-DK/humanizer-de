@@ -174,8 +174,10 @@ Substantive themenfremd ersetzen. Funktioniert der Satz unverändert, anschließ
 
 ## Modusmatrix
 
-Die Matrix steuert die Eingriffsentscheidung des Modells. Die deterministischen Linter melden
-modusunabhängig, während nur die Preflight-Empfehlung den Modus maschinell auswertet.
+Die Matrix steuert die Eingriffsentscheidung des Modells. `german_pattern_lint` meldet
+modusunabhängig; `rhythm_lint` unterdrückt bei `--mode formal` die Stilverdachte zu den
+Mustern 55 und 61, und `register_lint` schaltet Partikel- und Anrede-Findings je Modus.
+Zusätzlich wertet die Preflight-Empfehlung den Modus maschinell aus.
 
 | Musterklasse | Locker | Sachlich | Formal |
 |---|---|---|---|
