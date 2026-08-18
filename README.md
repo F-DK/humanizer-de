@@ -1014,6 +1014,13 @@ GitHub Release.
 
 ## Was ist neu?
 
+- **5.21.1** - Pass 4 rotiert Satzanfänge nur noch, wenn wirklich ein Rhythmus-Cluster vorliegt, und
+  stoppt am menschlichen Maß von rund 0,8 subjektinitialen Sätzen, statt pauschal jedes dritte
+  Vorfeld umzubauen. In gemessenen menschlichen Blog- und Sachtexten beginnen vier von fünf Sätzen
+  mit dem Subjekt; wer tiefer rotiert, erzeugt das nächste Muster. Muster 3 nennt jetzt auch „es ist
+  wichtig zu beachten“ und „zu beachten ist, dass“. Bei Muster 64 kennzeichnet der Katalog
+  urteilsbasierte Vokabeln maschinenlesbar, ein neuer Test hält Katalog und Linter synchron.
+  Erkennungslogik und Schwellen bleiben unverändert.
 - **5.21.0** - Der getrennte Two-Pass-Runner unterstützt neben Claude jetzt auch Codex. Codex
   läuft in zwei ephemeren, read-only Prozessen mit strukturierten Ausgaben; Benutzerkonfiguration
   und Exec-Regeln sowie globale oder projektbezogene `AGENTS.md`-Anweisungen werden nicht geladen,
