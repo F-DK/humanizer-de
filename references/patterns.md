@@ -412,6 +412,7 @@ Häufige Indikatoren:
 #### 64. KI-Marker-Vokabular [MEDIUM]
 <!-- haltbarkeit: jahrgang stand=2026-07 -->
 <!-- pass: 2 -->
+<!-- m64-judgment-only: entfesseln, revolutionieren, prägen, robust, essenziell, lebendig, landschaft, reise, meilenstein, spannungsfeld -->
 **Kategorie:** Sprache und Tonfall
 **Problem:** Für englische Wissenschaftssprache ist die Überrepräsentation bestimmter Wörter in
 LLM-beeinflussten Texten empirisch belegt. Die folgenden deutschen Marker sind eine funktionale,
