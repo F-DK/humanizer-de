@@ -18,7 +18,7 @@ humanizer-de/
 │   └── de-naturalness.md            # deutsche Rule Cards fuer spaete Muster
 ├── scripts/
 │   ├── unicode_lint.py              # Muster 43/46, JSON-Report, optional --fix
-│   ├── rhythm_lint.py               # Muster 4/51/54/55/61, JSON-Report
+│   ├── rhythm_lint.py               # Muster 4/54/55/61, JSON-Report
 │   ├── evidence_lint.py             # Faktenanker vor/nach Rewrite
 │   ├── humanizer_two_pass.py        # getrenntes Audit und begrenzter Rewrite
 │   ├── register_lint.py             # Register-/Profil-Drift
@@ -76,7 +76,7 @@ Tests müssen echte Codepoints mit `chr()`/`ord()` prüfen. Optisch ähnliche Gl
 
 ## Rhythmus und Burstiness
 
-Muster 4, 51, 54, 55 und 61 sind messbar unterstützt:
+Muster 4, 54, 55 und 61 sind messbar unterstützt (Muster 51 liefert seit dem Validitätsbefund keinen Verdacht mehr, nur Messwerte):
 
 ```bash
 python3 scripts/rhythm_lint.py --file path/to/text.md
