@@ -241,11 +241,11 @@ Häufige Indikatoren:
 
 ✓ Besser: "Das Land macht technologische Fortschritte, kämpft aber mit wirtschaftlichen Problemen."
 
-**Erweiterte Form – „Lob → Herausforderungen → Ausblick"-Dokumentschablone:** Dieselbe Dichotomie tritt oft nicht als Einzelsatz auf, sondern als dreiteilige Struktur über mehrere Absätze: (1) ein pauschal positiver Einleitungsabsatz, (2) „Trotz seiner Erfolge steht X vor Herausforderungen …" mit generischer Problemliste, (3) ein spekulativer „Zukunft/Ausblick"-Absatz ohne Beleg. Die drei Takte können über das Dokument verteilt sein. Als Cluster behandeln, nicht die Einzelteile.
+**Erweiterte Form – „Lob → Herausforderungen → Ausblick“-Dokumentschablone:** Dieselbe Dichotomie tritt oft nicht als Einzelsatz auf, sondern als dreiteilige Struktur über mehrere Absätze: (1) ein pauschal positiver Einleitungsabsatz, (2) „Trotz seiner Erfolge steht X vor Herausforderungen …“ mit generischer Problemliste, (3) ein spekulativer „Zukunft/Ausblick“-Absatz ohne Beleg. Die drei Takte können über das Dokument verteilt sein. Als Cluster behandeln, nicht die Einzelteile.
 
 **Kein Problem, wenn:** Herausforderungen und Ausblick mit belegter Substanz gefüllt sind (konkrete Zahlen, benannte Risiken, datierte Vorhaben). Ein sachlicher Ausblick ist kein Tell – nur die inhaltsleere Dreier-Schablone.
 
-**Abgrenzung:** Muster 7 (Satzebene) = der einzelne „Trotz X … Y"-Satz. Muster 44 = ein einzelner Standardabschnitt ohne Substanz (etwa nur der Zukunfts-Absatz). Muster 38 = aspirativer Unternehmensschluss als Schlussfloskel.
+**Abgrenzung:** Muster 7 (Satzebene) = der einzelne „Trotz X … Y“-Satz. Muster 44 = ein einzelner Standardabschnitt ohne Substanz (etwa nur der Zukunfts-Absatz). Muster 38 = aspirativer Unternehmensschluss als Schlussfloskel.
 
 #### 8. Negative Parallelismen und abgehackte Verneinungen [MEDIUM]
 <!-- haltbarkeit: kern -->
@@ -292,7 +292,7 @@ Häufige Indikatoren:
 - Tripel-Aufzählungen ohne echten Grund
 - Listen mit verdächtig runder Länge (genau 5, 7 oder 10 Punkte), wenn die Sache selbst keine solche Struktur verlangt
 
-**Warum LLMs das tun:** Trikolon ist ein starkes rhetorisches Muster in der Schreibweise. Runde Listenlängen entstehen durch Trainingsdaten, in denen „Top 5/7/10"-Artikel häufig vorkommen.
+**Warum LLMs das tun:** Trikolon ist ein starkes rhetorisches Muster in der Schreibweise. Runde Listenlängen entstehen durch Trainingsdaten, in denen „Top 5/7/10“-Artikel häufig vorkommen.
 
 **Beispiel:**
 
@@ -462,13 +462,13 @@ Häufige Indikatoren:
 <!-- haltbarkeit: kern -->
 <!-- pass: 2 -->
 **Kategorie:** Sprache und Tonfall
-**Problem:** LLMs hängen an normale Informationssätze scheinanalytische Relativsätze oder Anschlusskonstruktionen, die eine Schlussfolgerung vortäuschen, aber keine neue Information liefern. Erkennbar am Löschtest: Fällt „was X unterstreicht/zeigt/verdeutlicht" weg, geht keine Information verloren – der Hauptsatz steht vollständig. Die Konstruktion ist grammatikalisch korrekt; ihr Tell ist die funktionale Leere des Anhangs.
+**Problem:** LLMs hängen an normale Informationssätze scheinanalytische Relativsätze oder Anschlusskonstruktionen, die eine Schlussfolgerung vortäuschen, aber keine neue Information liefern. Erkennbar am Löschtest: Fällt „was X unterstreicht/zeigt/verdeutlicht“ weg, geht keine Information verloren – der Hauptsatz steht vollständig. Die Konstruktion ist grammatikalisch korrekt; ihr Tell ist die funktionale Leere des Anhangs.
 Häufige Indikatoren:
-- „...was X unterstreicht / belegt / verdeutlicht / bestätigt / beweist"
-- „...und zeigt / verdeutlicht damit, dass..."
-- „...und unterstreicht die Bedeutung von..."
-- „...und macht deutlich, wie wichtig..."
-- „...was zeigt, dass hier Handlungsbedarf besteht"
+- „...was X unterstreicht / belegt / verdeutlicht / bestätigt / beweist“
+- „...und zeigt / verdeutlicht damit, dass...“
+- „...und unterstreicht die Bedeutung von...“
+- „...und macht deutlich, wie wichtig...“
+- „...was zeigt, dass hier Handlungsbedarf besteht“
 **Warum LLMs das tun:** Training auf akademischen Texten, die Schlussfolgerungen explizit signalisieren; das Modell lernt, Gewicht durch Relativkonstruktionen auszudrücken, auch wenn kein neuer Gedanke folgt.
 **Abgrenzung:** Muster 3 = eigenständige Sätze mit Meta-Kommentar ("es ist wichtig zu bemerken"). Muster 10 = Partizip-I beschreibt gleichzeitige Aktion ("ermöglichend"). Muster 62 = eigenständiger Schlusssatz am Absatzende. Muster 64 = einzelne Frequenz-Marker-Vokabeln; Muster 66 = die syntaktische Anhang-Konstruktion selbst.
 **Kein Problem, wenn:** Der Relativsatz echte, aus dem Hauptsatz nicht ableitbare Information hinzufügt (z. B. "Die Studie wurde dreimal wiederholt, was die Replizierbarkeit nachweist" – wenn die Dreifachwiederholung tatsächlich das erste Replizierbarkeits-Signal im Text ist).
@@ -1362,7 +1362,7 @@ Häufige Indikatoren:
 
 **Beispiel:**
 
-❌ Schlecht: „Laut einer Studie des Fraunhofer-Instituts aus 2019 stieg die Produktivität deutscher Remote-Teams um 23 Prozent.<ref>Fraunhofer IAO: Arbeiten in der Corona-Pandemie, 2020.</ref>"
+❌ Schlecht: „Laut einer Studie des Fraunhofer-Instituts aus 2019 stieg die Produktivität deutscher Remote-Teams um 23 Prozent.<ref>Fraunhofer IAO: Arbeiten in der Corona-Pandemie, 2020.</ref>“
 (Quelle existiert, stammt aber aus 2020 und nennt keine 23 Prozent.)
 
 ✓ Besser: Quelle auf tatsächlichen Inhalt prüfen, Aussage an die Quelle anpassen oder passende Quelle suchen.
@@ -1384,7 +1384,7 @@ Häufige Indikatoren:
 - Byte Order Mark (U+FEFF) mitten im Text
 - Soft-Hyphen (U+00AD) an ungewöhnlichen Stellen
 - Bidi-Steuerzeichen: U+202A-U+202E (Left/Right-to-Left Embedding/Override/Pop), U+2066-U+2069 (Isolates)
-- Tags-Block (U+E0000-U+E007F): U+E0020-U+E007E spiegeln die druckbaren ASCII-Zeichen und tragen damit vollständig unsichtbaren Text im Absatz; dazu U+E0001 (Language Tag) und U+E007F (Cancel Tag). Bekannt als „ASCII smuggling", genutzt für versteckte Nutzlast und Prompt-Injection
+- Tags-Block (U+E0000-U+E007F): U+E0020-U+E007E spiegeln die druckbaren ASCII-Zeichen und tragen damit vollständig unsichtbaren Text im Absatz; dazu U+E0001 (Language Tag) und U+E007F (Cancel Tag). Bekannt als „ASCII smuggling“, genutzt für versteckte Nutzlast und Prompt-Injection
 - Variation Selectors außerhalb von Emoji: U+FE00-U+FE0F und U+E0100-U+E01EF (Supplement); zweite Trägerklasse für unsichtbare Daten
 
 **Warum LLMs das tun:** Modelle produzieren gelegentlich Tokens mit unsichtbaren Sonderzeichen. Copy-Paste aus KI-Oberflächen schleppt zusätzliche Formatierungsartefakte mit. Bidi-Controls können auch gezielt zur Verschleierung von Prompt-Inhalten genutzt werden.
@@ -1401,29 +1401,29 @@ Häufige Indikatoren:
 
 **Kategorie:** Stil
 
-**Problem:** Das Problem ist **nicht** die Überschrift an sich, sondern der generische, unbelegte Fülltext darunter. Überschriften wie „Bedeutung" oder „Relevanz" können in enzyklopädischen Texten legitim sein, wenn der Abschnitt konkrete Belege enthält. Tell ist die Kombination aus Standard-Überschrift + substanzloser Allgemeinplätze.
+**Problem:** Das Problem ist **nicht** die Überschrift an sich, sondern der generische, unbelegte Fülltext darunter. Überschriften wie „Bedeutung“ oder „Relevanz“ können in enzyklopädischen Texten legitim sein, wenn der Abschnitt konkrete Belege enthält. Tell ist die Kombination aus Standard-Überschrift + substanzloser Allgemeinplätze.
 
 **Deterministischer Teilaspekt:** `ad_boilerplate_cluster` erfasst Standard-Überschriften aus Werbetexten nur im Figuren-Cluster. Andere Standard-Kapitel und die Substanzbewertung bleiben judgment-only.
 
 **Abgrenzung:**
-- Muster 5 (Zusammenfassungen): Sprachmarker „zusammenfassend" im Fließtext
-- Muster 6 (Fazit): spezifisch die Überschrift „Fazit"/„Zusammenfassung"
+- Muster 5 (Zusammenfassungen): Sprachmarker „zusammenfassend“ im Fließtext
+- Muster 6 (Fazit): spezifisch die Überschrift „Fazit“/„Zusammenfassung“
 - Muster 34 (Fragmentierte Überschriften): Einzeiler direkt nach Überschrift
 - Muster 44: ganzer Abschnitt unter Standard-Überschrift ohne konkrete Information
 
 Häufige Indikatoren:
-- Überschriften: „== Herausforderungen ==", „== Zukunftsperspektiven ==", „== Bedeutung ==", „== Relevanz ==", „== Ausblick ==", „== Chancen und Risiken =="
+- Überschriften: „== Herausforderungen ==“, „== Zukunftsperspektiven ==“, „== Bedeutung ==“, „== Relevanz ==“, „== Ausblick ==“, „== Chancen und Risiken ==“
 - Darunter: allgemeine Aussagen ohne konkrete Fakten, Zahlen oder Belege
-- Prognose-Sprech ohne Träger („Experten erwarten", „es ist zu erwarten")
+- Prognose-Sprech ohne Träger („Experten erwarten“, „es ist zu erwarten“)
 - Bloße Wiederholung von Punkten aus früheren Abschnitten unter neuer Überschrift
 
 **Warum LLMs das tun:** Nachahmung formaler akademischer und journalistischer Strukturen. Standard-Kapitel füllen Platz, wo keine konkrete Information verfügbar ist.
 
-**Lösung:** Nicht kürzen (Leitplanke „Nie kürzen" gilt). Vorgehen in dieser Reihenfolge:
+**Lösung:** Nicht kürzen (Leitplanke „Nie kürzen“ gilt). Vorgehen in dieser Reihenfolge:
 1. **Substanz finden:** Prüfen, ob unter der Überschrift tatsächlich eine Aussage steckt, die bloß verwässert formuliert ist. Wenn ja: konkretisieren, Belege einfügen.
 2. **Integrieren:** Falls der Abschnitt nur thematisch Bekanntes wiederholt, Inhalt in bestehende thematische Kapitel verschieben und die Standard-Überschrift entfernen. Der Text selbst bleibt im Artikel erhalten.
-3. **Umwidmen:** Generische Überschrift durch spezifische ersetzen („Zukunftsperspektiven" → „Marktprognosen 2025–2030"), wenn der Inhalt das trägt.
-4. **Fallback bei echter Substanzlosigkeit:** Wenn weder konkrete Aussage noch tragbare Paraphrase noch thematische Zuordnung möglich ist, Abschnitt mit `[SUBSTANZ PRÜFEN]` markieren und wörtlich stehen lassen. Streichung oder Inhaltsergänzung liegt dann beim menschlichen Redigat, nicht beim Skill-Durchlauf. So bleibt die „Nie kürzen"-Leitplanke gewahrt, ohne Inhalt zu erfinden.
+3. **Umwidmen:** Generische Überschrift durch spezifische ersetzen („Zukunftsperspektiven“ → „Marktprognosen 2025–2030“), wenn der Inhalt das trägt.
+4. **Fallback bei echter Substanzlosigkeit:** Wenn weder konkrete Aussage noch tragbare Paraphrase noch thematische Zuordnung möglich ist, Abschnitt mit `[SUBSTANZ PRÜFEN]` markieren und wörtlich stehen lassen. Streichung oder Inhaltsergänzung liegt dann beim menschlichen Redigat, nicht beim Skill-Durchlauf. So bleibt die „Nie kürzen“-Leitplanke gewahrt, ohne Inhalt zu erfinden.
 
 **Beispiel:**
 
@@ -1446,19 +1446,19 @@ Häufige Indikatoren:
 **Problem:** KI überträgt englische Satzmuster, Kollokationen und Bedeutungen wörtlich ins Deutsche. Das Muster zielt nur auf **harte Transfers**: Calques (Lehnübersetzungen), False Friends (Falschfreunde) und syntaktische Muster, die im Deutschen als Übersetzungsdeutsch auffallen. Einzelne Anglizismen in Business- oder Umgangssprache sind **kein** Anzeichen.
 
 Harte Indikatoren (klare Tells):
-- **Calques:** „am Ende des Tages" (at the end of the day), „in Reihenfolge zu" (in order to), „zu Beginn mit" (to begin with), „das macht keinen Unterschied für mich" (that makes no difference to me)
-- **False Friends:** „eventuell" als „schließlich" (eventually, korrekt: „schließlich"/„am Ende"), „aktuell" als „tatsächlich" (actually, korrekt: „tatsächlich"/„eigentlich"), „sensibel" als „vernünftig/umsichtig" (sensible, korrekt: „vernünftig"/„besonnen")
-- **Syntaktische Transfers:** englische Wortstellung in Relativsätzen („das Unternehmen, welches gegründet wurde in 1990"), nachgestellte Präpositionalphrasen nach englischem Muster („das Buch über Berlin von Peter Schneider geschrieben")
+- **Calques:** „am Ende des Tages“ (at the end of the day), „in Reihenfolge zu“ (in order to), „zu Beginn mit“ (to begin with), „das macht keinen Unterschied für mich“ (that makes no difference to me)
+- **False Friends:** „eventuell“ als „schließlich“ (eventually, korrekt: „schließlich“/„am Ende“), „aktuell“ als „tatsächlich“ (actually, korrekt: „tatsächlich“/„eigentlich“), „sensibel“ als „vernünftig/umsichtig“ (sensible, korrekt: „vernünftig“/„besonnen“)
+- **Syntaktische Transfers:** englische Wortstellung in Relativsätzen („das Unternehmen, welches gegründet wurde in 1990“), nachgestellte Präpositionalphrasen nach englischem Muster („das Buch über Berlin von Peter Schneider geschrieben“)
 - **Kollokations-Transfers:** „bin ich simpler gegangen“ (I went simpler), „die Reibung fällt“ (friction drops), „der Filter bei der Arbeit“ (the filter at work), „gegen echten Output iterieren“ (iterate against output)
 - **Englischer Genitiv in deutscher Syntax:** „xAI's Agent Tools“ oder „OpenAI's Responses API“ statt „die Agent Tools von xAI“ beziehungsweise „die Responses API von OpenAI“
 
 **Kein belastbarer Tell (weglassen):**
-- „basiert auf", „in Bezug auf", „adressieren" – in Geschäfts- und Wissenschaftsdeutsch etabliert
-- „Sinn machen" – im heutigen Standarddeutsch etabliert; stilistische Präferenz, kein KI-Tell
-- „realisieren" im Sinne von „erkennen/begreifen" – lexikalisch etabliert (Duden, DWDS)
-- „kontrollieren" als „beherrschen" – Bedeutungen überlappen im Deutschen bereits
+- „basiert auf“, „in Bezug auf“, „adressieren“ – in Geschäfts- und Wissenschaftsdeutsch etabliert
+- „Sinn machen“ – im heutigen Standarddeutsch etabliert; stilistische Präferenz, kein KI-Tell
+- „realisieren“ im Sinne von „erkennen/begreifen“ – lexikalisch etabliert (Duden, DWDS)
+- „kontrollieren“ als „beherrschen“ – Bedeutungen überlappen im Deutschen bereits
 - Unnötige Possessivpronomen – allgemeines Übersetzungsdeutsch, Stilglättung
-- Einzelne Lehnwörter („Meeting", „Team", „Feedback") – im Zielregister oft normal
+- Einzelne Lehnwörter („Meeting“, „Team“, „Feedback“) – im Zielregister oft normal
 - Englische Titel, Zitate, Code und offizielle Produktstrings – nur die deutsche Anschlusskonstruktion prüfen
 
 **Register-Hinweis:**
@@ -1471,10 +1471,10 @@ Harte Indikatoren (klare Tells):
 
 **Beispiel:**
 
-❌ Schlecht: „Am Ende des Tages erkannte das Team eventuell, dass die Strategie aktuell nicht trug."
-(eventuell = eventually = „schließlich"; aktuell = actually = „tatsächlich")
+❌ Schlecht: „Am Ende des Tages erkannte das Team eventuell, dass die Strategie aktuell nicht trug.“
+(eventuell = eventually = „schließlich“; aktuell = actually = „tatsächlich“)
 
-✓ Besser: „Schließlich erkannte das Team, dass die Strategie tatsächlich nicht trug."
+✓ Besser: „Schließlich erkannte das Team, dass die Strategie tatsächlich nicht trug.“
 
 ### Typografie und Format (7 Muster)
 
@@ -1625,7 +1625,7 @@ Häufige Indikatoren:
 
 **Warum LLMs das tun:** Modelle optimieren auf optisch "aufgeräumte" Ausgaben und greifen zu Tabellen, Größensprüngen und Trennlinien als visuellen Markern, ohne die zugrunde liegende Dokumentstruktur zu prüfen.
 
-**Kein Problem, wenn:** Eine Tabelle echte mehrdimensionale Daten zeigt; eine horizontale Linie (`---`, `***` oder `___`) bewusst als Szenen- oder Themenwechsel *zwischen* gleichrangigen Abschnitten steht (nicht direkt vor einer Überschrift); ein CMS, Theme oder Markdown-Template die Struktur erzeugt. Konsistente, korrekte Formatierung allein ist kein KI-Tell. Eine Definitions- oder Merkmalsliste, deren Fett-Lead-in ein echtes Stichwort ist und deren Text eigenständige Substanz trägt (Glossar, Parameter-, Feature-Liste – auch dieser Katalog nutzt das Format legitim), ist kein Tell; Fall D greift erst, wenn sich generische Etiketten häufen und der „Titel" die Beschreibung nur wiederholt.
+**Kein Problem, wenn:** Eine Tabelle echte mehrdimensionale Daten zeigt; eine horizontale Linie (`---`, `***` oder `___`) bewusst als Szenen- oder Themenwechsel *zwischen* gleichrangigen Abschnitten steht (nicht direkt vor einer Überschrift); ein CMS, Theme oder Markdown-Template die Struktur erzeugt. Konsistente, korrekte Formatierung allein ist kein KI-Tell. Eine Definitions- oder Merkmalsliste, deren Fett-Lead-in ein echtes Stichwort ist und deren Text eigenständige Substanz trägt (Glossar, Parameter-, Feature-Liste – auch dieser Katalog nutzt das Format legitim), ist kein Tell; Fall D greift erst, wenn sich generische Etiketten häufen und der „Titel“ die Beschreibung nur wiederholt.
 
 **Abgrenzung:** Muster 16 = Dash-Satzzeichen und Gedankenstrich-Cluster im Fließtext, nicht die horizontale Linie `---`. Muster 13 = übermäßige Fettschrift, Muster 14 = falsche Listenzeichen. Muster 23 = Markdown statt Wikitext (Syntax-Wahl im Wiki-Kontext). Muster 57 = dekorativer Struktur-Missbrauch in Markdown selbst.
 
@@ -1674,7 +1674,7 @@ Häufige Indikatoren:
 
 **Fix-Aktion (Minimalintervention, ab 2+ Doppelpunkt-Titeln im Dokument):** Erst ab dem zweiten gleichartig gebauten Titel eingreifen – ein einzelner Doppelpunkt-Titel bleibt unangetastet. Strategie: im Cluster *variieren*, nicht alle gleich umbauen. Optionen: Überschrift als Aussage formulieren, auf die Kernaussage kürzen, Untertitel in Klammern setzen oder Titel ohne zweiteilige Schablone neu bauen, sofern dabei keine Information verloren geht. Nie alle Doppelpunkte mechanisch gegen Gedankenstriche tauschen – das erzeugt nur ein neues, monotones Schema.
 
-Den Subtitel/Nachsatz *nicht* entfernen, solange er echte, nicht-redundante Information trägt. Entfernen nur, wenn der Nachsatz die linke Seite nur in Langform wiederholt (z. B. „Datenschutz: Datenschutz richtig gemacht") oder eine leere Formel ist (z. B. „Alles, was du wissen musst" ohne konkreten Bezug).
+Den Subtitel/Nachsatz *nicht* entfernen, solange er echte, nicht-redundante Information trägt. Entfernen nur, wenn der Nachsatz die linke Seite nur in Langform wiederholt (z. B. „Datenschutz: Datenschutz richtig gemacht“) oder eine leere Formel ist (z. B. „Alles, was du wissen musst“ ohne konkreten Bezug).
 
 **Nicht anfassen:** wissenschaftliche Haupttitel mit Untertitel, Serien-/Rubriktitel, FAQ-/Glossar-/Definitionstitel, juristische oder technische Labels, echte Zitattitel, Interview-/Q&A-Labels, UI-/Formularlabels, Quellen-/Bildnachweise, Zeit-/Ortslabels.
 

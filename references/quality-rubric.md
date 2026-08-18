@@ -35,7 +35,7 @@ optimieren.
   greift auf, was der vorige offen gelassen hat. Der Leser weiß jederzeit, warum er diesen
   Absatz jetzt liest.
 - **Trägt nicht:** Absätze beginnen bei null oder hängen nur an mechanischen Konnektoren
-  („darüber hinaus", „zudem"). Die Reihenfolge der Absätze ließe sich tauschen, ohne dass
+  („darüber hinaus“, „zudem“). Die Reihenfolge der Absätze ließe sich tauschen, ohne dass
   es auffiele.
 
 ## Achse 2: Argumentdichte
