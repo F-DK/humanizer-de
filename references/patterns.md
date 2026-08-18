@@ -158,6 +158,8 @@ Häufige Indikatoren:
 - "keine Diskussion wäre vollständig ohne"
 - "es sollte hervorgehoben werden"
 - "es ist erwähnenswert"
+- "es ist wichtig zu beachten"
+- "zu beachten ist, dass"
 
 **Warum LLMs das tun:** Versucht, Gewichtung und Relevanz zu signalisieren, wo der Kontext unklar ist.
 
