@@ -521,9 +521,14 @@ def analyze(text: str, file: str | None = None, scope: str = "user_text", mode: 
             f"stddev/mean={rounded(length_ratio)} across {sentence_count} sentences",
             confidence="high",
         )
-    # SIR fires only as part of a cluster: high ratio AND (low variance OR repeated openers).
-    # Standalone SIR > 0.75 fired on ~95% of a 21-post human sample and is not a valid
-    # KI discriminator on its own. Revalidated 2026-07 on the frozen 2026-07-01 corpus: median 0.887 -> 0.891, thresholds unchanged.
+    # SIR fires only as part of a cluster: high ratio AND (variance < 0.6 OR repeated openers).
+    # Standalone SIR > 0.75 fired on ~95% of a 21-post sample of humanized author posts
+    # (mislabeled "human" until 2026-07-19; genuine pre-2022 humans have median SIR 0.816,
+    # see research/base-rates/sir-revalidation.md) and is not a valid KI discriminator on its
+    # own. The 0.6 variance gate is deliberately looser than the 0.4 low-variance warning:
+    # at 0.4 the cluster stops separating naive Claude texts (6/10 -> 0/10, measured
+    # 2026-08-18); cost is 4/20 genuine-human fires. Revalidated 2026-07 on the frozen
+    # 2026-07-01 corpus: median 0.887 -> 0.891, thresholds unchanged.
     sir_cluster = subject_ratio > 0.85 and (length_ratio < 0.6 or len(opener_repeats) >= 2)
     if sentence_count >= 8 and sir_cluster:
         add_suspicion(
