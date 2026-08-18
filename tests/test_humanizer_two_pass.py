@@ -669,6 +669,8 @@ class HumanizerTwoPassTests(unittest.TestCase):
             with (
                 mock.patch.object(two_pass.shutil, "which", return_value="/bin/codex"),
                 mock.patch.object(two_pass.subprocess, "run", return_value=tool_event),
+                mock.patch.object(two_pass.Path, "home", return_value=user_home),
+                mock.patch.dict(two_pass.os.environ, {"CODEX_HOME": str(codex_home)}),
                 self.assertRaisesRegex(RuntimeError, "forbidden tools"),
             ):
                 two_pass.run_model(
