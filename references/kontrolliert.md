@@ -8,7 +8,7 @@ Technische Doku, Anleitungen und Spezifikationen brauchen weniger Stimme und meh
 
 ## Aktivierung
 
-Nur auf ausdrücklichen Nutzerwunsch, nicht standardmäßig aus dem Texttyp ableiten. Typische Auslöser: "kontrolliertes Deutsch", "kontrollierte Sprache", "regelbasiertes Schreiben", "DIN 8579-1", "technische Doku ohne Stil", explizite Vorgaben zu Terminologie oder Satzlänge. Kombiniert mit Sachlich oder Formal; mit Locker nur auf ausdrücklichen Wunsch, da Modalpartikeln und Nähe-Register den Eindeutigkeitszielen entgegenlaufen.
+Nur auf ausdrücklichen Nutzerwunsch, nicht standardmäßig aus dem Texttyp ableiten. Typische Auslöser: „kontrolliertes Deutsch“, „kontrollierte Sprache“, „regelbasiertes Schreiben“, „DIN 8579-1“, „technische Doku ohne Stil“, explizite Vorgaben zu Terminologie oder Satzlänge. Kombiniert mit Sachlich oder Formal; mit Locker nur auf ausdrücklichen Wunsch, da Modalpartikeln und Nähe-Register den Eindeutigkeitszielen entgegenlaufen.
 
 ## Regeln
 
@@ -25,4 +25,4 @@ Pass 4 verlangt Satzlängen-Varianz (Burstiness) gegen Monotonie (Muster 55). Ko
 
 ## Output
 
-Bei aktivem Flag ergänzt der Bericht einen kurzen "Kontrolliert"-Block: gefundene Terminologie-Inkonsistenzen, Modalverb-Brüche (Muster 73) und Satzkomplexitäts-Überschreitungen (Muster 74), je mit Kurzzitat. Ohne Befund: "Keine Kontrolliert-Abweichungen."
+Bei aktivem Flag ergänzt der Bericht einen kurzen „Kontrolliert“-Block: gefundene Terminologie-Inkonsistenzen, Modalverb-Brüche (Muster 73) und Satzkomplexitäts-Überschreitungen (Muster 74), je mit Kurzzitat. Ohne Befund: „Keine Kontrolliert-Abweichungen.“
