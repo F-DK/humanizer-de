@@ -85,6 +85,30 @@ Schlüssel funktioniert die vollständige HTTPS-Adresse:
 /plugin marketplace add https://github.com/marmbiz/humanizer-de.git
 ```
 
+### Claude Cowork
+
+Cowork nimmt Skills nur als ZIP entgegen, nicht über den Plugin-Marktplatz. Das fertige Paket
+liegt eingecheckt bereit:
+
+1. [`dist/humanizer-de-cowork.zip`](dist/humanizer-de-cowork.zip) herunterladen
+   (Datei öffnen, dann **Download**).
+2. In Claude → **Customize → Skills → + → Create skill → Upload a skill** das ZIP hochladen.
+
+Das Paket enthält den Skill, alle `references/` und die Prüfskripte — ohne Tests, Doku und
+Bilder, weil Cowork höchstens 200 Dateien akzeptiert. Der Plugin-Router `skills/humanizer-de/`
+fehlt bewusst: Cowork liest ihn sonst als zweiten Skill und lehnt den Upload ab. Als Folge
+meldet `doctor.py` im Paket einen fehlenden Basis-Skill-Pfad. Das ist erwartet und betrifft
+keine Prüfung — Version und Werkzeugstatus darunter stimmen.
+
+Zum Aktualisieren den alten Skill zuerst löschen (Skill öffnen, Schalter aus, **…** → **Delete**),
+dann das neue ZIP hochladen. Ein Upload gleichen Namens ersetzt den alten nicht verlässlich.
+
+Optionale Zusatzwerkzeuge (spaCy, Hunspell, LanguageTool) fehlen in der Cowork-Umgebung;
+`--precise` meldet sich dort als `spacy_missing`. Die deterministischen Prüfungen laufen
+vollständig, weil sie nur die Python-Standardbibliothek brauchen.
+
+Neu bauen nach Änderungen: `make cowork-zip`.
+
 ### Funktioniert es?
 
 In der neuen beziehungsweise neu geladenen Sitzung eingeben:
