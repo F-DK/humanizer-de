@@ -17,7 +17,8 @@ Informationen werden nicht toleriert.
 
 ## Durchsetzung
 
-Vorfälle können vertraulich an [info@martin-moeller.biz](mailto:info@martin-moeller.biz)
+Vorfälle können vertraulich über GitHubs
+[Private Vulnerability Reporting](https://github.com/F-DK/humanizer-de/security/advisories/new)
 gemeldet werden. Der Maintainer kann Beiträge bearbeiten oder entfernen und Mitwirkende
 vorübergehend oder dauerhaft ausschließen. Meldungen werden vertraulich und ohne
 Benachteiligung der meldenden Person behandelt.

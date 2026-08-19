@@ -45,5 +45,5 @@ Automatisch prüfen lässt sich das im geklonten Repository mit dem Sammelcheck:
 python3 scripts/humanizer_audit.py --file text.md --mode sachlich
 ```
 
-Teil von [humanizer-de](https://github.com/marmbiz/humanizer-de), dem deutschen
+Teil von [humanizer-de](https://github.com/F-DK/humanizer-de), dem deutschen
 Stil-Editor für Claude Code und Codex.

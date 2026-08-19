@@ -13,5 +13,5 @@
 <!-- Nicht zutreffend? Abschnitt unverändert lassen. -->
 
 - [ ] Nicht zutreffend.
-- [ ] Das [Marker-Aufnahmeprotokoll](https://github.com/marmbiz/humanizer-de/blob/main/docs/marker-aufnahmeprotokoll.md) ist vollständig erfüllt.
+- [ ] Das [Marker-Aufnahmeprotokoll](https://github.com/F-DK/humanizer-de/blob/main/docs/marker-aufnahmeprotokoll.md) ist vollständig erfüllt.
 - [ ] Positiv-, Negativ- und Grenzfälle sowie Fehlalarmgrenzen sind dokumentiert und getestet.

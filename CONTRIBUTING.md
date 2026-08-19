@@ -4,7 +4,7 @@ Danke für dein Interesse an Humanizer (Deutsch).
 
 ## Issues
 
-Nutze das passende [Issue-Formular](https://github.com/marmbiz/humanizer-de/issues/new/choose).
+Nutze das passende [Issue-Formular](https://github.com/F-DK/humanizer-de/issues/new/choose).
 Sicherheitslücken gehören nicht in öffentliche Issues; siehe [SECURITY.md](SECURITY.md).
 
 ## Pull Requests

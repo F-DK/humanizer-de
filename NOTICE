@@ -1,5 +1,16 @@
 # Third-party and adapted material
 
+## Upstream German adaptation
+
+This repository is a fork of the German Humanizer skill by Martin Moeller:
+
+https://github.com/marmbiz/humanizer-de
+
+Copyright (c) 2026 Martin Moeller, MIT License; the notice is preserved in
+LICENSE. The fork branched at version 5.21.2 and is maintained independently
+since. Later additions carry their own copyright line in LICENSE and are
+released under the same terms.
+
 ## Original Humanizer
 
 Parts of this project derive from the Humanizer skill by Siqi Chen (blader):

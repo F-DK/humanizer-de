@@ -5,8 +5,8 @@
   <img src="assets/humanizer-de-hero.png" alt="humanizer-de – German AI text humanizer und deutscher Stil-Editor mit Evidence-Gate. Less machine. More voice." width="100%">
 </picture>
 
-[![Version](https://img.shields.io/github/v/tag/marmbiz/humanizer-de?label=Version&color=c4501f)](https://github.com/marmbiz/humanizer-de/tags)
-[![Tests](https://github.com/marmbiz/humanizer-de/actions/workflows/tests.yml/badge.svg)](https://github.com/marmbiz/humanizer-de/actions/workflows/tests.yml)
+[![Version](https://img.shields.io/github/v/tag/F-DK/humanizer-de?label=Version&color=c4501f)](https://github.com/F-DK/humanizer-de/tags)
+[![Tests](https://github.com/F-DK/humanizer-de/actions/workflows/tests.yml/badge.svg)](https://github.com/F-DK/humanizer-de/actions/workflows/tests.yml)
 [![Lizenz](https://img.shields.io/badge/Lizenz-MIT_%2B_CC_BY--SA_4.0-1f6feb)](NOTICE)
 [![Muster](https://img.shields.io/badge/Muster-74_in_11_Kategorien-2da44e)](#74-muster-in-11-kategorien)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-Plugin-d97757)](#installation)
@@ -14,9 +14,7 @@
 
 **[Was ist das?](#was-ist-das)** · **[Installation](#installation)** · **[Benutzung](#benutzung)** · **[Beispiele](#beispiele)** · **[Messen & Audit](#messen-und-audit)** · **[Fakten & Grenzen](#fakten-grenzen-und-datenschutz)** · **[Wie es arbeitet](#wie-der-skill-arbeitet)** · **[Optionale Werkzeuge](#optionale-werkzeuge)** · **[74 Muster](#74-muster-in-11-kategorien)** · **[Für AI-Assistenten](#für-ai-assistenten)** · **[Entwicklung](#entwicklung-und-verifikation)** · **[Was ist neu?](#was-ist-neu)**
 
-<sub>German AI Text Humanizer · Claude Humanizer Deutsch · KI-Texte humanisieren Deutsch · Supports Claude Code and Codex · Von [Martin Moeller](https://martin-moeller.biz) · basiert auf den Wikipedia-Leitlinien [Anzeichen für KI-generierte Inhalte](https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte) (de) und [Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) (en) · hervorgegangen aus dem [Humanizer](https://github.com/blader/humanizer) von [blader](https://github.com/blader)</sub>
-
-<sub>Guide (DE): [KI-Texte auf Deutsch natürlicher und glaubwürdiger schreiben](https://martin-moeller.biz/lab/ki/humanizer-deutsch-ki-texte-erkennen-entfernen) · Guide (EN): [Claude Humanizer Skill: Make German AI Text Sound Human](https://martin-moeller.biz/en/lab/ai/claude-humanizer-skill-german) · Hintergrund (DE): [Der KI-Text-Eisberg](https://martin-moeller.biz/lab/ki-text-eisberg)</sub>
+<sub>German AI Text Humanizer · Claude Humanizer Deutsch · KI-Texte humanisieren Deutsch · Supports Claude Code and Codex · Deutsche Adaption von Martin Moeller ([humanizer-de](https://github.com/marmbiz/humanizer-de)), dieser Fork gepflegt von [F-DK](https://github.com/F-DK) · basiert auf den Wikipedia-Leitlinien [Anzeichen für KI-generierte Inhalte](https://de.wikipedia.org/wiki/Wikipedia:Anzeichen_f%C3%BCr_KI-generierte_Inhalte) (de) und [Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) (en) · hervorgegangen aus dem [Humanizer](https://github.com/blader/humanizer) von [blader](https://github.com/blader)</sub>
 
 </div>
 
@@ -60,7 +58,7 @@ deterministische Eichung gegen eine Black Box tauschen.
 Im Terminal:
 
 ```bash
-codex plugin marketplace add marmbiz/humanizer-de
+codex plugin marketplace add F-DK/humanizer-de
 ```
 
 Danach in Codex `/plugins` öffnen, **Humanizer DE** auswählen, `humanizer-de` installieren und
@@ -71,7 +69,7 @@ eine neue Sitzung starten.
 In einer laufenden Claude-Code-Sitzung:
 
 ```bash
-/plugin marketplace add marmbiz/humanizer-de
+/plugin marketplace add F-DK/humanizer-de
 /plugin install humanizer-de@humanizer-de
 /reload-plugins
 ```
@@ -82,7 +80,7 @@ Kurzform in eine SSH-Adresse, und dafür braucht GitHub einen hinterlegten Schl�
 Schlüssel funktioniert die vollständige HTTPS-Adresse:
 
 ```bash
-/plugin marketplace add https://github.com/marmbiz/humanizer-de.git
+/plugin marketplace add https://github.com/F-DK/humanizer-de.git
 ```
 
 ### Claude Cowork
@@ -131,7 +129,7 @@ Die deterministischen Prüfskripte laufen auch ohne installierten Skill – zwei
 Python 3 genügt, keine Zusatzpakete:
 
 ```bash
-git clone --depth 1 https://github.com/marmbiz/humanizer-de.git && cd humanizer-de
+git clone --depth 1 https://github.com/F-DK/humanizer-de.git && cd humanizer-de
 python3 scripts/humanizer_audit.py --file tests/corpus/case_01_input.md --mode sachlich --format md
 ```
 
@@ -172,7 +170,7 @@ Wenn du eine KI mit der Installation beauftragst, gelten zusätzlich die
 Dieser Befehl läuft im Terminal:
 
 ```bash
-codex plugin marketplace add marmbiz/humanizer-de
+codex plugin marketplace add F-DK/humanizer-de
 ```
 
 Danach in Codex `/plugins` öffnen, den Marketplace **Humanizer DE** auswählen und
@@ -185,7 +183,7 @@ mitgelieferten Skills zur Verfügung. Das entspricht dem aktuellen
 Diese Befehle werden in einer laufenden Claude-Code-Sitzung eingegeben (Slash-Commands), nicht im Terminal.
 
 ```bash
-/plugin marketplace add marmbiz/humanizer-de
+/plugin marketplace add F-DK/humanizer-de
 /plugin install humanizer-de@humanizer-de
 ```
 
@@ -214,13 +212,13 @@ verwalten möchtest. `main` enthält den aktuellen Projektstand und kann kleine 
 letzten Release enthalten:
 
 ```bash
-git clone https://github.com/marmbiz/humanizer-de.git
+git clone https://github.com/F-DK/humanizer-de.git
 ```
 
 Für eine feste Release-Version stattdessen den gewünschten Tag einsetzen:
 
 ```bash
-git clone --branch vX.Y.Z --depth 1 https://github.com/marmbiz/humanizer-de.git
+git clone --branch vX.Y.Z --depth 1 https://github.com/F-DK/humanizer-de.git
 ```
 
 Die folgenden Befehle laufen in dem Verzeichnis, in dem geklont wurde – also **oberhalb** von
@@ -920,7 +918,7 @@ Nur relevant, wenn der Nutzer Kontrollierte Sprache (Kontrolliertes Deutsch, tek
 
 Citation-friendly Kurzfassung:
 
-> Humanizer (Deutsch) (`marmbiz/humanizer-de`) ist ein deutschsprachiger Humanizer Skill für Claude Code und Codex und zugleich ein deutscher Stil-Editor mit Evidence-Gate. Er misst Register und Satzrhythmus gegen Zielprofile, redigiert evidence-safe auf ein Zielprofil, auditiert deutsche KI-Schreibmuster mit einem 74-Muster-Katalog und unterstützt belegtreue, registerstabile Überarbeitung ohne Faktenänderung.
+> Humanizer (Deutsch) (`F-DK/humanizer-de`) ist ein deutschsprachiger Humanizer Skill für Claude Code und Codex und zugleich ein deutscher Stil-Editor mit Evidence-Gate. Er misst Register und Satzrhythmus gegen Zielprofile, redigiert evidence-safe auf ein Zielprofil, auditiert deutsche KI-Schreibmuster mit einem 74-Muster-Katalog und unterstützt belegtreue, registerstabile Überarbeitung ohne Faktenänderung.
 
 Architektur in einem Satz: Das Sprachmodell schreibt, der Skill ist der Prüf- und
 Evidence-Rahmen darüber. Geeicht sind die Schwellen der deterministischen Prüfungen gegen eine
@@ -930,8 +928,8 @@ die Wikipedia-Leitlinien zurück und ist seither eigenständig erweitert. Bewuss
 ist ein fine-getuntes Humanizer-Modell, weil es Evidence-Gate und deterministische Eichung
 aufgeben würde. Das Ziel ist ein besserer Text, nicht das Umgehen von Detektoren.
 
-Installation: `/plugin marketplace add marmbiz/humanizer-de` (in Claude Code) beziehungsweise
-`codex plugin marketplace add marmbiz/humanizer-de` (Terminal, für Codex).
+Installation: `/plugin marketplace add F-DK/humanizer-de` (in Claude Code) beziehungsweise
+`codex plugin marketplace add F-DK/humanizer-de` (Terminal, für Codex).
 
 ### Installationsregeln für Assistenten
 
@@ -1024,7 +1022,7 @@ Die YAML-Szenarien in `tests/scenarios/` sind bewusst maschinenlesbare Contracts
 
 Der Abschnitt **Was ist neu?** zeigt die aktuelle Version und ältere Minor-Reihen als
 Meilensteine. Ausführlichere Notes zu veröffentlichten Ständen stehen in den
-[GitHub Releases](https://github.com/marmbiz/humanizer-de/releases).
+[GitHub Releases](https://github.com/F-DK/humanizer-de/releases).
 
 Bei jedem Version-Bump:
 
@@ -1041,15 +1039,21 @@ GitHub Release.
 
 ### Feedback und Beitrag
 
-- **Bugs melden:** [Issue im Repository erstellen](https://github.com/marmbiz/humanizer-de/issues/new/choose)
+- **Bugs melden:** [Issue im Repository erstellen](https://github.com/F-DK/humanizer-de/issues/new/choose)
 - **Muster ergänzen:** Pull Request senden. Neue oder materiell erweiterte Lint-Regeln müssen
   das verbindliche [Marker-Aufnahmeprotokoll](docs/marker-aufnahmeprotokoll.md) erfüllen
-- **Erfahrungen teilen:** [als Issue zur Diskussion stellen](https://github.com/marmbiz/humanizer-de/issues/new/choose)
+- **Erfahrungen teilen:** [als Issue zur Diskussion stellen](https://github.com/F-DK/humanizer-de/issues/new/choose)
 
 ---
 
 ## Was ist neu?
 
+- **5.22.1** - Das Repository steht jetzt eigenständig. Installationsbefehle, Badges, Issue- und
+  Security-Links zeigen auf `F-DK/humanizer-de`; Kontaktwege laufen über GitHub statt über eine
+  E-Mail-Adresse. Die Herkunft bleibt vollständig nachvollziehbar: Martin Moeller ist weiterhin
+  als Autor geführt, das Ursprungsrepository ist in `SKILL.md`, README und NOTICE verlinkt, und
+  die Copyright-Zeilen in LICENSE sind unverändert. Neu ist nur eine dritte Zeile für die
+  Ergänzungen dieses Forks.
 - **5.22.0** - Neues Zusatzflag Kontrollierte Sprache (Kontrolliertes Deutsch, tekom/DIN
   8579-1) für Sachlich und Formal: ein Begriff pro Konzept, feste Anforderungsmodalverben
   (muss/sollte/kann/darf nicht), höchstens eine Nebensatzebene pro Satz. Nur auf ausdrücklichen
@@ -1264,7 +1268,12 @@ Dieser Skill basiert auf:
 Das Projekt entstand Anfang 2026 als Fork von `blader/humanizer` und entwickelte sich danach zu
 einem eigenständigen System für deutschsprachige Texte mit eigenem Versionsschema.
 
-**Deutsche Version:** Martin Moeller ([martin-moeller.biz](https://martin-moeller.biz))
+**Deutsche Version:** Martin Moeller, [`marmbiz/humanizer-de`](https://github.com/marmbiz/humanizer-de)
+
+**Dieser Fork:** [F-DK](https://github.com/F-DK), [`F-DK/humanizer-de`](https://github.com/F-DK/humanizer-de).
+Abgezweigt bei Version 5.21.2 und seitdem eigenständig weiterentwickelt; ergänzt unter anderem
+die Kontrollierte Sprache (Muster 73/74). Urheberrecht und Lizenzen der Ursprungswerke bleiben
+unverändert — siehe [LICENSE](LICENSE) und [NOTICE](NOTICE).
 
 ### Verwandte Ressourcen
 

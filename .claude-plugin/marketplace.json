@@ -1,8 +1,8 @@
 {
   "name": "humanizer-de",
   "owner": {
-    "name": "Martin Moeller",
-    "url": "https://github.com/marmbiz"
+    "name": "F-DK",
+    "url": "https://github.com/F-DK"
   },
   "description": "Marketplace für den Humanizer-de-Skill / German AI Text Humanizer für deutsche KI-Schreibmuster: deutscher Stil-Editor mit Evidence-Gate und messbarem Register. Supports Claude Code and Codex.",
   "plugins": [
@@ -12,10 +12,10 @@
       "description": "Deutscher Stil-Editor für Claude Code/Codex: misst Register und Rhythmus, redigiert evidence-safe auf ein Zielprofil und auditiert/entfernt KI-Schreibmuster. German AI Text Humanizer / deutscher Humanizer Skill: KI-Schreibmuster in deutschen Texten auditieren und belegtreu überarbeiten. Supports Claude Code and Codex. 74 Muster in 11 Kategorien für deutschsprachige Texte. Kern: Evidence-Gate und messbares Register.",
       "author": {
         "name": "Martin Moeller",
-        "url": "https://martin-moeller.biz"
+        "url": "https://github.com/marmbiz/humanizer-de"
       },
       "category": "productivity",
-      "homepage": "https://github.com/marmbiz/humanizer-de"
+      "homepage": "https://github.com/F-DK/humanizer-de"
     }
   ]
 }

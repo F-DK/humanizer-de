@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_VERSION = "5.22.0"
+EXPECTED_VERSION = "5.22.1"
 EXPECTED_PATTERN_COUNT = 74
 
 
@@ -154,7 +154,7 @@ class SkillStructureTests(unittest.TestCase):
         self.assertEqual(codex_marketplace_plugin["name"], "humanizer-de")
         self.assertEqual(codex_marketplace_plugin["source"]["path"], "./")
         self.assertEqual(codex_marketplace_plugin["policy"]["installation"], "AVAILABLE")
-        self.assertIn("codex plugin marketplace add marmbiz/humanizer-de", readme_text)
+        self.assertIn("codex plugin marketplace add F-DK/humanizer-de", readme_text)
         self.assertIn(f"- **{EXPECTED_VERSION}**", readme_text)
         self.assertIn(f"v{EXPECTED_VERSION}", patterns_text.splitlines()[2])
         self.assertIn(f"v{EXPECTED_VERSION}", decision_text.splitlines()[2])
