@@ -40,6 +40,7 @@ python3 scripts/run_review_eval.py tests/scenarios
 | 25 | Sachlich | Ein ausdrücklicher Tiefenwunsch wird als Vollrewrite oder Faktenfreibrief missverstanden. |
 | 26 | Sachlich | Bereits sauberer Kontrolltext wird trotz Null-Edit-Regel unnötig poliert. |
 | 27 | Locker | Ein mechanisch unauffälliger historischer Blogstand behält ein Cluster aus englischen Kollokationen und deutscher Anschlussgrammatik. |
+| 29 | Locker | Eine Häufung abstrakter „tragen“-Metaphern wird kontextabhängig variiert, ohne etablierte oder konkrete Kollokationen anzutasten. |
 
 Die Szenarien 14 bis 18 (QGIR-Contracts) existieren nur als maschinenlesbare Fixtures in `tests/scenarios/` und laufen ausschließlich über den Runner; sie haben bewusst keinen Eintrag in dieser Datei.
 

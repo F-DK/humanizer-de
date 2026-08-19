@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_VERSION = "5.20.0"
+EXPECTED_VERSION = "5.22.0"
 EXPECTED_PATTERN_COUNT = 74
 
 
@@ -143,6 +143,7 @@ class SkillStructureTests(unittest.TestCase):
         decision_text = read_utf8(ROOT / "references" / "decision-tables.md")
         coverage_text = read_utf8(ROOT / "docs" / "coverage-matrix.md")
         warp_text = read_utf8(ROOT / "WARP.md")
+        citation_text = read_utf8(ROOT / "CITATION.cff")
         checklist_text = read_utf8(ROOT / "assets" / "checkliste-ki-tells.md")
 
         self.assertRegex(skill_text, rf"version:\s+['\"]?{re.escape(EXPECTED_VERSION)}['\"]?")
@@ -158,6 +159,7 @@ class SkillStructureTests(unittest.TestCase):
         self.assertIn(f"v{EXPECTED_VERSION}", patterns_text.splitlines()[2])
         self.assertIn(f"v{EXPECTED_VERSION}", decision_text.splitlines()[2])
         self.assertIn(f"v{EXPECTED_VERSION}", coverage_text)
+        self.assertRegex(citation_text, rf"(?m)^version:\s*{re.escape(EXPECTED_VERSION)}$")
         self.assertEqual(
             warp_text.splitlines()[0],
             f"# WARP - Humanizer (Deutsch) Entwicklerleitfaden (v{EXPECTED_VERSION})",

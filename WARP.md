@@ -1,4 +1,4 @@
-# WARP - Humanizer (Deutsch) Entwicklerleitfaden (v5.20.0)
+# WARP - Humanizer (Deutsch) Entwicklerleitfaden (v5.22.0)
 
 WARP = Workflow, Architecture, References, Principles.
 
@@ -18,8 +18,9 @@ humanizer-de/
 │   └── de-naturalness.md            # deutsche Rule Cards fuer spaete Muster
 ├── scripts/
 │   ├── unicode_lint.py              # Muster 43/46, JSON-Report, optional --fix
-│   ├── rhythm_lint.py               # Muster 4/51/54/55/61, JSON-Report
+│   ├── rhythm_lint.py               # Muster 4/54/55/61, JSON-Report
 │   ├── evidence_lint.py             # Faktenanker vor/nach Rewrite
+│   ├── humanizer_two_pass.py        # getrenntes Audit und begrenzter Rewrite
 │   ├── register_lint.py             # Register-/Profil-Drift
 │   ├── german_pattern_lint.py       # deutsche Marker-Cluster
 │   └── run_review_eval.py           # Scenario-Contract-Invarianten
@@ -38,7 +39,7 @@ humanizer-de/
 
 ## Wartungsregeln
 
-1. Halte `SKILL.md` unter 2.000 Tokens. Zielbereich: 900-1.400 Tokens.
+1. Halte `SKILL.md` bei höchstens 2.300 Wörtern. Neue Zusätze brauchen einen Tausch oder eine bewusst dokumentierte Anhebung.
 2. Schreibe `SKILL.md` als SOP: direkte Wenn/Dann-Regeln, keine Muster-Enzyklopädie.
 3. Ändere den Slow-Update-Block nur für stabile Ziel-, Sicherheits-, Modus- oder Verifikationsregeln.
 4. Lege neue Muster oder ausführliche Beispiele in `references/patterns.md`, nicht in `SKILL.md`.
@@ -75,7 +76,7 @@ Tests müssen echte Codepoints mit `chr()`/`ord()` prüfen. Optisch ähnliche Gl
 
 ## Rhythmus und Burstiness
 
-Muster 4, 51, 54, 55 und 61 sind messbar unterstützt:
+Muster 4, 54, 55 und 61 sind messbar unterstützt (Muster 51 liefert seit dem Validitätsbefund keinen Verdacht mehr, nur Messwerte):
 
 ```bash
 python3 scripts/rhythm_lint.py --file path/to/text.md

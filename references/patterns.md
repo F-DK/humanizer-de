@@ -1,6 +1,6 @@
 # Humanizer-de Pattern Catalog
 
-Vollständiger Musterkatalog für Humanizer (Deutsch) v5.20.0. Nur bei konkreter Musterdiagnose, Audit oder Grenzfällen laden.
+Vollständiger Musterkatalog für Humanizer (Deutsch) v5.22.0. Nur bei konkreter Musterdiagnose, Audit oder Grenzfällen laden.
 
 ## Kurzreferenz
 
@@ -122,7 +122,7 @@ Häufige Indikatoren:
 
 ❌ Schlecht: "Die Kathedrale steht als Zeugnis für die künstlerische Brillanz des Mittelalters."
 
-✓ Besser: "Die Kathedrale zeigt die Handwerkskunst des Mittelalters – und beeindruckt noch heute."
+✓ Besser: "Die Kathedrale zeigt die Handwerkskunst des Mittelalters und beeindruckt noch heute."
 
 #### 2. Werbesprache und Superlative [HIGH]
 <!-- haltbarkeit: kern -->
@@ -160,6 +160,8 @@ Häufige Indikatoren:
 - "keine Diskussion wäre vollständig ohne"
 - "es sollte hervorgehoben werden"
 - "es ist erwähnenswert"
+- "es ist wichtig zu beachten"
+- "zu beachten ist, dass"
 
 **Warum LLMs das tun:** Versucht, Gewichtung und Relevanz zu signalisieren, wo der Kontext unklar ist.
 
@@ -207,7 +209,7 @@ Häufige Indikatoren:
 
 ❌ Schlecht: "Die Region hat drei Universitäten, ein Krankenhaus und eine Bibliothek. Insgesamt verfügt die Stadt über gute Infrastruktur."
 
-✓ Besser: "Die Region hat drei Universitäten, ein Krankenhaus und eine Bibliothek – eine gute Grundversorgung."
+✓ Besser: "Mit drei Universitäten, einem Krankenhaus und einer Bibliothek ist die Region gut versorgt."
 
 #### 6. Unpassendes "Fazit" [MEDIUM]
 <!-- haltbarkeit: kern -->
@@ -241,11 +243,11 @@ Häufige Indikatoren:
 
 ✓ Besser: "Das Land macht technologische Fortschritte, kämpft aber mit wirtschaftlichen Problemen."
 
-**Erweiterte Form – „Lob → Herausforderungen → Ausblick"-Dokumentschablone:** Dieselbe Dichotomie tritt oft nicht als Einzelsatz auf, sondern als dreiteilige Struktur über mehrere Absätze: (1) ein pauschal positiver Einleitungsabsatz, (2) „Trotz seiner Erfolge steht X vor Herausforderungen …" mit generischer Problemliste, (3) ein spekulativer „Zukunft/Ausblick"-Absatz ohne Beleg. Die drei Takte können über das Dokument verteilt sein. Als Cluster behandeln, nicht die Einzelteile.
+**Erweiterte Form – „Lob → Herausforderungen → Ausblick“-Dokumentschablone:** Dieselbe Dichotomie tritt oft nicht als Einzelsatz auf, sondern als dreiteilige Struktur über mehrere Absätze: (1) ein pauschal positiver Einleitungsabsatz, (2) „Trotz seiner Erfolge steht X vor Herausforderungen …“ mit generischer Problemliste, (3) ein spekulativer „Zukunft/Ausblick“-Absatz ohne Beleg. Die drei Takte können über das Dokument verteilt sein. Als Cluster behandeln, nicht die Einzelteile.
 
 **Kein Problem, wenn:** Herausforderungen und Ausblick mit belegter Substanz gefüllt sind (konkrete Zahlen, benannte Risiken, datierte Vorhaben). Ein sachlicher Ausblick ist kein Tell – nur die inhaltsleere Dreier-Schablone.
 
-**Abgrenzung:** Muster 7 (Satzebene) = der einzelne „Trotz X … Y"-Satz. Muster 44 = ein einzelner Standardabschnitt ohne Substanz (etwa nur der Zukunfts-Absatz). Muster 38 = aspirativer Unternehmensschluss als Schlussfloskel.
+**Abgrenzung:** Muster 7 (Satzebene) = der einzelne „Trotz X … Y“-Satz. Muster 44 = ein einzelner Standardabschnitt ohne Substanz (etwa nur der Zukunfts-Absatz). Muster 38 = aspirativer Unternehmensschluss als Schlussfloskel.
 
 #### 8. Negative Parallelismen und abgehackte Verneinungen [MEDIUM]
 <!-- haltbarkeit: kern -->
@@ -292,7 +294,7 @@ Häufige Indikatoren:
 - Tripel-Aufzählungen ohne echten Grund
 - Listen mit verdächtig runder Länge (genau 5, 7 oder 10 Punkte), wenn die Sache selbst keine solche Struktur verlangt
 
-**Warum LLMs das tun:** Trikolon ist ein starkes rhetorisches Muster in der Schreibweise. Runde Listenlängen entstehen durch Trainingsdaten, in denen „Top 5/7/10"-Artikel häufig vorkommen.
+**Warum LLMs das tun:** Trikolon ist ein starkes rhetorisches Muster in der Schreibweise. Runde Listenlängen entstehen durch Trainingsdaten, in denen „Top 5/7/10“-Artikel häufig vorkommen.
 
 **Beispiel:**
 
@@ -345,7 +347,7 @@ Keine Quelle erfinden. Entweder: echte Quelle einfügen wenn bekannt, Zuschreibu
 
 ❌ Schlecht: "Branchenberichte zeigen, dass der Markt wächst."
 
-✓ Besser: "Der Markt wächst (laut Wirtschaftsministerium 2024)." oder "Der Markt wächst – ein Trend, der seit 2020 beobachtet wird."
+✓ Besser: "Der Markt wächst (laut Wirtschaftsministerium 2024)." oder "Der Markt wächst seit 2020."
 
 #### 12. Falsche Erweiterung ("von... bis") [MEDIUM]
 <!-- haltbarkeit: kern -->
@@ -409,11 +411,12 @@ Häufige Indikatoren:
 **Kein Problem, wenn:** Sachlich/Formal – dort ist Partikelarmut korrekt und erwünscht.
 **Lösung:** In Locker sparsam dosieren: höchstens eine Partikel pro Absatz, nur wo sie eine tatsächliche Haltung des Texts trägt. Nie mechanisch nachrüsten.
 ❌ Schlecht (Nähe-Register, partikelfrei): "Du kennst das Problem. Die Lösung ist einfach. Du brauchst nur drei Schritte."
-✓ Besser: "Du kennst das Problem ja. Die Lösung ist simpel – drei Schritte reichen schon."
+✓ Besser: "Du kennst das Problem ja. Die Lösung ist simpel: drei Schritte reichen schon."
 
 #### 64. KI-Marker-Vokabular [MEDIUM]
 <!-- haltbarkeit: jahrgang stand=2026-07 -->
 <!-- pass: 2 -->
+<!-- m64-judgment-only: entfesseln, revolutionieren, prägen, robust, essenziell, lebendig, landschaft, reise, meilenstein, spannungsfeld -->
 **Kategorie:** Sprache und Tonfall
 **Problem:** Für englische Wissenschaftssprache ist die Überrepräsentation bestimmter Wörter in
 LLM-beeinflussten Texten empirisch belegt. Die folgenden deutschen Marker sind eine funktionale,
@@ -432,8 +435,11 @@ diffundieren und verlieren dadurch mit der Zeit an Trennschärfe.
 **Abgrenzung:** Muster 2 = Werbesprache/Superlative ("atemberaubend"). Muster 58 = Hypernym ersetzt eine belegte Konkretion. Muster 64 = die Frequenz-Marker selbst, auch wenn der Satz informativ ist.
 **Kein Problem, wenn:** das Wort fachlich gebunden ist ("robuste Statistik", "dynamisches Routing", "Meilenstein" im Projektplan) oder einzeln steht. Erst ab 3+ Markern im selben Text als Cluster behandeln.
 **Lösung:** Durch das gewöhnliche Wort ersetzen ("beleuchten" → "untersuchen"/"beschreiben", "spannend" → streichen oder konkret begründen, "die digitale Landschaft" → das gemeinte konkrete Feld benennen).
+
+**Kontextgebundene Unterform – abstraktes „tragen“:** Das Einzelwort ist kein Marker. Ein MEDIUM-Befund liegt erst bei einem Cluster semantisch überdehnter Stützmetaphern vor, etwa „Forschung/These/Hypothese/Änderung trägt“: Richtwert drei abstrakte Verwendungen im Dokument oder zwei in engem Abstand. Konkrete und etablierte Kollokationen wie „einen Karton tragen“, „Kosten tragen“ oder „Verantwortung tragen“ bleiben geschützt. Jede problematische Stelle wird nach ihrem eigenen Sinn redigiert; eine einheitliche Ersetzung durch „funktioniert“ erzeugt nur das nächste Wiederholungsmuster.
+
 ❌ Schlecht: "Der Artikel beleuchtet das vielschichtige Zusammenspiel der Akteure in der digitalen Landschaft und zeigt spannende Entwicklungen auf."
-✓ Besser: "Der Artikel beschreibt, wie die drei großen Anbieter aufeinander reagieren — und wo sich der Markt gerade dreht."
+✓ Besser: "Der Artikel beschreibt, wie die drei großen Anbieter aufeinander reagieren und wo sich der Markt gerade dreht."
 
 #### 65. Kopula-Vermeidung [MEDIUM]
 <!-- haltbarkeit: jahrgang stand=2026-07 -->
@@ -458,19 +464,19 @@ Häufige Indikatoren:
 <!-- haltbarkeit: kern -->
 <!-- pass: 2 -->
 **Kategorie:** Sprache und Tonfall
-**Problem:** LLMs hängen an normale Informationssätze scheinanalytische Relativsätze oder Anschlusskonstruktionen, die eine Schlussfolgerung vortäuschen, aber keine neue Information liefern. Erkennbar am Löschtest: Fällt „was X unterstreicht/zeigt/verdeutlicht" weg, geht keine Information verloren – der Hauptsatz steht vollständig. Die Konstruktion ist grammatikalisch korrekt; ihr Tell ist die funktionale Leere des Anhangs.
+**Problem:** LLMs hängen an normale Informationssätze scheinanalytische Relativsätze oder Anschlusskonstruktionen, die eine Schlussfolgerung vortäuschen, aber keine neue Information liefern. Erkennbar am Löschtest: Fällt „was X unterstreicht/zeigt/verdeutlicht“ weg, geht keine Information verloren – der Hauptsatz steht vollständig. Die Konstruktion ist grammatikalisch korrekt; ihr Tell ist die funktionale Leere des Anhangs.
 Häufige Indikatoren:
-- „...was X unterstreicht / belegt / verdeutlicht / bestätigt / beweist"
-- „...und zeigt / verdeutlicht damit, dass..."
-- „...und unterstreicht die Bedeutung von..."
-- „...und macht deutlich, wie wichtig..."
-- „...was zeigt, dass hier Handlungsbedarf besteht"
+- „...was X unterstreicht / belegt / verdeutlicht / bestätigt / beweist“
+- „...und zeigt / verdeutlicht damit, dass...“
+- „...und unterstreicht die Bedeutung von...“
+- „...und macht deutlich, wie wichtig...“
+- „...was zeigt, dass hier Handlungsbedarf besteht“
 **Warum LLMs das tun:** Training auf akademischen Texten, die Schlussfolgerungen explizit signalisieren; das Modell lernt, Gewicht durch Relativkonstruktionen auszudrücken, auch wenn kein neuer Gedanke folgt.
 **Abgrenzung:** Muster 3 = eigenständige Sätze mit Meta-Kommentar ("es ist wichtig zu bemerken"). Muster 10 = Partizip-I beschreibt gleichzeitige Aktion ("ermöglichend"). Muster 62 = eigenständiger Schlusssatz am Absatzende. Muster 64 = einzelne Frequenz-Marker-Vokabeln; Muster 66 = die syntaktische Anhang-Konstruktion selbst.
 **Kein Problem, wenn:** Der Relativsatz echte, aus dem Hauptsatz nicht ableitbare Information hinzufügt (z. B. "Die Studie wurde dreimal wiederholt, was die Replizierbarkeit nachweist" – wenn die Dreifachwiederholung tatsächlich das erste Replizierbarkeits-Signal im Text ist).
 **Lösung:** Relativsatz streichen. Falls die Schlussfolgerung echte Information trägt: als eigenständigen Satz mit konkretem Beleg formulieren statt als Anhang.
 ❌ Schlecht: "Das Team lieferte die Migration in drei Wochen ab, was die hohe Effizienz des Vorgehens unterstreicht."
-✓ Besser: "Das Team lieferte die Migration in drei Wochen ab." (oder: "...ab – geplant waren sechs.")
+✓ Besser: "Das Team lieferte die Migration in drei Wochen ab." (oder: "...ab, geplant waren sechs.")
 
 #### 68. Komparativ-Rahmung [MEDIUM]
 <!-- haltbarkeit: kern -->
@@ -499,7 +505,7 @@ Häufige Indikatoren:
 
 ❌ Schlecht: "Es geht weniger um das Werkzeug als vielmehr um die Haltung. Der Umbau fühlt sich eher wie ein Marathon als wie ein Sprint an."
 
-✓ Besser: "Das Werkzeug ist zweitrangig; entscheidend ist, ob das Team die Berichte liest. Der Umbau dauert: Wir rechnen mit zwei Jahren."
+✓ Besser: "Das Werkzeug ist zweitrangig. Entscheidend ist, ob das Team die Berichte liest. Der Umbau dauert: Wir rechnen mit zwei Jahren."
 
 ### Stil (5 Muster)
 
@@ -559,6 +565,7 @@ Häufige Indikatoren:
 - Doppelstriche als Ersatz: "Die Änderungen -- laut Kritikern überfällig -- treten sofort in Kraft."
 - Spaced Hyphen als Dash-Ersatz: "Danke für die Einführung - ich setze dich auf bcc."
 - Rhetorische Punchline: "Es geht nicht um Geschwindigkeit – es geht um Vertrauen."
+- Semikolon-Variante (judgment-only, gleiche Fingerabdruck-Klasse): gehäufte Hauptsatz-Verbindungen per Semikolon ("Suchanfragen waren kurz; Konversationen sind lang."). Gemessen 2026-08: naive Claude-Texte 4/10 mit mindestens einem, echte Menschen 1–2/20; ein aktueller Claude-Langtext lag bei 6,7 je 1.000 Wörter. Einzelnes Semikolon bleibt legitimes Deutsch; behandeln erst ab 2+ pro Text.
 
 **Warum LLMs das tun:** Englische Schreibweise, Marketingrhythmus und Chat-Oberflächen werden imitiert. Gepaarte Einschübe sehen eingeschoben aus, nicht geschrieben.
 
@@ -566,7 +573,7 @@ Häufige Indikatoren:
 1. **Punkt**: zwei vollständige Gedanken als zwei Sätze führen.
 2. **Komma**: kurzer Einschub oder enge Apposition.
 3. **Doppelpunkt**: Erklärung, Folge oder Liste.
-4. **Semikolon**: zwei selbstständige, locker verbundene Hauptsätze.
+4. **Semikolon**: zwei selbstständige, locker verbundene Hauptsätze. Sparsam einsetzen, höchstens einmal pro Text: Gehäufte Hauptsatz-Semikola sind selbst ein KI-Interpunktionsmuster (siehe Semikolon-Variante oben).
 5. **Klammer**: echter Nebengedanke.
 6. **Streichen oder umbauen**: wenn der Einschub nur Schlagseite oder Pointe erzeugt.
 
@@ -723,7 +730,7 @@ Häufige Indikatoren:
 ### Auszeichnungstext (6 Muster)
 
 #### 23. Markdown statt Wikitext [MEDIUM]
-<!-- haltbarkeit: jahrgang stand=2026-07 -->
+<!-- haltbarkeit: jahrgang stand=2026-08 -->
 <!-- pass: 1 -->
 **Problem:** Markdown-Syntax in Wikipedia-Artikel statt Wikitext.
 
@@ -731,13 +738,15 @@ Häufige Indikatoren:
 - `*fett*` oder `**fett**` statt `'''fett'''`
 - `# Überschrift` statt `== Überschrift ==`
 - `[Link](url)` statt `[Link url]`
+- Code-Fences aus drei Backticks statt Wikitext-Codeformatierung
+- Markdown-Trennlinien `---`, `***` oder `___` im Wikitext-Kontext
 
 **Warum LLMs das tun:** Trainiert auf Markdown-Quellen.
 
 **Lösung:** Konvertieren zu Wikitext.
 
 #### 24. Fehlerhafter Wikitext und KI-Tool-/Prozessartefakte [MEDIUM]
-<!-- haltbarkeit: jahrgang stand=2026-07 -->
+<!-- haltbarkeit: jahrgang stand=2026-08 -->
 <!-- pass: 1 -->
 **Problem:** Wikitext-Syntax ist ungültig oder unvollständig. Zusätzlich hinterlassen KI-Tools technische Artefakte im Text.
 
@@ -745,8 +754,8 @@ Häufige Indikatoren:
 - "gehe zu [[Suche Nr. 42]]"
 - Unvollständige Template-Tags
 - `{{cite book|author=` ohne Schließ-`}}`
-- **ChatGPT:** `oaicite:0`-/`oaicite:ref`-Tags, `contentReference[oaicite:0]`-Spans, `oai_citation`, `turn0search0`/`citeturn0search0` (von Private-Use-Area-Unicode umschlossen; Varianten: `citeturn0news0`, `citeturn1file0`, `iturn0image0`), `+1`-Suffixe an Quellennamen (`Wikipedia+1`, `ISO+3`), JSON-Anhang `({"attribution":{"attributableIndex":"X-Y"}})`
-- **Gemini:** `[cite: 1]` bzw. `[cite: 3, 12, 13]`, `[span_1][start_span]`/`[span_1][end_span]`
+- **ChatGPT:** `oaicite:0`-/`oaicite:ref`-Tags, `contentReference[oaicite:0]`-Spans, `oai_cite`/`oai_citation`, `turn0search0`/`turn0image0`/`citeturn0search0` (von Private-Use-Area-Unicode umschlossen; Varianten: `citeturn0news0`, `citeturn1file0`, `iturn0image0`), `+1`-Suffixe an Quellennamen (`Wikipedia+1`, `ISO+3`), JSON-Anhang `({"attribution":{"attributableIndex":"X-Y"}})`
+- **Gemini:** `[cite: 1]` bzw. `[cite: 3, 12, 13]`, `[span_1][start_span]`/`[span_1][end_span]` sowie `(start_span)`/`(end_span)`
 - **Grok:** `grok_card`-Spans (`<grok-card data-id=...>`), `grok_render_citation_card_json`, `<grok:render ...>` mit `<argument name="citation_id">`
 - **DeepSeek:** Linsenklammern mit Dagger, z. B. `【85†L261-269】`
 - **Weitere anbieterneutral behandelte Chat-/Share-Exportreste:** `[citation:1]`-Ketten, ein publizierter Block `> **Thinking**`, `[^1^]`, `_[unsupported block: think]_`, `_[unsupported block: search]_`, numerische `[[1]]`-Ketten außerhalb echten Wiki-/Notiz-Kontexts sowie unverarbeitete Reasoning-Tags wie `<think>...</think>`
@@ -776,7 +785,7 @@ Häufige Indikatoren:
 **Lösung:** Mit den verfügbaren Mitteln prüfen (Syntax, Plausibilität, interne Konsistenz, offensichtliche Tippfehler im übergebenen Kontext). Bei nachweisbarem Defekt: korrigieren oder entfernen. Externe Online-Verifikation eines Links liegt außerhalb des Skill-Umfangs – in diesem Fall mit [LINK NICHT VERIFIZIERT] markieren statt blind zu entfernen.
 
 #### 26. Zitatfabrikation und unverifizierbare Referenzen [HIGH]
-<!-- haltbarkeit: jahrgang stand=2026-07 -->
+<!-- haltbarkeit: jahrgang stand=2026-08 -->
 <!-- pass: 1 -->
 **Problem:** LLMs erfinden Quellen, die echt aussehen, aber nicht existieren, oder ordnen reale Quellen einer Aussage zu, die sie nicht tragen. Das reicht von ungültigen DOI-/ISBN-Angaben bis zu komplett halluzinierten Publikationen, Aktenzeichen, Gerichtsentscheidungen, URLs oder Studien. Factual Reliability ist hier wichtiger als Stil: Eine polierte Passage mit falscher Quelle ist schlechter als eine sichtbare Lücke.
 
@@ -787,7 +796,8 @@ Häufige Indikatoren:
 - Autoren existieren, aber die genannte Publikation nicht
 - Reale Quelle existiert, enthält aber die behauptete Zahl, Aussage oder das Zitat nicht
 - Plausibles Aktenzeichen, Urteil, Gesetz, Studie oder Interview ohne auffindbaren Träger im übergebenen Material
-- Defekte externe Links mit `utm_source=`-Parametern – besonders verdächtig: `utm_source=chatgpt.com` (auch verkürzt `utm_source=chatgpt` oder `utm_source=openai`), `utm_source=claude.ai`, `utm_source=gemini.google.com`, `utm_source=perplexity.ai` (direkter KI-Fingerabdruck; Gemini und Claude setzen UTM-Tags seltener als ChatGPT)
+- Defekte externe Links mit `utm_source=`-Parametern – besonders verdächtig: `utm_source=chatgpt.com` (auch verkürzt `utm_source=chatgpt` oder `utm_source=openai`), `utm_source=claude.ai`, `utm_source=gemini.google.com`, `utm_source=perplexity.ai`, `utm_source=copilot.com` (direkter KI-Fingerabdruck; Gemini und Claude setzen UTM-Tags seltener als ChatGPT)
+- Links auf KI-Chat- oder Suchoberflächen als angebliche Referenz, etwa ChatGPT, DeepSeek, Copilot, Gemini, Groq oder Grok; die bloße Erwähnung oder Dokumentation eines solchen Dienstes ist kein Befund
 - Unbenutzte benannte Referenzen (`<ref name="..."/>` ohne zugehörige Definition)
 
 **Warum LLMs das tun:** Kann keine echten Quellen recherchieren und erzeugt plausibel aussehende Referenzen aus dem Training.
@@ -958,7 +968,7 @@ Häufige Indikatoren:
 
 ❌ Schlecht: "Seit Anbeginn der Zivilisation suchen Menschen nach Wegen, effizienter zu kommunizieren. Im Zeitalter der Digitalisierung hat sich diese Suche grundlegend verändert."
 
-✓ Besser: "E-Mail hat den Geschäftsbrief abgelöst. Slack hat die E-Mail nicht abgelöst – aber den Ton verändert."
+✓ Besser: "E-Mail hat den Geschäftsbrief abgelöst. Slack hat die E-Mail nicht abgelöst, aber den Ton verändert."
 
 #### 37. "In der heutigen X-Welt" Framing [MEDIUM]
 <!-- haltbarkeit: kern -->
@@ -1131,7 +1141,7 @@ Häufige Indikatoren:
 
 ❌ Schlecht: "Der Test war erfolgreich. Genauer gesagt war er in vielerlei Hinsicht recht erfolgreich, auch wenn nicht alles perfekt lief."
 
-✓ Besser: "12 von 15 Prüffällen bestanden; drei scheiterten am Import großer CSV-Dateien."
+✓ Besser: "12 von 15 Prüffällen bestanden, drei scheiterten am Import großer CSV-Dateien."
 
 ### Argumentation und Evidenz (7 Muster)
 
@@ -1294,7 +1304,7 @@ Fehlt der echte Akteur im Material: keinen erfinden. Dann die offene Verantwortu
 
 ❌ Schlecht: "Die Strategie entschied, dass die Teams ab sofort wöchentlich ausliefern."
 
-✓ Besser: "Die Geschäftsführung legte wöchentliche Releases fest; Grundlage war die neue Plattformstrategie."
+✓ Besser: "Die Geschäftsführung legte wöchentliche Releases fest. Grundlage war die neue Plattformstrategie."
 
 #### 72. Pseudo-therapeutische Validierung [HIGH]
 <!-- haltbarkeit: jahrgang stand=2026-07 -->
@@ -1355,7 +1365,7 @@ Häufige Indikatoren:
 
 **Beispiel:**
 
-❌ Schlecht: „Laut einer Studie des Fraunhofer-Instituts aus 2019 stieg die Produktivität deutscher Remote-Teams um 23 Prozent.<ref>Fraunhofer IAO: Arbeiten in der Corona-Pandemie, 2020.</ref>"
+❌ Schlecht: „Laut einer Studie des Fraunhofer-Instituts aus 2019 stieg die Produktivität deutscher Remote-Teams um 23 Prozent.<ref>Fraunhofer IAO: Arbeiten in der Corona-Pandemie, 2020.</ref>“
 (Quelle existiert, stammt aber aus 2020 und nennt keine 23 Prozent.)
 
 ✓ Besser: Quelle auf tatsächlichen Inhalt prüfen, Aussage an die Quelle anpassen oder passende Quelle suchen.
@@ -1377,7 +1387,7 @@ Häufige Indikatoren:
 - Byte Order Mark (U+FEFF) mitten im Text
 - Soft-Hyphen (U+00AD) an ungewöhnlichen Stellen
 - Bidi-Steuerzeichen: U+202A-U+202E (Left/Right-to-Left Embedding/Override/Pop), U+2066-U+2069 (Isolates)
-- Tags-Block (U+E0000-U+E007F): U+E0020-U+E007E spiegeln die druckbaren ASCII-Zeichen und tragen damit vollständig unsichtbaren Text im Absatz; dazu U+E0001 (Language Tag) und U+E007F (Cancel Tag). Bekannt als „ASCII smuggling", genutzt für versteckte Nutzlast und Prompt-Injection
+- Tags-Block (U+E0000-U+E007F): U+E0020-U+E007E spiegeln die druckbaren ASCII-Zeichen und tragen damit vollständig unsichtbaren Text im Absatz; dazu U+E0001 (Language Tag) und U+E007F (Cancel Tag). Bekannt als „ASCII smuggling“, genutzt für versteckte Nutzlast und Prompt-Injection
 - Variation Selectors außerhalb von Emoji: U+FE00-U+FE0F und U+E0100-U+E01EF (Supplement); zweite Trägerklasse für unsichtbare Daten
 
 **Warum LLMs das tun:** Modelle produzieren gelegentlich Tokens mit unsichtbaren Sonderzeichen. Copy-Paste aus KI-Oberflächen schleppt zusätzliche Formatierungsartefakte mit. Bidi-Controls können auch gezielt zur Verschleierung von Prompt-Inhalten genutzt werden.
@@ -1394,29 +1404,29 @@ Häufige Indikatoren:
 
 **Kategorie:** Stil
 
-**Problem:** Das Problem ist **nicht** die Überschrift an sich, sondern der generische, unbelegte Fülltext darunter. Überschriften wie „Bedeutung" oder „Relevanz" können in enzyklopädischen Texten legitim sein, wenn der Abschnitt konkrete Belege enthält. Tell ist die Kombination aus Standard-Überschrift + substanzloser Allgemeinplätze.
+**Problem:** Das Problem ist **nicht** die Überschrift an sich, sondern der generische, unbelegte Fülltext darunter. Überschriften wie „Bedeutung“ oder „Relevanz“ können in enzyklopädischen Texten legitim sein, wenn der Abschnitt konkrete Belege enthält. Tell ist die Kombination aus Standard-Überschrift + substanzloser Allgemeinplätze.
 
 **Deterministischer Teilaspekt:** `ad_boilerplate_cluster` erfasst Standard-Überschriften aus Werbetexten nur im Figuren-Cluster. Andere Standard-Kapitel und die Substanzbewertung bleiben judgment-only.
 
 **Abgrenzung:**
-- Muster 5 (Zusammenfassungen): Sprachmarker „zusammenfassend" im Fließtext
-- Muster 6 (Fazit): spezifisch die Überschrift „Fazit"/„Zusammenfassung"
+- Muster 5 (Zusammenfassungen): Sprachmarker „zusammenfassend“ im Fließtext
+- Muster 6 (Fazit): spezifisch die Überschrift „Fazit“/„Zusammenfassung“
 - Muster 34 (Fragmentierte Überschriften): Einzeiler direkt nach Überschrift
 - Muster 44: ganzer Abschnitt unter Standard-Überschrift ohne konkrete Information
 
 Häufige Indikatoren:
-- Überschriften: „== Herausforderungen ==", „== Zukunftsperspektiven ==", „== Bedeutung ==", „== Relevanz ==", „== Ausblick ==", „== Chancen und Risiken =="
+- Überschriften: „== Herausforderungen ==“, „== Zukunftsperspektiven ==“, „== Bedeutung ==“, „== Relevanz ==“, „== Ausblick ==“, „== Chancen und Risiken ==“
 - Darunter: allgemeine Aussagen ohne konkrete Fakten, Zahlen oder Belege
-- Prognose-Sprech ohne Träger („Experten erwarten", „es ist zu erwarten")
+- Prognose-Sprech ohne Träger („Experten erwarten“, „es ist zu erwarten“)
 - Bloße Wiederholung von Punkten aus früheren Abschnitten unter neuer Überschrift
 
 **Warum LLMs das tun:** Nachahmung formaler akademischer und journalistischer Strukturen. Standard-Kapitel füllen Platz, wo keine konkrete Information verfügbar ist.
 
-**Lösung:** Nicht kürzen (Leitplanke „Nie kürzen" gilt). Vorgehen in dieser Reihenfolge:
+**Lösung:** Nicht kürzen (Leitplanke „Nie kürzen“ gilt). Vorgehen in dieser Reihenfolge:
 1. **Substanz finden:** Prüfen, ob unter der Überschrift tatsächlich eine Aussage steckt, die bloß verwässert formuliert ist. Wenn ja: konkretisieren, Belege einfügen.
 2. **Integrieren:** Falls der Abschnitt nur thematisch Bekanntes wiederholt, Inhalt in bestehende thematische Kapitel verschieben und die Standard-Überschrift entfernen. Der Text selbst bleibt im Artikel erhalten.
-3. **Umwidmen:** Generische Überschrift durch spezifische ersetzen („Zukunftsperspektiven" → „Marktprognosen 2025–2030"), wenn der Inhalt das trägt.
-4. **Fallback bei echter Substanzlosigkeit:** Wenn weder konkrete Aussage noch tragbare Paraphrase noch thematische Zuordnung möglich ist, Abschnitt mit `[SUBSTANZ PRÜFEN]` markieren und wörtlich stehen lassen. Streichung oder Inhaltsergänzung liegt dann beim menschlichen Redigat, nicht beim Skill-Durchlauf. So bleibt die „Nie kürzen"-Leitplanke gewahrt, ohne Inhalt zu erfinden.
+3. **Umwidmen:** Generische Überschrift durch spezifische ersetzen („Zukunftsperspektiven“ → „Marktprognosen 2025–2030“), wenn der Inhalt das trägt.
+4. **Fallback bei echter Substanzlosigkeit:** Wenn weder konkrete Aussage noch tragbare Paraphrase noch thematische Zuordnung möglich ist, Abschnitt mit `[SUBSTANZ PRÜFEN]` markieren und wörtlich stehen lassen. Streichung oder Inhaltsergänzung liegt dann beim menschlichen Redigat, nicht beim Skill-Durchlauf. So bleibt die „Nie kürzen“-Leitplanke gewahrt, ohne Inhalt zu erfinden.
 
 **Beispiel:**
 
@@ -1439,19 +1449,19 @@ Häufige Indikatoren:
 **Problem:** KI überträgt englische Satzmuster, Kollokationen und Bedeutungen wörtlich ins Deutsche. Das Muster zielt nur auf **harte Transfers**: Calques (Lehnübersetzungen), False Friends (Falschfreunde) und syntaktische Muster, die im Deutschen als Übersetzungsdeutsch auffallen. Einzelne Anglizismen in Business- oder Umgangssprache sind **kein** Anzeichen.
 
 Harte Indikatoren (klare Tells):
-- **Calques:** „am Ende des Tages" (at the end of the day), „in Reihenfolge zu" (in order to), „zu Beginn mit" (to begin with), „das macht keinen Unterschied für mich" (that makes no difference to me)
-- **False Friends:** „eventuell" als „schließlich" (eventually, korrekt: „schließlich"/„am Ende"), „aktuell" als „tatsächlich" (actually, korrekt: „tatsächlich"/„eigentlich"), „sensibel" als „vernünftig/umsichtig" (sensible, korrekt: „vernünftig"/„besonnen")
-- **Syntaktische Transfers:** englische Wortstellung in Relativsätzen („das Unternehmen, welches gegründet wurde in 1990"), nachgestellte Präpositionalphrasen nach englischem Muster („das Buch über Berlin von Peter Schneider geschrieben")
+- **Calques:** „am Ende des Tages“ (at the end of the day), „in Reihenfolge zu“ (in order to), „zu Beginn mit“ (to begin with), „das macht keinen Unterschied für mich“ (that makes no difference to me)
+- **False Friends:** „eventuell“ als „schließlich“ (eventually, korrekt: „schließlich“/„am Ende“), „aktuell“ als „tatsächlich“ (actually, korrekt: „tatsächlich“/„eigentlich“), „sensibel“ als „vernünftig/umsichtig“ (sensible, korrekt: „vernünftig“/„besonnen“)
+- **Syntaktische Transfers:** englische Wortstellung in Relativsätzen („das Unternehmen, welches gegründet wurde in 1990“), nachgestellte Präpositionalphrasen nach englischem Muster („das Buch über Berlin von Peter Schneider geschrieben“)
 - **Kollokations-Transfers:** „bin ich simpler gegangen“ (I went simpler), „die Reibung fällt“ (friction drops), „der Filter bei der Arbeit“ (the filter at work), „gegen echten Output iterieren“ (iterate against output)
 - **Englischer Genitiv in deutscher Syntax:** „xAI's Agent Tools“ oder „OpenAI's Responses API“ statt „die Agent Tools von xAI“ beziehungsweise „die Responses API von OpenAI“
 
 **Kein belastbarer Tell (weglassen):**
-- „basiert auf", „in Bezug auf", „adressieren" – in Geschäfts- und Wissenschaftsdeutsch etabliert
-- „Sinn machen" – im heutigen Standarddeutsch etabliert; stilistische Präferenz, kein KI-Tell
-- „realisieren" im Sinne von „erkennen/begreifen" – lexikalisch etabliert (Duden, DWDS)
-- „kontrollieren" als „beherrschen" – Bedeutungen überlappen im Deutschen bereits
+- „basiert auf“, „in Bezug auf“, „adressieren“ – in Geschäfts- und Wissenschaftsdeutsch etabliert
+- „Sinn machen“ – im heutigen Standarddeutsch etabliert; stilistische Präferenz, kein KI-Tell
+- „realisieren“ im Sinne von „erkennen/begreifen“ – lexikalisch etabliert (Duden, DWDS)
+- „kontrollieren“ als „beherrschen“ – Bedeutungen überlappen im Deutschen bereits
 - Unnötige Possessivpronomen – allgemeines Übersetzungsdeutsch, Stilglättung
-- Einzelne Lehnwörter („Meeting", „Team", „Feedback") – im Zielregister oft normal
+- Einzelne Lehnwörter („Meeting“, „Team“, „Feedback“) – im Zielregister oft normal
 - Englische Titel, Zitate, Code und offizielle Produktstrings – nur die deutsche Anschlusskonstruktion prüfen
 
 **Register-Hinweis:**
@@ -1464,10 +1474,10 @@ Harte Indikatoren (klare Tells):
 
 **Beispiel:**
 
-❌ Schlecht: „Am Ende des Tages erkannte das Team eventuell, dass die Strategie aktuell nicht trug."
-(eventuell = eventually = „schließlich"; aktuell = actually = „tatsächlich")
+❌ Schlecht: „Am Ende des Tages erkannte das Team eventuell, dass die Strategie aktuell nicht trug.“
+(eventuell = eventually = „schließlich“; aktuell = actually = „tatsächlich“)
 
-✓ Besser: „Schließlich erkannte das Team, dass die Strategie tatsächlich nicht trug."
+✓ Besser: „Schließlich erkannte das Team, dass die Strategie tatsächlich nicht trug.“
 
 ### Typografie und Format (7 Muster)
 
@@ -1606,19 +1616,19 @@ Häufige Indikatoren:
 ✓ Besser: "Das Team analysierte die Daten und kam zu einem eindeutigen Ergebnis: Die Conversion stieg um 25 Prozent, obwohl das Projekt im Budget blieb."
 
 #### 57. Markdown-Struktur-Artefakte [MEDIUM]
-<!-- haltbarkeit: jahrgang stand=2026-07 -->
+<!-- haltbarkeit: jahrgang stand=2026-08 -->
 <!-- pass: 1 -->
 
-**Problem:** KI-Chatbots setzen Markdown-Strukturelemente dekorativ statt semantisch ein. Drei wiederkehrende Fälle:
+**Problem:** KI-Chatbots setzen Markdown-Strukturelemente dekorativ statt semantisch ein. Vier wiederkehrende Fälle:
 
 - **Fall A – Tabelle, wo Prosa hingehört:** Eine Tabelle mit nur einer Datenzeile, eine Spalte, die einen Wert wiederholt, oder "Aspekt/Beschreibung"-Paare, die in Wahrheit ein Satz sind.
 - **Fall B – Übersprungene Überschriften-Ebenen:** Eine H2 folgt direkt eine H4 (`##` dann `####`). Die Überschriftengröße wird als optisches Gewicht missbraucht, nicht als Hierarchie. Überschriften sollten eine Ebene nach der anderen absteigen.
-- **Fall C – Thematische Trennlinie vor Überschrift:** Eine dekorative horizontale Linie (`---`) steht direkt über einer Überschrift. Die Überschrift beginnt bereits einen neuen Abschnitt; die Linie ist redundantes Rauschen.
+- **Fall C – Thematische Trennlinie vor Überschrift:** Eine dekorative horizontale Linie (`---`, `***` oder `___`) steht direkt über einer Überschrift. Die Überschrift beginnt bereits einen neuen Abschnitt; die Linie ist redundantes Rauschen.
 - **Fall D – Inline-Header-Listen:** Listenpunkte, die sich mit einem gefetteten kategorischen Mini-Titel plus Doppelpunkt häufen: `- **Aspekt:** Beschreibung`, `- **Vorteil:** …`, `- **Herausforderung:** …`. Tell ist die Häufung generischer Etiketten, wo die Aufzählung in Wahrheit Fließtext ist; nach Copy-Paste teils ohne Zeilenumbruch aneinandergereiht.
 
 **Warum LLMs das tun:** Modelle optimieren auf optisch "aufgeräumte" Ausgaben und greifen zu Tabellen, Größensprüngen und Trennlinien als visuellen Markern, ohne die zugrunde liegende Dokumentstruktur zu prüfen.
 
-**Kein Problem, wenn:** Eine Tabelle echte mehrdimensionale Daten zeigt; eine `---`-Linie bewusst als Szenen- oder Themenwechsel *zwischen* gleichrangigen Abschnitten steht (nicht direkt vor einer Überschrift); ein CMS, Theme oder Markdown-Template die Struktur erzeugt. Konsistente, korrekte Formatierung allein ist kein KI-Tell. Eine Definitions- oder Merkmalsliste, deren Fett-Lead-in ein echtes Stichwort ist und deren Text eigenständige Substanz trägt (Glossar, Parameter-, Feature-Liste – auch dieser Katalog nutzt das Format legitim), ist kein Tell; Fall D greift erst, wenn sich generische Etiketten häufen und der „Titel" die Beschreibung nur wiederholt.
+**Kein Problem, wenn:** Eine Tabelle echte mehrdimensionale Daten zeigt; eine horizontale Linie (`---`, `***` oder `___`) bewusst als Szenen- oder Themenwechsel *zwischen* gleichrangigen Abschnitten steht (nicht direkt vor einer Überschrift); ein CMS, Theme oder Markdown-Template die Struktur erzeugt. Konsistente, korrekte Formatierung allein ist kein KI-Tell. Eine Definitions- oder Merkmalsliste, deren Fett-Lead-in ein echtes Stichwort ist und deren Text eigenständige Substanz trägt (Glossar, Parameter-, Feature-Liste – auch dieser Katalog nutzt das Format legitim), ist kein Tell; Fall D greift erst, wenn sich generische Etiketten häufen und der „Titel“ die Beschreibung nur wiederholt.
 
 **Abgrenzung:** Muster 16 = Dash-Satzzeichen und Gedankenstrich-Cluster im Fließtext, nicht die horizontale Linie `---`. Muster 13 = übermäßige Fettschrift, Muster 14 = falsche Listenzeichen. Muster 23 = Markdown statt Wikitext (Syntax-Wahl im Wiki-Kontext). Muster 57 = dekorativer Struktur-Missbrauch in Markdown selbst.
 
@@ -1667,7 +1677,7 @@ Häufige Indikatoren:
 
 **Fix-Aktion (Minimalintervention, ab 2+ Doppelpunkt-Titeln im Dokument):** Erst ab dem zweiten gleichartig gebauten Titel eingreifen – ein einzelner Doppelpunkt-Titel bleibt unangetastet. Strategie: im Cluster *variieren*, nicht alle gleich umbauen. Optionen: Überschrift als Aussage formulieren, auf die Kernaussage kürzen, Untertitel in Klammern setzen oder Titel ohne zweiteilige Schablone neu bauen, sofern dabei keine Information verloren geht. Nie alle Doppelpunkte mechanisch gegen Gedankenstriche tauschen – das erzeugt nur ein neues, monotones Schema.
 
-Den Subtitel/Nachsatz *nicht* entfernen, solange er echte, nicht-redundante Information trägt. Entfernen nur, wenn der Nachsatz die linke Seite nur in Langform wiederholt (z. B. „Datenschutz: Datenschutz richtig gemacht") oder eine leere Formel ist (z. B. „Alles, was du wissen musst" ohne konkreten Bezug).
+Den Subtitel/Nachsatz *nicht* entfernen, solange er echte, nicht-redundante Information trägt. Entfernen nur, wenn der Nachsatz die linke Seite nur in Langform wiederholt (z. B. „Datenschutz: Datenschutz richtig gemacht“) oder eine leere Formel ist (z. B. „Alles, was du wissen musst“ ohne konkreten Bezug).
 
 **Nicht anfassen:** wissenschaftliche Haupttitel mit Untertitel, Serien-/Rubriktitel, FAQ-/Glossar-/Definitionstitel, juristische oder technische Labels, echte Zitattitel, Interview-/Q&A-Labels, UI-/Formularlabels, Quellen-/Bildnachweise, Zeit-/Ortslabels.
 

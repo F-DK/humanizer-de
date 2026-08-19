@@ -44,7 +44,7 @@ erweitert. Was darauf aufsetzt, ist eigene Arbeit: Die Schwellen der determinist
 Prüfungen sind gegen eine Fehlalarm-Baseline aus verifizierten Menschentexten geeicht, und
 neue Muster kommen nur über das [Marker-Aufnahmeprotokoll](docs/marker-aufnahmeprotokoll.md)
 hinein – mit Positiv-, Negativ- und Grenzfixtures und einer dokumentierten
-Fehlalarm-Erwartung. Scheitert ein Kandidat daran, wird er nicht aufgenommen; in 5.10.0 ist das
+Fehlalarm-Erwartung. Scheitert ein Kandidat daran, wird er nicht aufgenommen. In 5.10.0 ist das
 einem Lint-Marker so ergangen.
 
 Das Sprachmodell schreibt. Darüber liegt der Skill als Prüf- und Evidence-Rahmen. Deshalb ist
@@ -114,7 +114,7 @@ python3 scripts/humanizer_audit.py --file tests/corpus/case_01_input.md --mode s
 Der Report zeigt an einem mitgelieferten Beispieltext, wie der Sammelcheck Preflight-Risiko,
 Rhythmusdaten und Befunde meldet (hier: ein verstecktes Unicode-Zeichen und ein falsches
 schließendes Anführungszeichen). Statt des Beispiels lässt sich direkt eine eigene Datei angeben.
-Das testet die Messwerkzeuge; die eigentliche Überarbeitung übernimmt der Skill im Agenten.
+Das testet die Messwerkzeuge. Die eigentliche Überarbeitung übernimmt der Skill im Agenten.
 
 ---
 
@@ -123,7 +123,7 @@ Das testet die Messwerkzeuge; die eigentliche Überarbeitung übernimmt der Skil
 
 ### Voraussetzungen
 
-- Claude Code oder Codex (CLI, App oder IDE-Integration); Cursor und andere Tools mit
+- Claude Code oder Codex (CLI, App oder IDE-Integration). Cursor und andere Tools mit
   Agent-Skills-Unterstützung funktionieren über die [manuelle Installation](#cursor-und-andere-agent-skills-tools)
 - Für den Basis-Skill ist kein Python nötig. Python 3 wird erst gebraucht, wenn die
   deterministischen Prüfskripte ausgeführt werden sollen.
@@ -152,7 +152,7 @@ codex plugin marketplace add marmbiz/humanizer-de
 ```
 
 Danach in Codex `/plugins` öffnen, den Marketplace **Humanizer DE** auswählen und
-`humanizer-de` installieren. Anschließend eine neue Codex-Sitzung starten; erst dort stehen die
+`humanizer-de` installieren. Anschließend eine neue Codex-Sitzung starten, denn erst dort stehen die
 mitgelieferten Skills zur Verfügung. Das entspricht dem aktuellen
 [Codex-Plugin-Ablauf](https://learn.chatgpt.com/docs/plugins).
 
@@ -166,9 +166,9 @@ Diese Befehle werden in einer laufenden Claude-Code-Sitzung eingegeben (Slash-Co
 ```
 
 Der erste Befehl fügt nur den Marketplace hinzu, der zweite installiert den Humanizer. Danach
-`/reload-plugins` ausführen; alternativ eine neue Claude-Code-Sitzung starten. Über `/plugin` lässt
+`/reload-plugins` ausführen, alternativ eine neue Claude-Code-Sitzung starten. Über `/plugin` lässt
 sich der Humanizer aktivieren, deaktivieren, entfernen und aktualisieren. Automatische Updates sind
-bei Drittanbieter-Marketplaces nicht zwingend aktiv; sie lassen sich im Tab **Marketplaces**
+bei Drittanbieter-Marketplaces nicht zwingend aktiv. Sie lassen sich im Tab **Marketplaces**
 einschalten oder dort manuell ausführen. Details stehen in der aktuellen
 [Claude-Code-Plugin-Dokumentation](https://code.claude.com/docs/en/discover-plugins).
 
@@ -176,7 +176,7 @@ einschalten oder dort manuell ausführen. Details stehen in der aktuellen
 
 Installiert beziehungsweise kopiert werden die Skill-Anweisungen, der Musterkatalog, Referenzen
 und optionale lokale Prüfskripte. Bei einer manuellen Kopie liegt das ganze Repository im
-Skill-Ordner; deshalb sind dort auch `tests/`, `docs/`, Plugin-Metadaten und
+Skill-Ordner, deshalb sind dort auch `tests/`, `docs/`, Plugin-Metadaten und
 `requirements-precise.txt` zu sehen. Diese Dateien führen von selbst nichts aus.
 
 **Nicht installiert werden:** Python, Click, spaCy, das deutsche spaCy-Modell, Hunspell,
@@ -248,7 +248,7 @@ cp -R ./humanizer-de ~/.cursor/skills/humanizer-de
 Projektbezogen liest Cursor zusätzlich `.cursor/skills/` und `.agents/skills/` im Projektordner;
 ein `.cursorrules`-Umweg ist nicht nötig. Details:
 [Cursor-Dokumentation zu Skills](https://cursor.com/docs/context/skills). Getestet und gepflegt
-wird der Skill mit Claude Code und Codex; in Cursor hängt das Ergebnis vom dort gewählten Modell
+wird der Skill mit Claude Code und Codex. In Cursor hängt das Ergebnis vom dort gewählten Modell
 ab. Dasselbe Prinzip gilt für weitere Tools, die den Agent-Skills-Standard umsetzen.
 
 Supports Claude Code and Codex: Das Repository enthält zusätzlich `.claude-plugin/` für Claude Code und `.codex-plugin/` plus `agents/openai.yaml` für Codex.
@@ -277,11 +277,11 @@ die Entwickler-Testsuite.
 
 ### Version und Updates
 
-- Beim Plugin zeigt die Plugin-Verwaltung die installierte Version; Updates werden dort verwaltet.
+- Beim Plugin zeigt die Plugin-Verwaltung die installierte Version. Updates werden dort verwaltet.
 - Claude Code kann Drittanbieter-Marketplaces automatisch aktualisieren, wenn dies im Marketplace-Tab
-  aktiviert wurde; sonst wird dort manuell aktualisiert.
+  aktiviert wurde, sonst wird dort manuell aktualisiert.
 - Eine manuelle Kopie aktualisiert sich nicht automatisch. Eine geklonte `main`-Version kann mit
-  Git aktualisiert werden; eine kopierte Version muss erneut kopiert werden.
+  Git aktualisiert werden. Eine kopierte Version muss erneut kopiert werden.
 - Ein ausgecheckter Release-Tag bleibt absichtlich auf genau diesem Stand.
 
 </details>
@@ -338,7 +338,7 @@ andere Produkte übertragen ließe. Eine mehrgliedrige Figur bleibt jedoch stehe
 sobald eines ihrer Glieder eine Aussage macht, die nachprüfbar falsch sein könnte.
 ```
 
-Ein KI-Werbetext mit sieben eingebauten Schablonen diente als Prüfstein. Ohne den Zusatz verschwindet davon eine, mit ihm im Schnitt fünfeinhalb. Zur Gegenprobe lief derselbe Test auf einem menschlichen Werbetext aus derselben Branche, und dort blieben alle acht Substanzanker unberührt — Fachbegriffe, Zahlen und ein Dreiklang, den der Autor sichtlich mit Absicht gesetzt hat. Der Preis: Die Eingriffstiefe steigt von neun auf zwanzig Prozent. Wer viel ändert, ändert manchmal zu viel. Lies das Ergebnis gegen.
+Ein KI-Werbetext mit sieben eingebauten Schablonen diente als Prüfstein. Ohne den Zusatz verschwindet davon eine, mit ihm im Schnitt fünfeinhalb. Zur Gegenprobe lief derselbe Test auf einem menschlichen Werbetext aus derselben Branche, und dort blieben alle acht Substanzanker unberührt: Fachbegriffe, Zahlen und ein Dreiklang, den der Autor sichtlich mit Absicht gesetzt hat. Der Preis ist eine Eingriffstiefe von zwanzig statt neun Prozent, und wer viel ändert, ändert manchmal zu viel. Lies das Ergebnis darum gegen.
 
 ### Was du zurückbekommst
 
@@ -358,9 +358,52 @@ statt Klarheit, Belegtreue oder Stimme zu verbessern.
 <details>
 <summary><strong>Power-User: lokaler Prüfablauf, Schnellcheck und Stilprofil</strong></summary>
 
+### Zwei getrennte Modellaufrufe
+
+Der optionale Runner trennt Audit und Rewrite auch technisch. Der erste, read-only Aufruf
+erstellt ein Ledger aus bestätigten Kandidaten und wortgleichen Schutzankern. Bleiben bestätigte
+Kandidaten übrig, liefert ein frischer zweiter Aufruf nur Ersetzungen dafür. Der Host setzt sie
+deterministisch ein. Teilüberschriften, Teilsätze, verschobene Schutzanker und neue
+Evidence-Blocker werden abgelehnt.
+
+Voraussetzung ist eine angemeldete lokale `claude`-CLI. Das Zielverzeichnis muss leer sein:
+
+```bash
+python3 scripts/humanizer_two_pass.py \
+  --file entwurf.md \
+  --out-dir humanizer-lauf \
+  --mode sachlich \
+  --max-budget-usd 2
+```
+
+Alternativ läuft derselbe Vertrag über eine angemeldete lokale Codex-CLI:
+
+```bash
+python3 scripts/humanizer_two_pass.py \
+  --file entwurf.md \
+  --out-dir humanizer-lauf-codex \
+  --mode sachlich \
+  --provider codex
+```
+
+Codex verwendet dabei seinen Standardanbieter. Lokale `config.toml`-Anpassungen werden für den
+isolierten Lauf nicht geladen. Eine nicht leere globale `$CODEX_HOME/AGENTS.md` oder
+`AGENTS.override.md` führt zum Abbruch, damit keine persönlichen Anweisungen Audit oder Rewrite
+verändern.
+
+Ein Modell lässt sich mit `--model` wählen. `--max-budget-usd` ist Claude vorbehalten. Codex
+protokolliert seinen Tokenverbrauch stattdessen in den JSONL-Ereignissen der Call-Artefakte.
+Der Rewrite-Aufruf erhält keine Schreibrechte: Nur der
+Host kann bestätigte Spannen anwenden. Nur ein angenommenes Ergebnis erscheint als `result.md`.
+Abgelehnte Vorschläge heißen `rejected.md`, und `report.json` nennt Schutzverletzungen oder Blocker.
+Audit, Ledger, Modellantworten und Hashes bleiben zur Nachprüfung im Zielverzeichnis.
+Der Text wird an den jeweiligen Modellanbieter übertragen. Die Quellenprüfung bleibt eine
+unvollständige Nebenprüfung. Die harten Gates schützen erkennbare Anker, ersetzen aber keine
+fachliche Endabnahme.
+
 ### Ein Durchlauf in vier Kommandos
 
-So sieht die Arbeit konkret aus; die Ausgaben sind gekürzt. Schritt 4 läuft mit dem geklonten Repo sofort, weil er auf einer mitgelieferten Fixture arbeitet. Die Schritte 1 bis 3 brauchen eigene Dateien an der Stelle von `entwurf.md`, `vorher.md` und `nachher.md`.
+So sieht die Arbeit konkret aus, die Ausgaben sind gekürzt. Schritt 4 läuft mit dem geklonten Repo sofort, weil er auf einer mitgelieferten Fixture arbeitet. Die Schritte 1 bis 3 brauchen eigene Dateien an der Stelle von `entwurf.md`, `vorher.md` und `nachher.md`.
 
 **1. Der Audit findet echte Cluster.** Ein typischer KI-Entwurf („In der heutigen digitalen Landschaft ist es entscheidend, Prozesse nahtlos zu gestalten. Unsere maßgeschneiderten Lösungen beleuchten vielschichtige Aspekte …“):
 
@@ -410,7 +453,7 @@ Für Arbeitsordner mit Markdown-Entwürfen kann der neueste Stand automatisch ge
 python3 scripts/humanizer_audit.py --latest <dir> --mode sachlich --format md
 ```
 
-Der Sammelcheck ruft Unicode-, Rhythmus-, Naturalness- und Register-Prüfung in einem Prozess auf und gibt eine kurze gemeinsame Befundliste aus. Konkrete Fundstellen enthalten optionale Originaltext-Spans; Frontmatter, Code-Fences und andere geschützte Markdown-Bereiche verschieben die Offsets nicht. Mit `--precise` (und installiertem spaCy) fängt der Check die dokumentierten Fehlalarm-Klassen ab und hängt die Syntax-Analyse als eigene Sektion an. Die Einzelskripte bleiben für gezielte Nachprüfung nutzbar; `scripts/rhythm_lint.py` druckt standardmäßig eine kompakte Dokumentansicht und zeigt volle Absatzdaten nur mit `--include-paragraphs`.
+Der Sammelcheck ruft Unicode-, Rhythmus-, Naturalness- und Register-Prüfung in einem Prozess auf und gibt eine kurze gemeinsame Befundliste aus. Konkrete Fundstellen enthalten optionale Originaltext-Spans. Frontmatter, Code-Fences und andere geschützte Markdown-Bereiche verschieben die Offsets nicht. Mit `--precise` (und installiertem spaCy) fängt der Check die dokumentierten Fehlalarm-Klassen ab und hängt die Syntax-Analyse als eigene Sektion an. Die Einzelskripte bleiben für gezielte Nachprüfung nutzbar. `scripts/rhythm_lint.py` druckt standardmäßig eine kompakte Dokumentansicht und zeigt volle Absatzdaten nur mit `--include-paragraphs`.
 
 Der Report enthält außerdem ein Preflight-Risiko (`low`, `medium`, `high`, `insufficient_text`). Es beschreibt, ob der Text messbar zu gleichförmig wirkt: etwa durch sehr ähnliche Satzlängen, kaum kurze oder lange Sätze, wiederholte Satzanfänge, viele mechanische Übergänge oder Naturalness-Cluster. Das ist eine Qualitätsheuristik, keine Aussage zur Autorenschaft.
 
@@ -430,8 +473,8 @@ def humanizer_audit(path, mode="sachlich"):
     return json.loads(report.stdout)
 ```
 
-Das deckt den Audit-Teil ab. Die Pässe des Skills – Rewrite, Claim-Lock, Selbst-Audit – laufen
-weiter im LLM-Agenten und sind bewusst nicht als API nachgebaut.
+Das deckt den deterministischen Audit-Teil ab. Ohne den optionalen Zwei-Aufruf-Runner laufen
+Rewrite, Claim-Lock und Selbst-Audit weiterhin im LLM-Agenten.
 
 ### Persönliches Stilprofil
 
@@ -449,7 +492,7 @@ Wiederkehrende Stilvorlieben überleben die Session in einer optionalen Datei `.
 }
 ```
 
-`humanizer_audit.py` und `style_profile.py` legen diese Overrides automatisch über die Basis-Korridore (Override ersetzt den Korridor der Metrik komplett); überschriebene Korridore sind im Delta-Report mit `"override": true` markiert. Mit `--profile <datei.json>` wählen beide Skripte ein anderes Profil ausdrücklich aus; fehlt der angegebene Pfad, endet der Aufruf mit einem Fehler. Mit `--no-profile` laufen sie reproduzierbar ohne Nutzerprofil. Unbekannte Metriken oder kaputtes JSON erzeugen nur eine Warnung. Die Datei gehört in die `.gitignore` des jeweiligen Projekts, nicht ins Repository.
+`humanizer_audit.py` und `style_profile.py` legen diese Overrides automatisch über die Basis-Korridore (Override ersetzt den Korridor der Metrik komplett). Überschriebene Korridore sind im Delta-Report mit `"override": true` markiert. Mit `--profile <datei.json>` wählen beide Skripte ein anderes Profil ausdrücklich aus. Fehlt der angegebene Pfad, endet der Aufruf mit einem Fehler. Mit `--no-profile` laufen sie reproduzierbar ohne Nutzerprofil. Unbekannte Metriken oder kaputtes JSON erzeugen nur eine Warnung. Die Datei gehört in die `.gitignore` des jeweiligen Projekts, nicht ins Repository.
 
 Gefüllt wird das Profil auf Wunsch im Abschluss-Dialog: Wenn ein Lauf wiederholt in dieselbe Richtung korrigiert wurde, fragt der Skill am Ende einmal, ob er sich die Regel merken soll – bei Zustimmung schreibt er sie ins Profil und weist beim ersten Anlegen auf den `.gitignore`-Eintrag `.humanizer/` hin. Details: [`references/user-profile.md`](references/user-profile.md).
 
@@ -499,10 +542,10 @@ Gefüllt wird das Profil auf Wunsch im Abschluss-Dialog: Wenn ein Lauf wiederhol
 
 ## Messen & Audit
 
-Am Anfang jedes Durchgangs steht eine Messung. Im Agenten übernimmt der Skill sie selbst; als
+Am Anfang jedes Durchgangs steht eine Messung. Im Agenten übernimmt der Skill sie selbst. Als
 Kommandozeilen-Werkzeug genügt dafür Python 3 ohne Zusatzpakete. Gemeldet werden
 Preflight-Risiko, Rhythmusdaten, eine Stilkarte sowie Befunde mit Muster-Nummer und Severity.
-Unten steht eine gekürzte Fassung; vollständig nennt die Ausgabe zusätzlich Modus, Datei und
+Unten steht eine gekürzte Fassung, vollständig nennt die Ausgabe zusätzlich Modus, Datei und
 alle leeren Prüfsektionen:
 
 ```text
@@ -523,7 +566,7 @@ Autorenschaftsprüfung – wofür die Zahlen taugen und wofür nicht, steht dire
 
 Im JSON tragen adressierbare Befunde ein optionales Feld
 `spans: [{"start": 124, "end": 125}]`. Gezählt wird in Unicode-Codepoints wie in Python,
-bezogen auf den unveränderten Originaltext; `offset_unit` nennt diese Konvention
+bezogen auf den unveränderten Originaltext. `offset_unit` nennt diese Konvention
 explizit. Dokumentweite Rhythmusmetriken erhalten bewusst keine erfundene Einzelposition.
 
 Die Stilkarte gibt es auch einzeln, wenn dich nur die Messwerte interessieren und nicht der
@@ -645,7 +688,7 @@ sowie LanguageTool und Java.
 - **Python 3** führt die mitgelieferten deterministischen Prüfskripte aus. Der Basis-Skill braucht
   es nicht.
 - **spaCy** schaltet `--precise` frei. Empfohlen ist eine projektlokale Umgebung mit einer von
-  spaCy unterstützten Python-Version; CI und die folgenden Befehle verwenden Python 3.12:
+  spaCy unterstützten Python-Version. CI und die folgenden Befehle verwenden Python 3.12:
 
   ```bash
   # macOS/Linux
@@ -669,7 +712,7 @@ sowie LanguageTool und Java.
   Einsteiger können sie zunächst auslassen. Details: [Hunspell](https://github.com/hunspell/hunspell).
 - **LanguageTool** ist eine ausdrückliche Zweitmeinung für Maintainer. Auf macOS stellt
   `brew install languagetool` den von `make lt` erwarteten CLI-Befehl bereit. Unter Windows und
-  Linux unterscheidet sich die CLI-/Java-Einrichtung; Desktop- oder Browser-App allein reichen
+  Linux unterscheidet sich die CLI-/Java-Einrichtung. Desktop- oder Browser-App allein reichen
   dafür nicht zwingend. LanguageTool bleibt außerhalb von `verify` und CI.
 
 Fehlt ein Werkzeug, meldet es sich mit `"available": false` oder einer Skip-Meldung ab. Nichts
@@ -681,7 +724,7 @@ davon wird zusammen mit dem Skill installiert oder automatisch aktiviert.
 
 ## 74 Muster in 11 Kategorien
 
-Der Skill arbeitet mit einem Katalog aus **74 KI-Schreibmustern** in 11 Kategorien, priorisiert nach Schweregrad (HIGH / MEDIUM / LOW). Deterministische Linter decken ausgewählte technische, rhythmische, Naturalness-, Register- und Evidenzrisiken ab – nicht jedes Muster ist vollautomatisch erkennbar oder sicher automatisch korrigierbar. Linter-gestützt sind derzeit rund 18 Muster (2, 4, 8, 13, 16, 39, 43, 44, 46, 54, 55, 58, 61, 63–65 sowie ein advisory Kandidatenhinweis für 72; Muster 2 und 44: Teilaspekte, Muster 39: Erkennung im Präzisionspfad mit spaCy, kein Gate-Anschluss) plus Register-, Rhythmus- und Evidenz-Checks; die übrigen Muster prüft das Modell anhand des Katalogs. Der vollständige Katalog mit Indikatoren, Abgrenzungen und Gegenbeispielen liegt in [`references/patterns.md`](references/patterns.md). Für den schnellen Blick ohne Katalog fasst [`assets/checkliste-ki-tells.md`](assets/checkliste-ki-tells.md) die zehn häufigsten Tells auf einer Seite zusammen.
+Der Skill arbeitet mit einem Katalog aus **74 KI-Schreibmustern** in 11 Kategorien, priorisiert nach Schweregrad (HIGH / MEDIUM / LOW). Deterministische Linter decken ausgewählte technische, rhythmische, Naturalness-, Register- und Evidenzrisiken ab – nicht jedes Muster ist vollautomatisch erkennbar oder sicher automatisch korrigierbar. Linter-gestützt sind derzeit rund 18 Muster (2, 4, 8, 13, 16, 39, 43, 44, 46, 54, 55, 58, 61, 63–65 sowie ein advisory Kandidatenhinweis für 72; Muster 2 und 44: Teilaspekte, Muster 39: Erkennung im Präzisionspfad mit spaCy, kein Gate-Anschluss) plus Register-, Rhythmus- und Evidenz-Checks. Die übrigen Muster prüft das Modell anhand des Katalogs. Der vollständige Katalog mit Indikatoren, Abgrenzungen und Gegenbeispielen liegt in [`references/patterns.md`](references/patterns.md). Für den schnellen Blick ohne Katalog fasst [`assets/checkliste-ki-tells.md`](assets/checkliste-ki-tells.md) die zehn häufigsten Tells auf einer Seite zusammen.
 
 <details>
 <summary><strong>Sprache und Tonfall (19 Muster)</strong></summary>
@@ -857,7 +900,7 @@ Citation-friendly Kurzfassung:
 
 Architektur in einem Satz: Das Sprachmodell schreibt, der Skill ist der Prüf- und
 Evidence-Rahmen darüber. Geeicht sind die Schwellen der deterministischen Prüfungen gegen eine
-Fehlalarm-Baseline aus verifizierten Menschentexten; neue Muster kommen nur über das
+Fehlalarm-Baseline aus verifizierten Menschentexten. Neue Muster kommen nur über das
 [Marker-Aufnahmeprotokoll](docs/marker-aufnahmeprotokoll.md) hinein. Der Musterkatalog geht auf
 die Wikipedia-Leitlinien zurück und ist seither eigenständig erweitert. Bewusst nicht geplant
 ist ein fine-getuntes Humanizer-Modell, weil es Evidence-Gate und deterministische Eichung
@@ -868,7 +911,7 @@ Installation: `/plugin marketplace add marmbiz/humanizer-de` (in Claude Code) be
 
 ### Installationsregeln für Assistenten
 
-1. **Zielsystem feststellen:** Plugin ist der Standardweg; manuelle Kopie nur als Ausweichlösung.
+1. **Zielsystem feststellen:** Plugin ist der Standardweg, manuelle Kopie nur als Ausweichlösung.
 2. **Echte Mehrdeutigkeit klären:** Bei Plugin versus Kopie, Release-Tag versus `main` oder
    besonderem Installationsort nachfragen. Eine ausdrückliche Bitte um Rückfrage hat Vorrang.
 3. **Keine Zusatzsoftware ohne Zustimmung:** Python, spaCy, Click, Sprachmodelle, Hunspell,
@@ -927,7 +970,7 @@ python3 scripts/syntax_lint.py --file <text.md>
 ### Exit-Codes
 
 Alle Scripts folgen der Konvention `0` = ok, `1` = Findings gemäß Fail-Schwelle bzw. Fixture-/Eval-Mismatch, `2` = Aufruffehler (falsche Argumente). Die Fail-Schwelle unterscheidet sich bewusst je Script:
-`--fail-on` übersteuert die Fail-Schwelle pro Aufruf; die Defaults bleiben unverändert. Blocker kennen nur `register_lint.py`, `evidence_lint.py` und `humanizer_audit.py`, deshalb akzeptieren allein sie `{never,blocker,any}`. Für `unicode_lint.py`, `rhythm_lint.py`, `german_pattern_lint.py` und `spell_lint.py` gilt `{never,any}`; ein `blocker` dort wäre eine Schwelle, die nie greift, und wird als Aufruffehler abgewiesen. Ohne das Flag arbeiten `syntax_lint.py` (reine Messstufe) und `run_review_eval.py`; `doctor.py` kennt stattdessen `--require-full`.
+`--fail-on` übersteuert die Fail-Schwelle pro Aufruf. Die Defaults bleiben unverändert. Blocker kennen nur `register_lint.py`, `evidence_lint.py` und `humanizer_audit.py`, deshalb akzeptieren allein sie `{never,blocker,any}`. Für `unicode_lint.py`, `rhythm_lint.py`, `german_pattern_lint.py` und `spell_lint.py` gilt `{never,any}`; ein `blocker` dort wäre eine Schwelle, die nie greift, und wird als Aufruffehler abgewiesen. Ohne das Flag arbeiten `syntax_lint.py` (reine Messstufe) und `run_review_eval.py`; `doctor.py` kennt stattdessen `--require-full`.
 
 | Script | Exit `1` bei |
 |---|---|
@@ -947,7 +990,7 @@ Das Evidence-Gate prüft ein Textpaar unabhängig vom Humanizing auf Faktenversc
 python3 scripts/evidence_lint.py --before-file before.md --after-file after.md
 ```
 
-Verglichen werden Faktenanker (Zahlen, Daten, URLs, DOIs, Paragraphen, Code, Zitate, Eigennamen), der Autoritätsgrad von Aussagen und die Claim-Richtung (Zunahme/Abnahme). Der JSON-Report listet jede Abweichung; ein Blocker (etwa eine neue Zahl oder eine gekippte Aussagerichtung) bedeutet: die Umformulierung hat Fakten verschoben und gehört zurückgewiesen. Exit-Code 1 nur bei Blockern, Warnings (z. B. neue Eigennamen) blocken nicht. Details zum Schema stehen in [`references/evidence-ledger.md`](references/evidence-ledger.md).
+Verglichen werden Faktenanker (Zahlen, Daten, URLs, DOIs, Paragraphen, Code, Zitate, Eigennamen), der Autoritätsgrad von Aussagen und die Claim-Richtung (Zunahme/Abnahme). Der JSON-Report listet jede Abweichung. Ein Blocker (etwa eine neue Zahl oder eine gekippte Aussagerichtung) bedeutet: die Umformulierung hat Fakten verschoben und gehört zurückgewiesen. Exit-Code 1 nur bei Blockern, Warnings (z. B. neue Eigennamen) blocken nicht. Details zum Schema stehen in [`references/evidence-ledger.md`](references/evidence-ledger.md).
 
 Die YAML-Szenarien in `tests/scenarios/` sind bewusst maschinenlesbare Contracts. QGIR-Szenarien prüfen zusätzlich Pass-Limits, Edit-Budget, geschützte Anker, Registerdrift und Claim-Richtungsdrift. Detector-Bezug bleibt außerhalb der Contract-Checks. Die ausführlichere Datei `tests/SCENARIOS.md` bleibt die manuelle LLM-im-Loop-Referenz.
 
@@ -964,18 +1007,18 @@ Bei jedem Version-Bump:
 1. Version in `SKILL.md`, Plugin-Metadaten, Referenzen und Changelog synchronisieren.
 2. `make verify` ausführen.
 3. Änderungen per Pull Request einreichen, alle Pflichtchecks abwarten und nach `main` mergen.
-4. Den CI-Lauf auf `main` abwarten; erst danach einen Tag `vX.Y.Z` exakt auf den grünen
+4. Den CI-Lauf auf `main` abwarten und erst danach einen Tag `vX.Y.Z` exakt auf den grünen
    Merge-Commit setzen und pushen.
 5. Auf GitHub einen Release aus diesem Tag erstellen. Die Release Notes dürfen die Changelog-Zeile erweitern, müssen aber denselben Scope beschreiben.
 
-Im README bleibt nur die aktuelle Version einzeln stehen; ältere Releases werden nach
+Im README bleibt nur die aktuelle Version einzeln stehen. Ältere Releases werden nach
 Minor-Reihe zusammengefasst. Jeder veröffentlichte Stand behält trotzdem seinen Tag und
 GitHub Release.
 
 ### Feedback und Beitrag
 
 - **Bugs melden:** [Issue im Repository erstellen](https://github.com/marmbiz/humanizer-de/issues/new/choose)
-- **Muster ergänzen:** Pull Request senden; neue oder materiell erweiterte Lint-Regeln müssen
+- **Muster ergänzen:** Pull Request senden. Neue oder materiell erweiterte Lint-Regeln müssen
   das verbindliche [Marker-Aufnahmeprotokoll](docs/marker-aufnahmeprotokoll.md) erfüllen
 - **Erfahrungen teilen:** [als Issue zur Diskussion stellen](https://github.com/marmbiz/humanizer-de/issues/new/choose)
 
@@ -983,12 +1026,47 @@ GitHub Release.
 
 ## Was ist neu?
 
-- **5.20.0** - Neues Zusatzflag Kontrollierte Sprache (Kontrolliertes Deutsch, tekom/DIN
+- **5.22.0** - Neues Zusatzflag Kontrollierte Sprache (Kontrolliertes Deutsch, tekom/DIN
   8579-1) für Sachlich und Formal: ein Begriff pro Konzept, feste Anforderungsmodalverben
   (muss/sollte/kann/darf nicht), höchstens eine Nebensatzebene pro Satz. Nur auf ausdrücklichen
   Wunsch aktiv, kein eigener `mode`-Wert. Zwei neue judgment-only Muster (73, 74) im Katalog,
   Details in [`references/kontrolliert.md`](references/kontrolliert.md). Bei aktivem Flag hat
   die Kurzsatz-Vorgabe Vorrang vor Pass 4 (Rhythmus/Burstiness).
+- **5.21.2** - Muster 16 kennt jetzt die Semikolon-Variante: Gehäufte Hauptsatz-Verbindungen per
+  Semikolon sind ein Claude-typisches Interpunktionsmuster, und die Ersetzungshierarchie warnt vor
+  genau dieser Ausweichroute. Im Katalog sind 66 deutsche Schlusszeichen repariert, die als gerades
+  ASCII gesetzt waren. Diese Fehlerklasse behebt `unicode_lint --fix` künftig automatisch. Zehn
+  Besser-Beispiele lösten ihr Muster einheitlich per Gedankenstrich oder Semikolon und zeigen nun
+  gestreute Ersatzstrategien. Dazu drei Doku-Korrekturen: WARP.md führt Muster 51 nicht mehr als
+  linter-gestützt, die SIR-Referenzwerte tragen korrekte Etiketten, und die Modusmatrix beschreibt
+  das Linter-Verhalten je Modus.
+- **5.21.1** - Pass 4 rotiert Satzanfänge nur noch, wenn wirklich ein Rhythmus-Cluster vorliegt, und
+  stoppt am menschlichen Maß von rund 0,8 subjektinitialen Sätzen, statt pauschal jedes dritte
+  Vorfeld umzubauen. In gemessenen menschlichen Blog- und Sachtexten beginnen vier von fünf Sätzen
+  mit dem Subjekt. Wer tiefer rotiert, erzeugt das nächste Muster. Muster 3 nennt jetzt auch „es ist
+  wichtig zu beachten“ und „zu beachten ist, dass“. Bei Muster 64 kennzeichnet der Katalog
+  urteilsbasierte Vokabeln maschinenlesbar, ein neuer Test hält Katalog und Linter synchron.
+  Erkennungslogik und Schwellen bleiben unverändert.
+- **5.21.0** - Der getrennte Two-Pass-Runner unterstützt neben Claude jetzt auch Codex. Codex
+  läuft in zwei ephemeren, read-only Prozessen mit strukturierten Ausgaben. Benutzerkonfiguration
+  und Exec-Regeln sowie globale oder projektbezogene `AGENTS.md`-Anweisungen werden nicht geladen,
+  lokale Skills, Plugin-, App-, Shell- und Werkzeug-Suchfunktionen sind abgeschaltet. Meldet der
+  Ereignisstrom trotzdem einen Werkzeugaufruf, verwirft der Host den Lauf. Das Claude-spezifische
+  USD-Budget wird bei Codex nicht vorgetäuscht: dort bleiben die Tokenzahlen in den
+  Call-Artefakten nachvollziehbar.
+- **5.20.0** - Audit und Rewrite können erstmals in zwei wirklich getrennten Modellaufrufen
+  laufen. Der optionale lokale Runner friert Kandidaten, Fakten, Zitate, Fachbegriffe und
+  Persona-Anker nach dem ersten Aufruf ein. Ein frischer, werkzeugloser Rewrite darf danach
+  nur bestätigte Spannen bearbeiten. Eingesetzt werden seine Ersetzungen vom Host, nicht vom
+  Modell. Vollständige Überschriften und Sätze gehören dabei jeweils einer Änderung. Unsichere
+  Teilstrukturen, überlappende Kandidaten, verschobene Schutzanker und neue Evidence-Blocker
+  führen zum Verwerfen statt zu einem scheinbar fertigen Text. Die Quellenprüfung bleibt
+  ausdrücklich unvollständig. Der neue Ablauf schützt Stil und Substanz, macht daraus aber
+  keinen Belegprüfer. Daneben zählen Fettdruck und Antithesen in Fremdstimmen nicht mehr zur
+  Autorenprosa, fünf adverbiale Vorfelder verzerren die SIR-Messung nicht länger, und das
+  Evidence-Gate erkennt Beleg-Widerlegungs-Wechsel, ohne `%`/`Prozent` oder `€`/`Euro` als
+  Faktenänderung zu behandeln. Muster 64 trennt außerdem ein Cluster abstrakter
+  „tragen“-Metaphern von etablierten und konkreten Verwendungen des Verbs.
 - **5.19.0** - Unsichtbare Zeichen findet Muster 43 jetzt auch dort, wo sie am gefährlichsten
   sind. Neu geprüft werden der Unicode-Tags-Block und die Variation Selectors. Im Tags-Block
   spiegeln die Zeichen U+E0020 bis U+E007E die druckbaren ASCII-Zeichen, weshalb sich damit
@@ -1052,7 +1130,7 @@ GitHub Release.
   `security-guidance` aus dem `claude-plugins-official`-Marketplace prüft bei `PostToolUse` mit
   Matcher auf die Schreibwerkzeuge und reicht Befunde über
   `hookSpecificOutput.additionalContext` weiter. Bei Text, der direkt im Prompt steht, greift
-  er nicht. Die Musterzahl bleibt bei 72; Muster 2 und 44 sind jetzt teilweise linter-gestützt,
+  er nicht. Die Musterzahl bleibt bei 72. Muster 2 und 44 sind jetzt teilweise linter-gestützt,
   Muster 9 bleibt Urteilssache. Auf frisch erzeugter KI-Werbung feuert der Detektor allerdings
   nicht. In sechs Testläufen entstanden sechs verschiedene Überschriften für dieselbe
   Kundenstimmen-Sektion, und davon kennt er genau eine. Er erkennt also Formulierungen und
@@ -1076,7 +1154,7 @@ GitHub Release.
   woran ein kompletter Lauf scheiterte. Beim Nachschlagen in Referenzdateien fordert er
   Zeileninhalt statt der Dateiliste an, die zuvor drei Anläufe für ein einzelnes Muster
   kostete. Und den Katalog holt er nun gezielt über die Pass-Anker aus 5.15.0 statt die ganze
-  Datei zu lesen; der Volltext bleibt dem Audit-Zweig vorbehalten. Hintergrund der letzten
+  Datei zu lesen. Der Volltext bleibt dem Audit-Zweig vorbehalten. Hintergrund der letzten
   Änderung: Nach der Katalog-Kopplung las jeder Lauf die 14.700 Wörter dreimal, gemessen
   45 Prozent Mehrkosten auf drei Vergleichstexten.
 - **5.15.0** - Seit dieser Version hängt der Musterkatalog an der Arbeitsanweisung. Bisher rief
@@ -1090,7 +1168,7 @@ GitHub Release.
   Für die Anleitung steigt die Wortgrenze dafür von 2000 auf 2300.
 - **5.14.0** - Acht Robustheitsfehler behoben, die das Werkzeug an Stellen blind oder falsch
   machten, an denen niemand nachgesehen hatte. Enthielt ein unveränderter Text sowohl
-  Steigerungs- als auch Sinkwörter, blockierte ihn das Evidence-Gate; jetzt blockt nur eine echte
+  Steigerungs- als auch Sinkwörter, blockierte ihn das Evidence-Gate, jetzt blockt nur eine echte
   Richtungsänderung. In einzeiligem HTML wird die Prosa wieder geprüft, was den Parsedown-Weg
   betrifft, ganze fett gesetzte Sätze zählen nun mit, und zwischen benachbarten Fett-Spannen
   entstehen keine Phantom-Treffer mehr. Zitierte Fremdrede zählt nicht mehr zur Autorenstimme.
@@ -1101,21 +1179,21 @@ GitHub Release.
   Katalog und Schwellen bleiben unverändert. Die Fehlalarm-Baseline ist byte-identisch geblieben.
 
 - **5.13.0** - Befunde von `syntax_lint` erscheinen jetzt als Hinweise mit Severity `info` im
-  kompakten Audit-Report; bisher war Muster 39 nur in einer internen Sektion sichtbar.
+  kompakten Audit-Report. Bisher war Muster 39 nur in einer internen Sektion sichtbar.
   **Achtung für CI-Nutzer:** Advisory-Befunde sind ab sofort gate-neutral, `--fail-on any`
   schlägt darauf also nicht mehr an. Ohne diese Regel würde jeder deutsche Text mit einer
   Passivkonstruktion das Gate reißen, denn ein Hinweis liefert Kontext und keinen Defekt.
   Betroffen ist auch der Kandidatenhinweis für Muster 72, der bisher für sich genommen Exit-Code
   `1` auslöste. Künftig werden unbelegte oder erfundene Quellen immer markiert, selbst wenn der Text
-  sonst unangetastet bleibt; weil Markieren kein Eingriff ist, bleibt der Null-Edit-Vertrag
-  intakt. Klarstellung zur Modussteuerung: Die deterministischen Linter melden modusunabhängig,
-  nur die Preflight-Empfehlung wertet den Modus aus. Katalog und Schwellen bleiben unverändert.
+  sonst unangetastet bleibt. Weil Markieren kein Eingriff ist, bleibt der Null-Edit-Vertrag
+  intakt. Klarstellung zur Modussteuerung: Der Muster-Linter meldet modusunabhängig,
+  nur die Preflight-Empfehlung wertet den Modus maschinell aus. Katalog und Schwellen bleiben unverändert.
 
 - **5.12.0** - Wartungsrelease mit zwei geschlossenen Detektor-Lücken: Fettdruck-Marker
   schlossen die Prosa zwischen zwei Fett-Spannen als Zitat aus, und der Fakten-Carve-out griff
   nur für „nicht A, sondern B“. Wochentags-, Monats- und Einheitenkorrekturen bleiben jetzt in
   beiden Antithesenformen unbeanstandet. Zeilenenden überleben Lesen und Schreiben, damit
-  Positionsangaben zur Datei passen; unlesbare Dateien und defekte Fixtures enden
+  Positionsangaben zur Datei passen. Unlesbare Dateien und defekte Fixtures enden
   vertragsgemäß mit Exit-Code `2`. **Für CI-Nutzer wichtig:** `--fail-on blocker` entfällt bei
   `unicode_lint.py`, `rhythm_lint.py`, `german_pattern_lint.py` und `spell_lint.py`, weil
   diese Scripts keine Blocker erzeugen und die Option das Gate still abschaltete. Dazu

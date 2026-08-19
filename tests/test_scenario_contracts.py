@@ -17,6 +17,19 @@ spec.loader.exec_module(run_review_eval)
 
 
 class ScenarioContractTests(unittest.TestCase):
+    def test_eval_runner_reuses_sibling_module_instances(self):
+        code = (
+            "import sys; "
+            f"sys.path.insert(0, {str(ROOT / 'scripts')!r}); "
+            "import run_review_eval as runner; "
+            "assert runner.evidence_lint is sys.modules['evidence_lint']; "
+            "assert runner.register_lint is sys.modules['register_lint']; "
+            "assert runner.rhythm_lint is sys.modules['rhythm_lint']; "
+            "assert runner.style_profile.register_lint is runner.register_lint"
+        )
+        completed = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True)
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+
     def assert_scenario_usage_error(self, scenario: dict, message: str) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
             path = Path(tmp_dir) / "invalid.json"
@@ -34,7 +47,7 @@ class ScenarioContractTests(unittest.TestCase):
 
     def test_all_scenarios_have_required_contract_fields(self):
         files = run_review_eval.scenario_files(SCENARIOS)
-        self.assertEqual(len(files), 28)
+        self.assertEqual(len(files), 29)
         for file_path in files:
             with self.subTest(file=file_path.name):
                 scenario = run_review_eval.load_scenario(file_path)
