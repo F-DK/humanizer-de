@@ -1060,6 +1060,11 @@ GitHub Release.
   Wunsch aktiv, kein eigener `mode`-Wert. Zwei neue judgment-only Muster (73, 74) im Katalog,
   Details in [`references/kontrolliert.md`](references/kontrolliert.md). Bei aktivem Flag hat
   die Kurzsatz-Vorgabe Vorrang vor Pass 4 (Rhythmus/Burstiness).
+- **5.21.3** - Der Antithesen-Detektor von Muster 8 erkennt jetzt auch den nachgestellten
+  Kontrast-Schwanz: Sätze mit dem Schluss „X, nicht Y.“ zählen in den bestehenden
+  Dichtebefund. Abkürzungs-, Dezimal- und Ordinalpunkte gelten dabei nicht als Satzende.
+  Wie bisher bleiben beidseitige Wert-Korrekturen nach dem Muster
+  „am Dienstag, nicht am Mittwoch.“ ausgenommen, und an den Schwellen ändert sich nichts.
 - **5.21.2** - Muster 16 kennt jetzt die Semikolon-Variante: Gehäufte Hauptsatz-Verbindungen per
   Semikolon sind ein Claude-typisches Interpunktionsmuster, und die Ersetzungshierarchie warnt vor
   genau dieser Ausweichroute. Im Katalog sind 66 deutsche Schlusszeichen repariert, die als gerades
