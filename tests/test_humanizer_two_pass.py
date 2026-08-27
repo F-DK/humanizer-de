@@ -521,7 +521,10 @@ class HumanizerTwoPassTests(unittest.TestCase):
                     "scope": "phrase",
                 }
             ],
-            "advisories": [{"source": "Lösung", "reason": "Quelle nicht verifiziert"}],
+            "advisories": [
+                {"source": "Lösung", "reason": "Quelle nicht verifiziert"},
+                {"source": "Satzlängenvarianz 0,512", "reason": "Metrik auffällig"},
+            ],
             "protected": {"facts": [], "quotes": [], "terms": [], "persona": []},
         }
         with tempfile.TemporaryDirectory() as temp_name:
@@ -551,8 +554,21 @@ class HumanizerTwoPassTests(unittest.TestCase):
             self.assertIn("BESTÄTIGTES LEDGER", run.call_args_list[1].args[0])
             self.assertEqual((out / "result.md").read_text(encoding="utf-8"), "Die Lösung.\n")
             report = json.loads((out / "report.json").read_text(encoding="utf-8"))
+            confirmed = json.loads((out / "confirmed-ledger.json").read_text(encoding="utf-8"))
             self.assertEqual(report["advisory_count"], 1)
-            self.assertEqual(report["advisories"], audit["advisories"])
+            self.assertEqual(report["advisories"], audit["advisories"][:1])
+            self.assertEqual(report["discarded_advisory_count"], 1)
+            self.assertEqual(
+                report["discarded_advisories"],
+                [
+                    {
+                        "source": "Satzlängenvarianz 0,512",
+                        "reason": "source_missing_from_original",
+                    }
+                ],
+            )
+            self.assertEqual(confirmed["advisories"], report["advisories"])
+            self.assertEqual(confirmed["discarded_advisories"], report["discarded_advisories"])
 
     def test_model_calls_disable_tools(self):
         envelope = json.dumps(
