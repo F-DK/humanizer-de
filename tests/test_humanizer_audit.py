@@ -391,6 +391,33 @@ class HumanizerAuditTests(unittest.TestCase):
         self.assertEqual(after["score"], before["score"] + 2)
         self.assertIn(after["risk"], {"medium", "high"})
 
+    def test_low_preflight_never_recommends_a_rewrite_by_mode(self):
+        rhythm_report = {
+            "document": {
+                "sentence_count": 8,
+                "stddev_mean_ratio": 0.6,
+                "subject_initial_ratio": 0.5,
+                "repeated_openers": [],
+                "connector_density_by_paragraph": [0],
+                "sentence_length_buckets": {
+                    "ratios": {"short_lt_12": 0.15, "long_gt_28": 0.1}
+                },
+                "paragraph_sentence_counts_uniform": False,
+            }
+        }
+
+        for mode in ("locker", "sachlich", "formal"):
+            with self.subTest(mode=mode):
+                preflight = humanizer_audit.preflight_assessment(
+                    rhythm_report, [], [], mode
+                )
+                self.assertEqual(preflight["risk"], "low")
+                self.assertEqual(
+                    preflight["recommendation"],
+                    "no_rewrite_or_local_edit_only",
+                )
+                self.assertEqual(preflight["combing"]["reason"], "no_cluster")
+
     def test_antithesis_summary_keeps_density_before_long_matches(self):
         text = (
             "Nicht abwarten, sondern machen. Der Plan ist mutig und nicht vorsichtig. "
