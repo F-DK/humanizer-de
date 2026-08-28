@@ -133,6 +133,35 @@ def package_checks(root: Path) -> tuple[list[dict[str, Any]], str | None]:
     elif marketplace_version:
         versions["marketplace"] = marketplace_version
 
+    version_files = {
+        "WARP.md": (root / "WARP.md", r"(?m)\A# WARP[^\n]*\(v(\d+\.\d+\.\d+)\)$"),
+        "README.md": (
+            root / "README.md",
+            r"(?m)^## Was ist neu\?\s*\n- \*\*(\d+\.\d+\.\d+)\*\*",
+        ),
+        "references/patterns.md": (
+            root / "references" / "patterns.md",
+            r"\A[^\n]*\n[^\n]*\nVollständiger Musterkatalog[^\n]*\bv(\d+\.\d+\.\d+)\.",
+        ),
+        "references/decision-tables.md": (
+            root / "references" / "decision-tables.md",
+            r"\A[^\n]*\n[^\n]*\nNutze diese Tabellen[^\n]*\bv(\d+\.\d+\.\d+)\.",
+        ),
+        "docs/coverage-matrix.md": (
+            root / "docs" / "coverage-matrix.md",
+            r"\A[^\n]*\n[^\n]*\nStatus:[^\n]*\bv(\d+\.\d+\.\d+)\.",
+        ),
+        "CITATION.cff": (root / "CITATION.cff", r"(?m)^version:\s*(\d+\.\d+\.\d+)\s*$"),
+    }
+    for name, (path, pattern) in version_files.items():
+        if not path.is_file():
+            continue
+        try:
+            match = re.search(pattern, path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError):
+            match = None
+        versions[name] = match.group(1) if match else None
+
     known_versions = [value for value in versions.values() if value]
     synced = len(known_versions) == len(versions) and len(set(known_versions)) == 1
     checks.append(
@@ -376,7 +405,7 @@ def build_report(root: Path = ROOT) -> dict[str, Any]:
         "ok": ok,
         "full": full,
         "summary": "full" if full else ("base_only" if ok else "error"),
-        "privacy": "No user text or content files were read.",
+        "privacy": "No user text was read; only the listed repository and skill files were read.",
         "checks": checks,
     }
 
@@ -399,7 +428,7 @@ def format_report(report: dict[str, Any]) -> str:
         [
             "",
             f"Gesamt: {report['summary'].upper()}",
-            "Datenschutz: Es wurden keine Nutzertexte oder Inhaltsdateien gelesen.",
+            "Datenschutz: Es wurden keine Nutzertexte gelesen; nur die aufgeführten Repo-/Skill-Dateien.",
         ]
     )
     return "\n".join(lines)

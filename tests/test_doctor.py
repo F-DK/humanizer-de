@@ -30,7 +30,10 @@ class DoctorTests(unittest.TestCase):
         self.assertTrue(report["ok"])
         self.assertEqual(report["name"], "humanizer-de")
         self.assertEqual(report["version"], "5.22.1")
-        self.assertEqual(report["privacy"], "No user text or content files were read.")
+        self.assertEqual(
+            report["privacy"],
+            "No user text was read; only the listed repository and skill files were read.",
+        )
         ids = {item["id"] for item in report["checks"]}
         self.assertTrue(
             {
@@ -66,7 +69,7 @@ class DoctorTests(unittest.TestCase):
             "ok": True,
             "full": False,
             "summary": "base_only",
-            "privacy": "No user text or content files were read.",
+            "privacy": "No user text was read; only the listed repository and skill files were read.",
             "checks": [],
         }
         with mock.patch.object(doctor, "build_report", return_value=report):
@@ -175,6 +178,25 @@ class DoctorTests(unittest.TestCase):
         version_sync = next(item for item in checks if item["id"] == "version_sync")
         self.assertEqual(version_sync["status"], "error")
         self.assertEqual(json.loads(version_sync["detail"])["marketplace"], None)
+
+    def test_metadata_file_version_mismatch_breaks_version_sync(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "references").mkdir()
+            (root / "references" / "patterns.md").write_text(
+                "# Humanizer-de Pattern Catalog\n\n"
+                "Vollst\u00e4ndiger Musterkatalog f\u00fcr Humanizer (Deutsch) v1.0.1.\n",
+                encoding="utf-8",
+            )
+            with mock.patch.object(doctor, "skill_version", return_value="1.0.0"):
+                with mock.patch.object(
+                    doctor, "read_json", return_value={"name": "humanizer-de", "version": "1.0.0"}
+                ):
+                    checks, _ = doctor.package_checks(root)
+
+        version_sync = next(item for item in checks if item["id"] == "version_sync")
+        self.assertEqual(version_sync["status"], "error")
+        self.assertEqual(json.loads(version_sync["detail"])["references/patterns.md"], "1.0.1")
 
     def test_human_report_has_clear_summary(self):
         output = doctor.format_report(self.report)
