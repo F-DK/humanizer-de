@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import difflib
 import hashlib
 import json
 import math
@@ -13,6 +14,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -456,6 +458,136 @@ def protected_violations(original: str, result: str, ledger: dict[str, Any]) -> 
     if not violations and not is_subsequence(after_order, before_order):
         violations.append("protected anchor order changed")
     return violations
+
+
+def structure_delta(before: str, after: str) -> dict[str, Any]:
+    """Schließt die Formatierungsblindheit der wortbasierten Eingriffstiefe."""
+
+    def extract(text: str) -> dict[str, list[Any]]:
+        lines = text.splitlines(keepends=True)
+        offsets = []
+        position = 0
+        for line in lines:
+            offsets.append(position)
+            position += len(line)
+
+        masked = list(text)
+        fences = []
+        index = 0
+        while index < len(lines):
+            body = lines[index].rstrip("\r\n")
+            opening = re.match(r"^[ \t]{0,3}(`{3,}|~{3,})(.*)$", body)
+            if not opening or (opening.group(1).startswith("`") and "`" in opening.group(2)):
+                index += 1
+                continue
+            marker = opening.group(1)[0]
+            closing = re.compile(
+                rf"^[ \t]{{0,3}}{re.escape(marker)}{{{len(opening.group(1))},}}[ \t]*$"
+            )
+            end_index = index + 1
+            while end_index < len(lines) and not closing.fullmatch(
+                lines[end_index].rstrip("\r\n")
+            ):
+                end_index += 1
+            end_index = min(end_index + 1, len(lines))
+            start = offsets[index]
+            end = offsets[end_index] if end_index < len(lines) else len(text)
+            fences.append(text[start:end])
+            for offset in range(start, end):
+                if masked[offset] not in "\r\n":
+                    masked[offset] = " "
+            index = end_index
+
+        without_fences = "".join(masked)
+        plain_lines = without_fences.splitlines()
+        headings = []
+        for line_index, line in enumerate(plain_lines):
+            atx = re.match(r"^[ \t]{0,3}(#{1,6})(?:[ \t]+(.*)|[ \t]*)$", line)
+            if atx:
+                wording = re.sub(r"[ \t]+#+[ \t]*$", "", atx.group(2) or "").strip()
+                headings.append((len(atx.group(1)), wording))
+            elif (
+                line.strip()
+                and line_index + 1 < len(plain_lines)
+                and (underline := re.fullmatch(r"[ \t]{0,3}(=+|-+)[ \t]*", plain_lines[line_index + 1]))
+            ):
+                headings.append((1 if underline.group(1).startswith("=") else 2, line.strip()))
+
+        link_pattern = re.compile(
+            r"(?<!!)\[([^\]\r\n]+)\]\([ \t]*(?:<([^>\r\n]+)>|([^\s)]+))"
+            r"(?:[ \t]+(?:\"[^\"\r\n]*\"|'[^'\r\n]*'|\([^\)\r\n]*\)))?[ \t]*\)"
+        )
+        links = list(link_pattern.finditer(without_fences))
+        link_targets = [match.group(2) or match.group(3) for match in links]
+        link_texts = [match.group(1) for match in links]
+
+        inline_pattern = re.compile(r"(?<!`)(`+)(?!`)(.+?)(?<!`)\1(?!`)", re.DOTALL)
+        inline_matches = list(inline_pattern.finditer(without_fences))
+        inline_code = [match.group(2) for match in inline_matches]
+        url_mask = list(without_fences)
+        for match in links + inline_matches:
+            for offset in range(*match.span()):
+                if url_mask[offset] not in "\r\n":
+                    url_mask[offset] = " "
+        for match in re.finditer(r"https?://[^\s<>\[\]{}\"']+", "".join(url_mask)):
+            target = match.group().rstrip(".,;:!?")
+            while target.endswith(")") and target.count(")") > target.count("("):
+                target = target[:-1]
+            link_targets.append(target)
+
+        return {
+            "headings": headings,
+            "link_targets": link_targets,
+            "link_texts": link_texts,
+            "fences": fences,
+            "inline_code": inline_code,
+        }
+
+    old = extract(before)
+    new = extract(after)
+    differences: list[dict[str, Any]] = []
+
+    def sequence_changes(kind: str, old_values: list[Any], new_values: list[Any]) -> None:
+        for tag, old_start, old_end, new_start, new_end in difflib.SequenceMatcher(
+            a=old_values, b=new_values, autojunk=False
+        ).get_opcodes():
+            if tag == "equal":
+                continue
+            paired = min(old_end - old_start, new_end - new_start)
+            for offset in range(paired):
+                differences.append(
+                    {
+                        "kind": f"{kind}_changed",
+                        "before": old_values[old_start + offset],
+                        "after": new_values[new_start + offset],
+                    }
+                )
+            differences.extend(
+                {"kind": f"{kind}_removed", "before": value}
+                for value in old_values[old_start + paired : old_end]
+            )
+            differences.extend(
+                {"kind": f"{kind}_added", "after": value}
+                for value in new_values[new_start + paired : new_end]
+            )
+
+    def multiset_changes(kind: str, old_values: list[str], new_values: list[str]) -> None:
+        removed = list((Counter(old_values) - Counter(new_values)).elements())
+        added = list((Counter(new_values) - Counter(old_values)).elements())
+        paired = min(len(removed), len(added))
+        differences.extend(
+            {"kind": f"{kind}_changed", "before": removed[index], "after": added[index]}
+            for index in range(paired)
+        )
+        differences.extend({"kind": f"{kind}_removed", "before": value} for value in removed[paired:])
+        differences.extend({"kind": f"{kind}_added", "after": value} for value in added[paired:])
+
+    sequence_changes("heading", old["headings"], new["headings"])
+    multiset_changes("link_target", old["link_targets"], new["link_targets"])
+    multiset_changes("link_text", old["link_texts"], new["link_texts"])
+    sequence_changes("code", old["fences"], new["fences"])
+    multiset_changes("inline_code", old["inline_code"], new["inline_code"])
+    return {"ok": not differences, "differences": differences}
 
 
 def anchor_order(text: str, anchors: set[str]) -> list[str]:
@@ -910,7 +1042,20 @@ def main(argv: list[str] | None = None) -> int:
             raise RuntimeError("runtime files changed during the model calls")
         candidate_path = args.out_dir / "candidate.md"
         candidate_path.write_bytes(proposed.encode("utf-8"))
-        violations = apply_violations + protected_violations(normalized, proposed, ledger)
+        structure = structure_delta(normalized, proposed)
+        structure_violations = [
+            {
+                "kind": "structure_drift",
+                "message": difference["kind"],
+                "difference": difference,
+            }
+            for difference in structure["differences"]
+        ]
+        violations = (
+            apply_violations
+            + structure_violations
+            + protected_violations(normalized, proposed, ledger)
+        )
         blockers = evidence_gate(normalized_path, candidate_path, args.out_dir)
         accepted = not violations and not blockers
         candidate_path.replace(args.out_dir / ("result.md" if accepted else "rejected.md"))
@@ -947,6 +1092,7 @@ def main(argv: list[str] | None = None) -> int:
             "discarded_advisories": ledger["discarded_advisories"],
             "edit_count": len(edits["edits"]),
             "protected_violations": violations,
+            "structure": structure,
             "evidence_blockers": blockers,
             "model_calls": 1 + bool(ledger["candidates"]),
             "model_cost_usd": (
