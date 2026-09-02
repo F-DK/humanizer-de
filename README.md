@@ -382,11 +382,18 @@ statt Klarheit, Belegtreue oder Stimme zu verbessern.
 
 ### Zwei getrennte Modellaufrufe
 
-Der optionale Runner trennt Audit und Rewrite auch technisch. Der erste, read-only Aufruf
-erstellt ein Ledger aus bestätigten Kandidaten und wortgleichen Schutzankern. Bleiben bestätigte
-Kandidaten übrig, liefert ein frischer zweiter Aufruf nur Ersetzungen dafür. Der Host setzt sie
-deterministisch ein. Teilüberschriften, Teilsätze, verschobene Schutzanker und neue
-Evidence-Blocker werden abgelehnt.
+Der optionale Runner trennt Audit und Rewrite auch technisch. Vor dem Audit sichert er die
+unveränderte Eingabe als `original.md` und erzeugt daraus `normalized.md`, das
+`unicode_lint --fix --write` konservativ bereinigt. Alle folgenden Schritte einschließlich
+Schutzankern und Evidence-Gate arbeiten auf dieser Fassung, und `report.json` hält den Eingriff
+unter `unicode_fix` fest. Der erste, read-only Aufruf erstellt ein Ledger aus bestätigten
+Kandidaten und wortgleichen Schutzankern. Bleiben bestätigte Kandidaten übrig, liefert ein
+frischer zweiter Aufruf nur Ersetzungen dafür. Der Host setzt sie deterministisch ein.
+Teilüberschriften, Teilsätze, verschobene Schutzanker, veränderte Überschriften, Links oder
+Codeblöcke und neue Evidence-Blocker werden abgelehnt.
+Mehrfach vorkommende identische Sätze oder Überschriften adressiert das Audit-Ledger über das
+1-basierte Feld `occurrence`. Lässt das Rewrite-Modell einen bestätigten Kandidaten aus, führt
+`report.json` ihn unter `skipped_candidates` mit dem Grund `no_replacement`.
 
 Voraussetzung ist eine angemeldete lokale `claude`-CLI. Das Zielverzeichnis muss leer sein:
 
