@@ -11,7 +11,7 @@ Diese Elemente dürfen durch Humanisierung nicht verschwinden, wandern oder ihre
 - direkte Zitate und zitierte Satzteile
 - URLs, DOI/ISBN/ISSN, Aktenzeichen, Paragraphen und Normverweise
 - Code, Statuscodes, technische Feldnamen, Dateinamen und API-Bezeichner
-- Autoritätsgrad: "belegt", "vermutlich", "laut", "kann", "muss"
+- Autoritätsgrad: „belegt“, „vermutlich“, „laut“, „kann“, „muss“
 
 ## Operationstypen
 
@@ -33,7 +33,10 @@ Der Two-Pass-Runner (`humanizer_two_pass.py`) setzt nur `STYLE_ONLY`, `DROP_FLUF
 
 Konkrete Quellen sind nicht Dekoration. Eine Referenz muss existieren, formal plausibel sein und die konkrete Aussage tragen. Wenn das im aktuellen Material nicht prüfbar ist, markiere den Prüfstatus statt den Text glatter zu schreiben.
 
-Markiere unbelegte oder erfundene Quellen immer, auch ohne weitere Änderung.
+Markiere auffällige unbelegte oder erfundene Quellen auch ohne weitere Änderung. Die Prüfung
+bleibt eine unvollständige Nebenprüfung und verspricht keine vollständige Quelleninventur.
+Quellen werden hier nicht geöffnet. Die externe Prüfung gegen die Originale läuft auf Wunsch
+als Quellen-Sweep nach Pass 5 auf der Endfassung ([source-sweep.md](source-sweep.md)).
 
 Prüfe besonders:
 
@@ -63,11 +66,11 @@ Wenn eine Antwort unklar ist, nicht glatter schreiben. Markieren oder Rückfrage
 
 Aufrufmodi:
 
-- `--before "<text>" --after "<text>"` — Passagen direkt als Argument
-- `--before-file <datei> --after-file <datei>` — Passagen aus Dateien (Datei-Paar-Modus)
-- `--write-ledger <datei>` — Original-Anker aus `--before`/`--before-file` als Ledger schreiben
-- `--ledger <datei>` — `--after`/`--after-file` gegen ein Original-Ledger prüfen
-- `--fixture <datei-oder-verzeichnis>` — JSON-Fixtures mit `before`, `after` und optional `expect_kinds`
+- `--before "<text>" --after "<text>"` – Passagen direkt als Argument
+- `--before-file <datei> --after-file <datei>` – Passagen aus Dateien (Datei-Paar-Modus)
+- `--write-ledger <datei>` – Original-Anker aus `--before`/`--before-file` als Ledger schreiben
+- `--ledger <datei>` – `--after`/`--after-file` gegen ein Original-Ledger prüfen
+- `--fixture <datei-oder-verzeichnis>` – JSON-Fixtures mit `before`, `after` und optional `expect_kinds`
 
 ## Ledger-Modus
 
@@ -135,16 +138,16 @@ Report im Paar-Modus:
 
 Finding-Kinds:
 
-- `removed_<anker>` / `added_<anker>` — Anker verschwunden bzw. neu eingeführt. Anker-Arten: `number`, `date`, `url`, `doi`, `paragraph`, `code`, `quote` (jeweils Blocker) sowie `proper_name` (Warning).
-- `authority_strengthened` (Blocker) — starker Autoritätsmarker (z. B. "belegt", "muss") neu im After.
-- `hedge_removed` (Warning) — Hedge (z. B. "kann", "vermutlich") entfernt, während starke Marker im After stehen.
-- `claim_direction_changed` (Blocker) — Aussagerichtung kippt zwischen Zunahme und Abnahme.
+- `removed_<anker>` / `added_<anker>` – Anker verschwunden bzw. neu eingeführt. Anker-Arten: `number`, `date`, `url`, `doi`, `paragraph`, `code`, `quote` (jeweils Blocker) sowie `proper_name` (Warning).
+- `authority_strengthened` (Blocker) – starker Autoritätsmarker (z. B. „belegt“, „muss“) neu im After.
+- `hedge_removed` (Warning) – Hedge (z. B. „kann“, „vermutlich“) entfernt, während starke Marker im After stehen.
+- `claim_direction_changed` (Blocker) – Aussagerichtung kippt zwischen Zunahme und Abnahme.
 
 Severity und Exit-Codes:
 
 - `blocker` = Verstoß gegen die Ledger-Regeln oben; `warning` = manuell prüfen, blockt nicht automatisch.
 - Paar-Modus: Exit 1 nur, wenn mindestens ein Finding `severity = blocker` hat. Nur Warnings → Exit 0.
-- Fixture-Modus: Report `{"ok": ..., "results": [{"fixture": ..., "ok": ..., "findings": [...]}]}`; Exit 1, wenn eine Fixture-Erwartung (`expect_kinds`) nicht getroffen wird — unabhängig von der Severity.
+- Fixture-Modus: Report `{"ok": ..., "results": [{"fixture": ..., "ok": ..., "findings": [...]}]}`; Exit 1, wenn eine Fixture-Erwartung (`expect_kinds`) nicht getroffen wird, unabhängig von der Severity.
 
 ## QGIR-Invarianten
 
@@ -152,6 +155,6 @@ Bei iterativer Revision gilt die Claim-Delta-Regel nach jedem Pass, nicht nur am
 
 - Jeder Pass muss die vorher geschützten Anker erneut erhalten.
 - Neue Faktenanker, Beispiele, Ursachen, Personen, Orte oder Erfahrungsdetails blocken den Loop.
-- "kann", "laut", "vermutlich" und andere Qualifier dürfen nicht zu "zeigt", "beweist" oder "muss" werden.
+- „kann“, „laut“, „vermutlich“ und andere Qualifier dürfen nicht zu „zeigt“, „beweist“ oder „muss“ werden.
 - Eine spätere Runde darf keine Lücke füllen, die eine frühere Runde korrekt markiert hat.
 - Wenn Claim-Erhalt und Stilgewinn kollidieren, stoppt QGIR.

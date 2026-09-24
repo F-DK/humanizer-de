@@ -618,9 +618,11 @@ ignoriert es.
 
 ## Fakten, Grenzen und Datenschutz
 
-Der Humanizer schützt Zahlen, Namen, Daten, URLs, Zitate, Quellen und die Richtung einer Aussage.
-Er erfindet keine Erfahrung und macht aus einer Vermutung keine Gewissheit. Ist ein Text sauber oder
-bleiben nur bekannte Fehlalarme, greift er nicht weiter ein.
+Zahlen, Namen, Daten, URLs, Zitate und Quellenanker gleicht der Skill konservativ ab.
+Auffällige Quellen markiert er, eine vollständige Quellenprüfung verspricht er nicht.
+Auf Wunsch folgt am Ende ein Quellen-Sweep: Erst wenn Stilprüfung und Überarbeitung
+abgeschlossen sind, werden die zitierten Quellen gegen die Endfassung gehalten.
+Sachliche Richtigkeit und semantische Beziehungen brauchen weiterhin eine fachliche Endabnahme.
 
 **Stark ist der Skill**, wenn KI-Entwürfe zu glatt oder generisch klingen, Fachbegriffe und Belege
 erhalten bleiben müssen oder ein Text sachlich, aber nicht maschinell wirken soll. **Zurückhaltung
@@ -665,16 +667,17 @@ flowchart TD
     T([Eingabetext]) --> M["Messen – Pass 0<br/>Rhythmus, Register, Preflight"]
     M --> Z{"Redigieren oder<br/>nur Befunde?"}
     Z -- "nur Befunde" --> AU["Audit-Zweig<br/>alle 74 Muster prüfen"]
-    AU --> B([Befundliste, Text bleibt unberührt])
-    Z -- redigieren --> C{"Echte Muster-Cluster?"}
-    C -- nein --> N["Null-Edit: Text bleibt stehen<br/>unbelegte Quellen trotzdem markieren"]
-    N --> O
-    C -- ja --> E["Fakten sichern – Pass 1<br/>Zahlen, Namen, Quellen, Zitate"]
-    E --> R["Redigieren – Pass 2–4<br/>Lexik, Struktur, Rhythmus"]
+    AU --> B([Befundliste, Text bleibt unberührt<br/>auf Wunsch danach: Quellen-Sweep])
+    Z -- redigieren --> E["Pass 1 immer: Artefakte und Evidenz prüfen<br/>Fakten sichern, auffällige Quellen markieren"]
+    E --> C{"Bearbeitungswürdige<br/>Stilcluster?"}
+    C -- nein --> N["Keine weitere Stiländerung<br/>Null-Edit, wenn auch Pass 1 ohne Änderung blieb"]
+    N --> A
+    C -- ja --> R["Redigieren – Pass 2–4<br/>Lexik, Struktur, Rhythmus"]
     R --> A["Selbst-Audit – Pass 5<br/>Qualität und Stimme"]
-    A --> G{"Evidence-Gate grün?"}
-    G -- nein --> R
-    G -- ja --> O([Überarbeiteter Text + Kurzaudit])
+    A --> G{"Claim-/Ankerprüfung grün?"}
+    G -- nein --> K["Betroffene Änderung korrigieren<br/>oder zurücknehmen"]
+    K --> A
+    G -- ja --> O([Geänderte Passagen oder Null-Edit + Kurzaudit<br/>Volltext auf Wunsch, danach optional Quellen-Sweep])
 ```
 
 Die Leitidee ist proportional: so viel wie nötig, so wenig wie möglich. Regeln messen, aber richten
