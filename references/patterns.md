@@ -1028,7 +1028,7 @@ Häufige Indikatoren:
 
 ❌ Schlecht: "Die Plattform wurde jetzt um KI-gestützte Empfehlungen erweitert, die die alte manuelle Auswahl ersetzen."
 
-✓ Besser: "Die Plattform empfiehlt passende Inhalte automatisch auf Basis des Nutzerverhaltens."
+✓ Besser: "Die Plattform verwendet KI-gestützte Empfehlungen anstelle der manuellen Auswahl."
 
 #### 56. Aphorismus-Formeln [MEDIUM]
 <!-- haltbarkeit: kern -->
