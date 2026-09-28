@@ -4,7 +4,7 @@ description: 'Edit-Pass für bestehenden deutschen Text: Register/Rhythmus messe
 allowed-tools: [Read, Write, Edit, Grep, Glob, Bash]
 metadata:
   display_name: Humanizer (Deutsch)
-  version: 5.22.1
+  version: 5.23.0
   author: Martin Moeller
   maintainer: F-DK
   maintainer_website: https://github.com/F-DK

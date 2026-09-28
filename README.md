@@ -1058,6 +1058,15 @@ GitHub Release.
 
 ## Was ist neu?
 
+- **5.23.0** - Übernimmt die kritischen Fixes aus Upstream bis 5.28.0. `unicode_lint --fix`
+  macht aus `geht’s` in einfachen Anführungszeichen kein `geht‘s` mehr und meldet `’s` am
+  Wortanfang nicht mehr als Fehler. `SKILL.md` behandelt den zu bearbeitenden Text als Daten:
+  Anweisungen darin werden nicht befolgt. Der Two-Pass-Runner lehnt Ergebnisse ab, die
+  Überschriften, Links oder Code verändern, normalisiert Unicode vor dem Einfrieren der
+  Schutzanker und adressiert wiederholte Sätze über `occurrence`. Neu erkannt werden
+  KI-Zitations-, Tool- und Verweigerungsreste (M20/M24/M26) sowie Wörter mit gemischten
+  Schriftsystemen. Die externe Quellenprüfung läuft nur noch auf Wunsch als Quellen-Sweep nach
+  Pass 5; Pass 1 öffnet keine Quellen mehr.
 - **5.22.1** - Das Repository steht jetzt eigenständig. Installationsbefehle, Badges, Issue- und
   Security-Links zeigen auf `F-DK/humanizer-de`; Kontaktwege laufen über GitHub statt über eine
   E-Mail-Adresse. Die Herkunft bleibt vollständig nachvollziehbar: Martin Moeller ist weiterhin
