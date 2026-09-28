@@ -42,6 +42,47 @@ class HumanizerTwoPassTests(unittest.TestCase):
             output = out / ("result.md" if report["accepted"] else "rejected.md")
             return code, report, output.read_text(encoding="utf-8")
 
+    def test_write_json_uses_utf8_bytes_with_lf(self):
+        path = mock.Mock()
+
+        two_pass.write_json(path, {"text": "Grüße"})
+
+        payload = path.write_bytes.call_args.args[0]
+        self.assertEqual(payload, b'{\n  "text": "Gr\xc3\xbc\xc3\x9fe"\n}\n')
+        self.assertNotIn(b"\r", payload)
+
+    def test_runtime_freeze_covers_imported_helpers(self):
+        self.assertIn(ROOT / "scripts" / "rhythm_lint.py", two_pass.runtime_files())
+        self.assertIn(ROOT / "scripts" / "text_scope.py", two_pass.runtime_files())
+        self.assertIn(ROOT / "references" / "style-targets.json", two_pass.runtime_files())
+
+    def test_runtime_freeze_rejects_tampered_previously_unhashed_helper(self):
+        audit = {
+            "register": "sachlich",
+            "candidates": [],
+            "advisories": [],
+            "protected": {"facts": [], "quotes": [], "terms": [], "persona": []},
+        }
+        with tempfile.TemporaryDirectory() as temp_name:
+            temp = Path(temp_name)
+            source, out = temp / "source.md", temp / "out"
+            source.write_text("Text.\n", encoding="utf-8")
+            target = temp / "rhythm_lint.py"
+            target.write_bytes((ROOT / "scripts" / "rhythm_lint.py").read_bytes())
+            original = target.read_bytes()
+
+            def tamper(*_args, **_kwargs):
+                target.write_bytes(original + b"\n")
+                return audit, None
+
+            runtime = tuple(two_pass.runtime_files()) + (target,)
+            with mock.patch.object(two_pass, "runtime_files", return_value=runtime), mock.patch.object(
+                two_pass, "run_model", side_effect=tamper
+            ), mock.patch("builtins.print"):
+                self.assertEqual(two_pass.main(["--file", str(source), "--out-dir", str(out)]), 2)
+            failure = json.loads((out / "failure.json").read_text(encoding="utf-8"))
+            self.assertIn("runtime files changed", failure["error"])
+
     def test_confirmation_only_discards_candidates_touching_quotes_or_persona(self):
         original = "Echt. Regional. Fakt 42 bleibt. Dynamisch und nahtlos."
         ledger = {

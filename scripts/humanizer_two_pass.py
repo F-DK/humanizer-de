@@ -31,6 +31,8 @@ EVIDENCE_LINT = ROOT / "scripts" / "evidence_lint.py"
 HUMANIZER_AUDIT = ROOT / "scripts" / "humanizer_audit.py"
 UNICODE_LINT = ROOT / "scripts" / "unicode_lint.py"
 PATTERNS = ROOT / "references" / "patterns.md"
+# Freeze every local script and runtime data file so changed helpers cannot slip past.
+STYLE_TARGETS = ROOT / "references" / "style-targets.json"
 SENTENCE_CLOSERS = "\"'„“‚‘”’«»‹›"
 MARKDOWN_STRUCTURE_RE = re.compile(
     r"([ \t]{4,}|\t+|[ \t]{0,3}(?:#{1,6}[ \t]+|>[ \t]*|(?:[-+*]|\d+[.)])[ \t]+(?:\[[ xX]\][ \t]+)?))"
@@ -120,7 +122,13 @@ def subprocess_env() -> dict[str, str]:
 
 
 def write_json(path: Path, value: object) -> None:
-    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    path.write_bytes((json.dumps(value, ensure_ascii=False, indent=2) + "\n").encode("utf-8"))
+
+
+def runtime_files() -> tuple[Path, ...]:
+    return (ROOT / "SKILL.md", PATTERNS, STYLE_TARGETS) + tuple(
+        sorted(SCRIPT_DIR.glob("*.py"))
+    )
 
 
 def occurrences(text: str, value: str) -> list[tuple[int, int]]:
@@ -971,15 +979,7 @@ def main(argv: list[str] | None = None) -> int:
         normalized_path = args.out_dir / "normalized.md"
         normalized_path.write_bytes(original.encode("utf-8"))
         runtime_hashes = {
-            path: hashlib.sha256(path.read_bytes()).hexdigest()
-            for path in (
-                Path(__file__),
-                ROOT / "SKILL.md",
-                PATTERNS,
-                HUMANIZER_AUDIT,
-                UNICODE_LINT,
-                EVIDENCE_LINT,
-            )
+            path: hashlib.sha256(path.read_bytes()).hexdigest() for path in runtime_files()
         }
     except (OSError, UnicodeError) as error:
         return fail_run(args.out_dir, started, error)
