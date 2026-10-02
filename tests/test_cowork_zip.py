@@ -52,6 +52,18 @@ class CoworkZipTests(unittest.TestCase):
             name = f"humanizer-de/{path.relative_to(ROOT).as_posix()}"
             self.assertIn(name, self.names, f"{name} fehlt im ZIP — 'make cowork-zip'")
 
+    def test_zip_is_a_skill_not_a_plugin(self):
+        # Mit Plugin-Manifest deutet Cowork das ZIP als Plugin und lehnt es ab.
+        for name in self.names:
+            self.assertNotIn("-plugin/", name)
+
+    def test_zip_frontmatter_has_only_string_values(self):
+        # Der Upload validiert nach Agent-Skills-Spec: keine YAML-Listen.
+        with zipfile.ZipFile(ZIP_PATH) as zf:
+            head = zf.read("humanizer-de/SKILL.md").decode("utf-8").split("---\n", 2)[1]
+        self.assertNotRegex(head, r"(?m): \[")
+        self.assertRegex(head, r"(?m)^allowed-tools: 'Read Write Edit Grep Glob Bash'$")
+
     def test_zip_excludes_build_junk(self):
         for name in self.names:
             self.assertNotIn("__pycache__", name)

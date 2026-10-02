@@ -6,11 +6,18 @@ Pakete mit mehr als einer SKILL.md ab. Der Plugin-Router skills/humanizer-de/
 bleibt deshalb draussen: Cowork liest ihn sonst als zweiten Skill. Dafuer meldet
 doctor.py im Paket einen fehlenden Basis-Skill-Pfad — das ist der bewusste
 Tausch, nicht ein defektes Paket.
+
+Der Upload prueft das Frontmatter nach der Agent-Skills-Spezifikation:
+allowed-tools ist ein String, metadata-Werte sind Strings. Listen im
+Baum-Frontmatter werden fuer das Paket deshalb zu Strings umgeschrieben.
+Plugin-Manifeste (.claude-plugin/, .codex-plugin/) bleiben draussen, sonst
+behandelt Cowork das ZIP als Plugin statt als Skill.
 """
 
 from __future__ import annotations
 
 import argparse
+import re
 import shutil
 import sys
 import zipfile
@@ -20,12 +27,9 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "dist" / "humanizer-de-cowork.zip"
 PREFIX = "humanizer-de"
 
-# Laufzeit-Set: was der Skill zum Arbeiten braucht, plus die Manifeste, damit
-# doctor.py Version und Paket-Sync pruefen kann. tests/, docs/, .github/ und die
-# README-Bilder bleiben draussen — sie kosten nur Dateien am 200er-Limit.
-FILES = ("SKILL.md", "LICENSE", "NOTICE", "assets/checkliste-ki-tells.md",
-         ".claude-plugin/plugin.json", ".claude-plugin/marketplace.json",
-         ".codex-plugin/plugin.json")
+# Laufzeit-Set: was der Skill zum Arbeiten braucht. tests/, docs/, .github/ und
+# die README-Bilder bleiben draussen — sie kosten nur Dateien am 200er-Limit.
+FILES = ("SKILL.md", "LICENSE", "NOTICE", "assets/checkliste-ki-tells.md")
 GLOBS = ("references/*.md", "references/*.json", "scripts/*.py")
 
 
@@ -39,6 +43,21 @@ def collect() -> list[Path]:
     return sorted(set(paths))
 
 
+FLOW_LIST = re.compile(r"(?m)^(\s*)([\w-]+): \[(.*)\]$")
+
+
+def cowork_frontmatter(text: str) -> str:
+    """Schreibt YAML-Flow-Listen im Frontmatter zu Strings um (siehe Modul-Doc)."""
+    _, head, body = text.split("---\n", 2)
+
+    def flatten(m: re.Match) -> str:
+        items = [i.strip() for i in m.group(3).split(",")]
+        sep = " " if m.group(2) == "allowed-tools" else ", "
+        return f"{m.group(1)}{m.group(2)}: '{sep.join(items)}'"
+
+    return f"---\n{FLOW_LIST.sub(flatten, head)}---\n{body}"
+
+
 def build() -> Path:
     paths = collect()
     if sum(1 for p in paths if p.name == "SKILL.md") != 1:
@@ -49,7 +68,11 @@ def build() -> Path:
     OUT.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(OUT, "w", zipfile.ZIP_DEFLATED) as zf:
         for path in paths:
-            zf.write(path, f"{PREFIX}/{path.relative_to(ROOT).as_posix()}")
+            arcname = f"{PREFIX}/{path.relative_to(ROOT).as_posix()}"
+            if path.name == "SKILL.md":
+                zf.writestr(arcname, cowork_frontmatter(path.read_text(encoding="utf-8")))
+            else:
+                zf.write(path, arcname)
     return OUT
 
 

@@ -94,9 +94,10 @@ liegt eingecheckt bereit:
 
 Das Paket enthält den Skill, alle `references/` und die Prüfskripte — ohne Tests, Doku und
 Bilder, weil Cowork höchstens 200 Dateien akzeptiert. Der Plugin-Router `skills/humanizer-de/`
-fehlt bewusst: Cowork liest ihn sonst als zweiten Skill und lehnt den Upload ab. Als Folge
-meldet `doctor.py` im Paket einen fehlenden Basis-Skill-Pfad. Das ist erwartet und betrifft
-keine Prüfung — Version und Werkzeugstatus darunter stimmen.
+fehlt bewusst: Cowork liest ihn sonst als zweiten Skill und lehnt den Upload ab. Aus demselben
+Grund fehlen die Plugin-Manifeste (`.claude-plugin/`, `.codex-plugin/`), und das Frontmatter der
+`SKILL.md` im Paket nutzt Strings statt YAML-Listen, wie der Skill-Upload es verlangt. Als Folge
+meldet `doctor.py` im Paket fehlende Paketdateien. Das ist erwartet und betrifft keine Prüfung.
 
 Zum Aktualisieren den alten Skill zuerst löschen (Skill öffnen, Schalter aus, **…** → **Delete**),
 dann das neue ZIP hochladen. Ein Upload gleichen Namens ersetzt den alten nicht verlässlich.
